@@ -109,5 +109,3 @@ make dist
 QQ 群：1030129384
 
 ![QQ群](public/goView-QQ.png)
-
-![渲染海报](public/logo-poster.png)
