@@ -1,0 +1,11 @@
+import { defineStore } from 'pinia'
+import { {{upperDataName}}StoreType } from './{{name}}Store.d'
+import { setLocalStorage, getLocalStorage } from '@/utils'
+import { StorageEnum } from '@/enums/storageEnum'
+
+export const use{{upperDataName}}Store = defineStore({
+  id: 'use{{upperDataName}}Store',
+  state: (): {{name}}StoreType => ({}),
+  getters: {},
+  actions: {}
+})
