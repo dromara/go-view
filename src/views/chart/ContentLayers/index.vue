@@ -41,7 +41,7 @@ import { computed, toRaw } from 'vue'
 import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { ContentBox } from '../contentBox/index'
+import { ContentBox } from '../ContentBox/index'
 import { useChartLayoutStore } from '@/store/modules/chartLayoutStore/chartLayoutStore'
 import { ChartLayoutStoreEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'

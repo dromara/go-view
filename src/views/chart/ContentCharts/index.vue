@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ContentBox } from '../contentBox/index'
+import { ContentBox } from '../ContentBox/index'
 import { ChartsOptionContent } from './components/ChartsOptionContent'
 import { ChartsSearch } from './components/ChartsSearch'
 import {
