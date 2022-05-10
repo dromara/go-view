@@ -2,7 +2,7 @@ import { publicConfig } from '@/packages/public'
 import { CreateComponentType } from '@/packages/index.d'
 import { ImageConfig } from './index'
 import cloneDeep from 'lodash/cloneDeep'
-import logo from '@/../public/logo.png'
+import logo from '@/assets/logo.png'
 
 export const option = {
   // 图片路径

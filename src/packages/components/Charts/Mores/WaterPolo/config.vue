@@ -15,14 +15,14 @@
           placeholder="水球数值"
         ></n-input-number>
       </SettingItem>
-      <SettingItem name="颜色">
+      <SettingItem name="颜色1">
         <n-color-picker
           size="small"
           :modes="['hex']"
           v-model:value="item.color[0].colorStops[0].color"
        ></n-color-picker>
       </SettingItem>
-      <SettingItem name="颜色">
+      <SettingItem name="颜色2">
         <n-color-picker
           size="small"
           :modes="['hex']"

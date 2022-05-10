@@ -50,9 +50,9 @@ chartHistoryStoreStore.canvasInit(chartEditStore.getEditCanvas)
 const HeaderLeftBtn = loadAsyncComponent(() => import('./ContentHeader/headerLeftBtn/index.vue'))
 const HeaderRightBtn = loadAsyncComponent(() => import('./ContentHeader/headerRightBtn/index.vue'))
 const HeaderTitle = loadAsyncComponent(() => import('./ContentHeader/headerTitle/index.vue'))
-const ContentLayers = loadAsyncComponent(() => import('./contentLayers/index.vue'))
-const ContentCharts = loadAsyncComponent(() => import('./contentCharts/index.vue'))
-const ContentConfigurations = loadAsyncComponent(() => import('./contentConfigurations/index.vue'))
+const ContentLayers = loadAsyncComponent(() => import('./ContentLayers/index.vue'))
+const ContentCharts = loadAsyncComponent(() => import('./ContentCharts/index.vue'))
+const ContentConfigurations = loadAsyncComponent(() => import('./ContentConfigurations/index.vue'))
 
 // 右键
 const {

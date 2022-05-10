@@ -8,6 +8,7 @@
       </template>
     </n-button>
     <n-space>
+      <!-- 模块展示按钮 -->
       <n-tooltip v-for="item in btnList" :key="item.key" placement="bottom" trigger="hover">
         <template #trigger>
           <n-button size="small" ghost :type="styleHandle(item)" @click="clickHandle(item)">
@@ -19,6 +20,7 @@
 
       <n-divider vertical />
 
+      <!-- 历史记录按钮 -->
       <n-tooltip v-for="item in historyList" :key="item.key" placement="bottom" trigger="hover">
         <template #trigger>
           <n-button size="small" ghost type="primary" :disabled="!item.select" @click="clickHistoryHandle(item)">

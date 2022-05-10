@@ -1,4 +1,4 @@
-import { ref, nextTick, onMounted, onUnmounted} from 'vue'
+import { ref, onMounted, onUnmounted} from 'vue'
 import { usePreviewFitScale, usePreviewScrollYScale, usePreviewScrollXScale, usePreviewFullScale } from '@/hooks/index'
 import type { ChartEditStorageType } from '../index.d'
 import { PreviewScaleEnum } from '@/enums/styleEnum'

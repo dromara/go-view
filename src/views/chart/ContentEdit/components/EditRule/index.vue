@@ -41,6 +41,11 @@ const lines = {
 /* 使用 SCSS 会报错，直接使用最基础的 CSS 进行修改，
 此库有计划 Vue3 版本，但是开发的时候还没发布 */
 
+#mb-ruler {
+  top: 0; 
+  left: 0;
+}
+
 /* 横线 */
 #mb-ruler .v-container .lines .line {
   /* 最大缩放 200% */
@@ -71,6 +76,7 @@ const lines = {
   font-size: 26px;
   font-weight: bolder;
 }
+
 #mb-ruler .corner{
   border-width: 0!important;
 }

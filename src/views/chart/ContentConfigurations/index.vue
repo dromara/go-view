@@ -95,7 +95,7 @@ const {
   LeafIcon
 } = icon.ionicons5
 
-const ContentEdit = loadAsyncComponent(() => import('../contentEdit/index.vue'))
+const ContentEdit = loadAsyncComponent(() => import('../ContentEdit/index.vue'))
 const CanvasPage = loadAsyncComponent(() =>
   import('./components/CanvasPage/index.vue')
 )

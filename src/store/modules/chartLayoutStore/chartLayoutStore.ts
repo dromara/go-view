@@ -19,8 +19,8 @@ export const useChartLayoutStore = defineStore({
       layers: true,
       // 图表组件
       charts: true,
-      // 详情设置
-      details: true
+      // 详情设置（收缩为true）
+      details: false
     },
   getters: {
     getLayers(): boolean {

@@ -1,5 +1,5 @@
 ## 总览
-![logo](public/logo-t-y.png)
+![logo](readme/logo-t-y.png)
 
 GoView 是一个高效的拖拽式低代码数据可视化开发平台，将图表或页面元素封装为基础组件，无需编写代码即可制作数据大屏，减少心智负担。当然低代码也不是 “银弹”，希望所有人员都能理智看待此技术。
 
@@ -23,7 +23,7 @@ GoView 是一个高效的拖拽式低代码数据可视化开发平台，将图�
 
 
 项目截图：
-![项目截图](public/goView-canvas.png)
+![项目截图](readme/goView-canvas.png)
 
 主要技术栈为：
 
@@ -108,4 +108,6 @@ make dist
 
 QQ 群：1030129384
 
-![QQ群](public/goView-QQ.png)
+![QQ群](readme/goView-QQ.png)
+
+![渲染海报](readme/logo-poster.png)

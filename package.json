@@ -1,10 +1,9 @@
 {
   "name": "go-view",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "dev": "vite --host",
     "build": "vue-tsc --noEmit && vite build",
-    "lint": "eslint \"{src}/**/*.{vue,ts,tsx}\" --fix --ext",
     "new": "plop --plopfile ./plop/plopfile.js"
   },
   "dependencies": {
@@ -19,7 +18,7 @@
     "highlight.js": "^11.5.0",
     "html2canvas": "^1.4.1",
     "keymaster": "^1.6.2",
-    "naive-ui": "^2.27.0",
+    "naive-ui": "^2.28.2",
     "pinia": "^2.0.13",
     "screenfull": "^6.0.1",
     "vue": "^3.2.31",
@@ -57,11 +56,7 @@
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-importer": "^0.2.5",
     "vite-plugin-mock": "^2.9.6",
-    "vite-plugin-style-import": "^1.4.1",
     "vue-echarts": "^6.0.2",
     "vue-tsc": "^0.28.10"
-  },
-  "lint-staged": {
-    "*.{vue,js,ts,tsx}": "eslint --fix"
   }
 }

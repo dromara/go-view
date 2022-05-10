@@ -74,7 +74,7 @@ import { useAddKeyboard } from '../hooks/useKeyboard.hook'
 import { dragHandle, dragoverHandle, useMouseHandle } from './hooks/useDrag.hook'
 import { useComponentStyle, useSizeStyle } from './hooks/useStyle.hook'
 
-import { ContentBox } from '../contentBox/index'
+import { ContentBox } from '../ContentBox/index'
 import { EditRange } from './components/EditRange'
 import { EditBottom } from './components/EditBottom'
 import { EditShapeBox } from './components/EditShapeBox'

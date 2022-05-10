@@ -12,7 +12,7 @@
       </template>
     </n-button>
   </n-space>
-  <setting-item-box name="边距">
+  <setting-item-box name="位置">
     <n-input-number
       v-model:value="chartAttr.y"
       :min="0"

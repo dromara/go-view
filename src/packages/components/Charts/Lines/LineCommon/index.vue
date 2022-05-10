@@ -61,9 +61,9 @@ watch(() => chartEditStore.getEditCanvasConfig.chartThemeColor, (newColor: keyof
         v.color = themeColor[i]
       })
     })
-    option.value = mergeTheme(props.chartConfig.option, props.themeSetting, includes)
-    props.chartConfig.option = option.value
   }
+  option.value = mergeTheme(props.chartConfig.option, props.themeSetting, includes)
+  props.chartConfig.option = option.value
 }, {
   immediate: true,
 })
