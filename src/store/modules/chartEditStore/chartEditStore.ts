@@ -9,10 +9,13 @@ import { requestInterval, previewScaleType } from '@/settings/designSetting'
 import { useChartHistoryStore } from '@/store/modules/chartHistoryStore/chartHistoryStore'
 // 全局设置
 import { useSettingStore } from '@/store/modules/settingStore/settingStore'
+// 历史类型
 import { HistoryActionTypeEnum, HistoryItemType, HistoryTargetTypeEnum } from '@/store/modules/chartHistoryStore/chartHistoryStore.d'
-import { MenuEnum } from '@/enums/editPageEnum'
-import { PreviewScaleEnum } from '@/enums/styleEnum'
+// 画布枚举
+import { MenuEnum, SyncEnum } from '@/enums/editPageEnum'
+
 import {
+  ProjectInfoType,
   ChartEditStoreEnum,
   ChartEditStorage,
   ChartEditStoreType,
@@ -31,6 +34,12 @@ const settingStore = useSettingStore()
 export const useChartEditStore = defineStore({
   id: 'useChartEditStore',
   state: (): ChartEditStoreType => ({
+    // 项目数据
+    projectInfo: {
+      projectName: '',
+      remarks: '',
+      thumbnail: ''
+    },
     // 画布属性
     editCanvas: {
       // 编辑区域 Dom
@@ -47,7 +56,9 @@ export const useChartEditStore = defineStore({
       // 初始化
       isCreate: false,
       // 拖拽中
-      isDrag: false
+      isDrag: false,
+      // 同步中
+      saveStatus: SyncEnum.PENDING
     },
     // 右键菜单
     rightMenuShow: false,
@@ -109,6 +120,9 @@ export const useChartEditStore = defineStore({
     componentList: []
   }),
   getters: {
+    getProjectInfo(): ProjectInfoType {
+      return this.projectInfo
+    },
     getMousePosition(): MousePositionType {
       return this.mousePosition
     },
@@ -143,6 +157,10 @@ export const useChartEditStore = defineStore({
     }
   },
   actions: {
+    // * 设置 peojectInfo 数据项
+    setProjectInfo<T extends keyof ProjectInfoType,  K extends ProjectInfoType[T]>(key: T, value: K) {
+      this.projectInfo[key] = value
+    },
     // * 设置 editCanvas 数据项
     setEditCanvas<T extends keyof EditCanvasType,  K extends EditCanvasType[T]>(key: T, value: K) {
       this.editCanvas[key] = value
@@ -517,8 +535,8 @@ export const useChartEditStore = defineStore({
           attr.x -= distance
           break;
       }
-    }, 
-    // ----------------
+    },
+    // * 页面缩放设置-----------------
     // * 设置页面大小
     setPageSize(scale: number): void {
       this.setPageStyle('height', `${this.editCanvasConfig.height * scale}px`)

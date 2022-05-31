@@ -1,4 +1,5 @@
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
+import { useSync } from './useSync.hook' 
 import { WinKeyboard, MacKeyboard, MenuEnum } from '@/enums/editPageEnum'
 import throttle from 'lodash/throttle'
 import debounce from 'lodash/debounce'
@@ -6,7 +7,7 @@ import debounce from 'lodash/debounce'
 import keymaster from 'keymaster'
 // Keymaster可以支持识别以下组合键： ⇧，shift，option，⌥，alt，ctrl，control，command，和⌘
 const chartEditStore = useChartEditStore()
-
+const useSyncIns = useSync()
 const winCtrlMerge = (e: string) => `${WinKeyboard.CTRL}+${e}`
 const winShiftMerge = (e: string) => `${WinKeyboard.SHIFT}+${e}`
 const winAltMerge = (e: string) => `${WinKeyboard.ALT}+${e}`
@@ -22,6 +23,7 @@ export const winKeyboardValue = {
   [MenuEnum.DELETE]: 'delete',
   [MenuEnum.BACK]: winCtrlMerge('z'),
   [MenuEnum.FORWORD]: winCtrlMerge(winShiftMerge('z')),
+  [MenuEnum.SAVE]: winCtrlMerge('s'),
 }
 
 // 这个 Ctrl 后面还是换成了 ⌘
@@ -41,6 +43,7 @@ export const macKeyboardValue = {
   [MenuEnum.DELETE]: macCtrlMerge('backspace'),
   [MenuEnum.BACK]: macCtrlMerge('z'),
   [MenuEnum.FORWORD]: macCtrlMerge(macShiftMerge('z')),
+  [MenuEnum.SAVE]: macCtrlMerge('s'),
 }
 
 // Win 快捷键列表
@@ -57,6 +60,8 @@ const winKeyList: Array<string> = [
 
   winKeyboardValue.back,
   winKeyboardValue.forward,
+
+  winKeyboardValue.save,
 ]
 
 // Mac 快捷键列表
@@ -73,6 +78,8 @@ const macKeyList: Array<string> = [
 
   macKeyboardValue.back,
   macKeyboardValue.forward,
+
+  macKeyboardValue.save,
 ]
 
 // 初始化监听事件
@@ -120,6 +127,11 @@ export const useAddKeyboard = () => {
       // 前进 ct+sh+z
       case keyboardValue.forward:
         keymaster(e, throttle(() => { chartEditStore.setForward(); return false }, 200))
+        break;
+
+      // 保存 ct+s
+      case keyboardValue.save:
+        keymaster(e, throttle(() => { useSyncIns.dataSyncUpdate(); return false }, 200))
         break;
     }
   }

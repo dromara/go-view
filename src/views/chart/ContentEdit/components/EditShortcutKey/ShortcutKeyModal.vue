@@ -99,6 +99,11 @@ const shortcutKeyOptions = [
     win: `${WinKeyboard.CTRL.toUpperCase()} + ${WinKeyboard.SHIFT.toUpperCase()} + Z `,
     mac: `${MacKeyboard.CTRL.toUpperCase()} + ${MacKeyboard.SHIFT.toUpperCase()} + Z `,
   },
+  {
+    label: '保存',
+    win: `${WinKeyboard.CTRL.toUpperCase()} + S `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + S `,
+  },
 ]
 const closeHandle = () => {
   emit('update:modelShow', false)

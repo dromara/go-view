@@ -1,4 +1,5 @@
-export const OUTPUT_DIR = 'dist';
+// 打包路径
+export const OUTPUT_DIR = 'dist'
 
 // chunk 警告大小
 export const chunkSizeWarningLimit = 2000

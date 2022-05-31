@@ -1,11 +1,12 @@
 import { useRoute } from 'vue-router'
-import { ResultEnum } from '@/enums/httpEnum'
+import { ResultEnum, RequestHttpHeaderEnum } from '@/enums/httpEnum'
 import { ErrorPageNameMap, PageEnum } from '@/enums/pageEnum'
 import { docPath, giteeSourceCodePath } from '@/settings/pathConst'
-import { cryptoDecode } from './crypto'
+import { SystemStoreEnum, SystemStoreUserInfoEnum } from '@/store/modules/systemStore/systemStore.d'
 import { StorageEnum } from '@/enums/storageEnum'
-import { clearLocalStorage, getLocalStorage } from './storage'
+import { clearLocalStorage, getLocalStorage, clearCookie } from './storage'
 import router from '@/router'
+import { logoutApi } from '@/api/path'
 
 /**
  * * 根据名字跳转路由
@@ -101,11 +102,20 @@ export const reloadRoutePage = () => {
 }
 
 /**
- * * 退出
+ * * 退出登录
  */
-export const logout = () => {
-  clearLocalStorage(StorageEnum.GO_LOGIN_INFO_STORE)
-  routerTurnByName(PageEnum.BASE_LOGIN_NAME)
+export const logout = async () => {
+  try {
+    const res:any = await logoutApi()
+    if(res.code === ResultEnum.SUCCESS) {
+      window['$message'].success(window['$t']('global.logout_success'))
+      clearCookie(RequestHttpHeaderEnum.COOKIE)
+      clearLocalStorage(StorageEnum.GO_SYSTEM_STORE)
+      routerTurnByName(PageEnum.BASE_LOGIN_NAME)
+    }
+  } catch (error) {
+    window['$message'].success(window['$t']('global.logout_failure'))
+  }
 }
 
 /**
@@ -154,6 +164,19 @@ export const fetchRouteParams = () => {
 }
 
 /**
+ * * 通过硬解析获取当前路由下的参数
+ * @returns object
+ */
+export const fetchRouteParamsLocation = () => {
+  try {
+    return document.location.hash.split('/').pop() || ''
+  } catch (error) {
+    window['$message'].warning('查询路由信息失败，请联系管理员！')
+    return ''
+  }
+}
+
+/**
  * * 回到主页面
  * @param confirm
  */
@@ -167,10 +190,9 @@ export const goHome = () => {
  */
 export const loginCheck = () => {
   try {
-    const info = getLocalStorage(StorageEnum.GO_LOGIN_INFO_STORE)
+    const info = getLocalStorage(StorageEnum.GO_SYSTEM_STORE)
     if (!info) return false
-    const decodeInfo = cryptoDecode(info)
-    if (decodeInfo) {
+    if (info[SystemStoreEnum.USER_INFO][SystemStoreUserInfoEnum.USER_TOKEN]) {
       return true
     }
     return false

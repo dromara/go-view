@@ -10,6 +10,31 @@ $--color-text-2: #86909c;
 $--color-text-3: #c9cdd4;
 $--color-text-4: #f2f3f5;
 
+//.mt-1 => margin top
+//spacing
+$spacing-base-size: 1em;
+
+$spacing-types: (
+  m: margin,
+  p: padding,
+);
+
+$spacing-directions: (
+  t: top,
+  r: right,
+  b: bottom,
+  l: left,
+);
+
+$spacing-sizes: (
+  0: 0,
+  1: 0.25,
+  2: 0.5,
+  3: 1,
+  4: 1.5,
+  5: 2.5,
+);
+
 // 变亮值
 $--light-shalow: 2%;
 

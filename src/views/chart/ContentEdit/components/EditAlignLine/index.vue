@@ -94,7 +94,7 @@ const canvasPositionList = computed(() => {
 // * 监听鼠标移动
 watch(
   () => chartEditStore.getMousePosition,
-  throttle(e => {
+  throttle(() => {
     if (!isComputedLine.value) return
     // 获取目标组件数据
 

@@ -46,14 +46,24 @@
               </n-button>
             </n-space>
           </n-upload>
-          <n-button class="sourceBtn-item" @click="download">
-            <template #icon>
-              <n-icon>
-                <document-download-icon />
-              </n-icon>
-            </template>
-            下载
-          </n-button>
+          <div>
+            <n-button class="sourceBtn-item" @click="download">
+              <template #icon>
+                <n-icon>
+                  <document-download-icon />
+                </n-icon>
+              </template>
+              下载
+            </n-button>
+           <n-tooltip trigger="hover">
+              <template #trigger>
+                <n-icon class="go-ml-1" size="21" :depth="3">
+                  <help-outline-icon></help-outline-icon>
+                </n-icon>
+              </template>
+              <n-text depth="3">点击【下载】查看完整数据</n-text>
+            </n-tooltip>
+          </div>
         </n-space>
         <n-card>
           <n-code :code="getSource" language="json"></n-code>
@@ -83,7 +93,9 @@ const props = defineProps({
 // 表格标题
 const tableTitle = ['字段', '映射', '状态']
 
+const { HelpOutlineIcon } = icon.ionicons5
 const { DocumentAddIcon, DocumentDownloadIcon } = icon.carbon
+
 const source = ref()
 const dimensions = ref()
 const dimensionsAndSource = ref()
@@ -140,7 +152,7 @@ watch(() => targetData.value?.option?.dataset, (newData: {
   source: any,
   dimensions: any
 } | null) => {
-  if (isObject(newData)) {
+  if (newData && isObject(newData)) {
     // 只有 Echarts 数据才有对应的格式
     source.value = isCharts.value ? newData.source : newData
     if (isCharts.value) {

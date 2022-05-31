@@ -1,61 +1,12 @@
 import { ref, nextTick } from 'vue'
 import { UploadCustomRequestOptions } from 'naive-ui'
 import { FileTypeEnum } from '@/enums/fileTypeEnum'
-import { fetchChartComponent } from '@/packages/index'
-import { CreateComponentType } from '@/packages/index.d'
-import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-import { ChartEditStoreEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
-import { useChartHistoryStore } from '@/store/modules/chartHistoryStore/chartHistoryStore'
 import { readFile, goDialog } from '@/utils'
-import { createComponent } from '@/packages'
-
-// 更新函数
-const updateComponent = async (fileData: any, isSplace = false) => {
-  const chartEditStore = useChartEditStore()
-  const chartHistoryStore = useChartHistoryStore()
-  if (isSplace) {
-    // 清除列表
-    chartEditStore.componentList = []
-    // 清除历史记录
-    chartHistoryStore.clearBackStack()
-    chartHistoryStore.clearForwardStack()
-  }
-  // 列表组件注册
-  fileData.componentList.forEach(async (e: CreateComponentType) => {
-    if (!window['$vue'].component(e.chartConfig.chartKey)) {
-      window['$vue'].component(
-        e.chartConfig.chartKey,
-        fetchChartComponent(e.chartConfig)
-      )
-    }
-  })
-  // 数据赋值
-  for (const key in fileData) {
-    // 组件
-    if (key === ChartEditStoreEnum.COMPONENT_LIST) {
-      for (const comItem of fileData[key]) {
-        // 补充 class 上的方法
-        let newComponent: CreateComponentType = await createComponent(
-          comItem.chartConfig
-        )
-        // 不保存到记录
-        chartEditStore.addComponentList(
-          Object.assign(newComponent, comItem),
-          false,
-          true
-        )
-      }
-    } else {
-      // 非组件(顺便排除脏数据)
-      if(key !== 'editCanvasConfig' && key !== 'requestGlobalConfig') return
-      Object.assign((chartEditStore as any)[key], fileData[key])
-    }
-  }
-}
+import { useSync } from '@/views/chart/hooks/useSync.hook'
 
 export const useFile = () => {
   const importUploadFileListRef = ref()
-
+  const { updateComponent } = useSync()
   // 上传-前置
   //@ts-ignore
   const importBeforeUpload = ({ file }) => {

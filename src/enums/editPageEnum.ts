@@ -19,7 +19,8 @@ export enum MenuEnum {
   DOWN = 'down',
   CLEAR = 'clear',
   BACK = 'back',
-  FORWORD = 'forward'
+  FORWORD = 'forward',
+  SAVE = 'save'
 }
 
 // Win 键盘枚举
@@ -35,4 +36,16 @@ export enum MacKeyboard {
   CTRL = '⌘',
   SHIFT = '⇧',
   ALT = '⌥',
+}
+
+// 同步状态枚举
+export enum SyncEnum {
+  // 等待
+  PENDING,
+  // 开始
+  START,
+  // 成功
+  SUCCESS,
+  // 失败
+  FAILURE
 }

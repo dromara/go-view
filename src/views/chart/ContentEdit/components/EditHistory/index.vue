@@ -10,7 +10,7 @@
     >
       <template #trigger>
         <n-button
-          class="mr-10"
+          class="go-mr-1"
           secondary
           size="small"
           :disabled="options.length === 0"
@@ -140,9 +140,6 @@ const handleClick = () => {
 </script>
 
 <style lang="scss" scoped>
-.mr-10 {
-  margin-right: 10px;
-}
 .edit-history-popover {
   .btn-text {
     font-size: 12px;

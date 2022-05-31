@@ -5,8 +5,8 @@
     </div>
     <div class="text-center">
       <h1 class="text-base text-gray-500">抱歉，服务器出错了</h1>
-      <n-button type="info" @click="goHome">回到首页</n-button>
     </div>
+    <n-button type="primary" secondary @click="goHome">回到首页</n-button>
   </div>
 </template>
 
@@ -21,11 +21,15 @@ function goHome() {
 
 <style lang="scss" scoped>
 @include go(error) {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
   padding: 100px 0;
+  @include background-image('background-image');
   .text-center {
     h1 {
       color: #666;

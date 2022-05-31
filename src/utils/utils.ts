@@ -112,29 +112,6 @@ export const isMac = () => {
 }
 
 /**
- * * file转url
- */
-export const fileToUrl = (file: File): string => {
-  const Url = URL || window.URL || window.webkitURL
-  const ImageUrl = Url.createObjectURL(file)
-  return ImageUrl
-}
-
-/**
- * * file转base64
- */
-export const fileTobase64 = (file: File, callback: Function) => {
-  let reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onload = function (e: ProgressEvent<FileReader>) {
-    if (e.target) {
-      let base64 = e.target.result
-      callback(base64)
-    }
-  }
-}
-
-/**
  * * 挂载监听
  */
 export const addEventListener = <K extends keyof WindowEventMap>(

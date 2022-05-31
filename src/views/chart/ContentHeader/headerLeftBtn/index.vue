@@ -130,7 +130,7 @@ const clickHistoryHandle = (item: ItemType<HistoryStackEnum>) => {
 // 返回首页
 const goHomeHandle = () => {
   goDialog({
-    message: '返回将不会保存任何操作',
+    message: '确定已保存了数据（Ctrl / ⌘ + S），并返回到首页吗？',
     isMaskClosable: true,
     onPositiveCallback: () => {
       goHome()

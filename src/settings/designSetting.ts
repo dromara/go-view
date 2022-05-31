@@ -48,8 +48,11 @@ export const backgroundImageSize = 5
 // 预览展示方式
 export const previewScaleType = PreviewScaleEnum.FIT
 
-// 数据请求间隔
+// 数据请求间隔（s）
 export const requestInterval = 30
+
+// 工作台自动保存间隔（s）
+export const saveInterval = 30
 
 // 工作区域历史记录存储最大数量
 export const editHistoryMax = 100

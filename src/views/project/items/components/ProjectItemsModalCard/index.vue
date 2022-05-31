@@ -26,9 +26,7 @@
         <!-- 中间 -->
         <div class="list-content-img">
           <img
-            :src="
-              requireUrl('project/moke-20211219181327.png')
-            "
+            :src="cardData?.image"
             :alt="cardData?.title"
           />
         </div>
@@ -75,10 +73,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, PropType } from 'vue'
 import { renderIcon, renderLang } from '@/utils'
 import { icon } from '@/plugins'
 import { MacOsControlBtn } from '@/components/Tips/MacOsControlBtn'
+import { Chartype } from '../../index.d'
 
 const { HammerIcon } = icon.ionicons5
 
@@ -86,13 +85,8 @@ const emit = defineEmits(['close', 'edit'])
 
 const props = defineProps({
   modalShow: Boolean,
-  cardData: Object
+  cardData: Object as PropType<Chartype>
 })
-
-// 处理url获取
-const requireUrl = (name: string) => {
-  return new URL(`../../../../../assets/images/${name}`, import.meta.url).href
-}
 
 const fnBtnList = reactive([
   {
@@ -124,10 +118,12 @@ const closeHandle = () => {
 <style lang="scss" scoped>
 $padding: 30px;
 $contentHeight: calc(80vh);
+$imageHeight: calc(80vh - 110px);
 $contentWidth: calc(82vw);
 
 @include go('modal-box') {
   width: $contentWidth;
+  height: $contentHeight;
   .list-content {
     margin-top: 20px;
     border-radius: $--border-radius-base;
@@ -144,8 +140,9 @@ $contentWidth: calc(82vw);
     }
     &-img {
       @extend .go-flex-center;
+      padding: 6px 0;
       img {
-        max-height: $contentHeight;
+        height: $imageHeight;
         min-height: 200px;
         max-width: 100%;
         @extend .go-border-radius;

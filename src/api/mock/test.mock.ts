@@ -1,6 +1,7 @@
 export default {
   // 图表
   fetchMockData: {
+    code: 0,
     status: 200,
     msg: '请求成功',
     data: {
@@ -41,6 +42,7 @@ export default {
   },
   // 排名列表
   fetchRankList: {
+    code: 0,
     status: 200,
     msg: '请求成功',
     data: [
@@ -61,6 +63,7 @@ export default {
   },
   // 获取数字
   fetchNumber: {
+    code: 0,
     status: 200,
     msg: '请求成功',
     data: '@float(0, 0.99)',

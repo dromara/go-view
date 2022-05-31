@@ -15,11 +15,9 @@
         <div class="list-content-img" @click="resizeHandle">
           <n-image
             object-fit="contain"
-            height="200"
+            height="180"
             preview-disabled
-            :src="
-              requireUrl('project/moke-20211219181327.png')
-            "
+            :src="cardData.image"
             :alt="cardData.title"
             :fallback-src="requireErrorImg()"
          ></n-image>
@@ -92,22 +90,17 @@ const {
   CopyIcon,
   TrashIcon,
   PencilIcon,
+  DownloadIcon,
   BrowsersOutlineIcon,
-  DownloadOutlineIcon,
   HammerIcon,
   SendIcon
 } = icon.ionicons5
 
-const emit = defineEmits(['delete', 'resize', 'edit'])
+const emit = defineEmits(['delete', 'resize', 'edit', 'release'])
 
 const props = defineProps({
   cardData: Object as PropType<Chartype>
 })
-
-// 处理url获取
-const requireUrl = (name: string) => {
-  return new URL(`../../../../../assets/images/${name}`, import.meta.url).href
-}
 
 const fnBtnList = reactive([
   {
@@ -131,12 +124,14 @@ const selectOptions = ref([
   {
     label: renderLang('global.r_copy'),
     key: 'copy',
-    icon: renderIcon(CopyIcon)
+    icon: renderIcon(CopyIcon),
+    disabled: true
   },
   {
     label: renderLang('global.r_rename'),
     key: 'rename',
-    icon: renderIcon(PencilIcon)
+    icon: renderIcon(PencilIcon),
+    disabled: true
   },
   {
     type: 'divider',
@@ -146,13 +141,14 @@ const selectOptions = ref([
     label: props.cardData?.release
       ? renderLang('global.r_unpublish')
       : renderLang('global.r_publish'),
-    key: 'send',
+    key: 'release',
     icon: renderIcon(SendIcon)
   },
   {
     label: renderLang('global.r_download'),
     key: 'download',
-    icon: renderIcon(DownloadOutlineIcon)
+    icon: renderIcon(DownloadIcon),
+    disabled: true
   },
   {
     type: 'divider',
@@ -170,6 +166,9 @@ const handleSelect = (key: string) => {
     case 'delete':
       deleteHanlde()
       break
+    case 'release':
+      releaseHandle()
+      break
     case 'edit':
       editHandle()
       break
@@ -186,6 +185,11 @@ const editHandle = () => {
   emit('edit', props.cardData)
 }
 
+// 编辑处理
+const releaseHandle = () => {
+  emit('release', props.cardData)
+}
+
 // 放大处理
 const resizeHandle = () => {
   emit('resize', props.cardData)
@@ -193,7 +197,7 @@ const resizeHandle = () => {
 </script>
 
 <style lang="scss" scoped>
-$contentHeight: 200px;
+$contentHeight: 180px;
 @include go('items-list-card') {
   position: relative;
   border-radius: $--border-radius-base;

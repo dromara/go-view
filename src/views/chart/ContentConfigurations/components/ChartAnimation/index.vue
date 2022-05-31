@@ -73,8 +73,8 @@ const addAnimation = (item: { label: string; value: string }) => {
     width: 100%;
   }
   .animation-item {
-    height: 50px;
-    line-height: 50px;
+    height: 40px;
+    line-height: 40px;
     text-align: center;
     cursor: pointer;
     border-radius: 5px;

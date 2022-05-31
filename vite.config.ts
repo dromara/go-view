@@ -1,16 +1,17 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import { OUTPUT_DIR, brotliSize, chunkSizeWarningLimit, terserOptions, rollupOptions } from './build/constant'
 import viteCompression from 'vite-plugin-compression'
 import { viteMockServe} from "vite-plugin-mock";
+import { axiosPre } from './src/settings/httpSetting'
 
 function pathResolve(dir: string) {
   return resolve(process.cwd(), '.', dir)
 }
 
-export default defineConfig({
-  base: './',
+export default ({ mode }) => defineConfig({
+  base: process.env.NODE_ENV === 'production' ? './' : '/',
   // 路径重定向
   resolve: {
     alias: [
@@ -31,6 +32,21 @@ export default defineConfig({
       scss: {
         javascriptEnabled: true,
         additionalData: `@import "src/styles/common/style.scss";`
+      }
+    }
+  },
+  // 开发服务器配置
+  server: {
+    host: true,
+    open: true,
+    port: 3000,
+    proxy: {
+      [axiosPre]: {
+        // @ts-ignore
+        target: loadEnv(mode, process.cwd()).VITE_DEV_PATH,
+        changeOrigin: true,
+        ws: true,
+        secure: true,
       }
     }
   },

@@ -11,13 +11,15 @@ const global = {
   help: 'Help',
   contact: 'Contact Us',
   logout: 'Logout',
+  logout_success: 'Logout success！',
+  logout_failure: 'Logout Failed！',
   // system setting
   sys_set: 'System Setting',
   lang_set: 'Language Setting',
   // right key
   r_edit: 'Edit',
   r_preview: 'Preview',
-  r_copy: 'Copy',
+  r_copy: 'Clone',
   r_rename: 'Rename',
   r_publish: 'Publish',
   r_unpublish: 'Unpublish',
@@ -26,8 +28,14 @@ const global = {
   r_more: 'More',
 }
 
+const http = {
+  error_message: 'The interface is abnormal, please check the interface!',
+  token_overdue_message: 'Login expired, please log in again!'
+}
+
 export default {
   global,
+  http,
   login,
   project
 }

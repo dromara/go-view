@@ -44,7 +44,7 @@
 }
 
 // 渐变
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
@@ -58,7 +58,7 @@
 .list-complete-item {
   transition: all 1s;
 }
-.list-complete-enter,
+.list-complete-enter-from,
 .list-complete-leave-to {
   opacity: 0;
   transform: translateY(30px);

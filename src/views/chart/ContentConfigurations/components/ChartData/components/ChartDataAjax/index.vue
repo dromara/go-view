@@ -20,16 +20,10 @@
               <help-outline-icon></help-outline-icon>
             </n-icon>
           </template>
-          <ul>
+          <ul class="go-pl-0">
             开发环境使用 mock 数据，请输入
-            <li>
-              <n-text type="info"> 【图表】{{ chartDataUrl }} </n-text>
-            </li>
-            <li>
-              <n-text type="info"> 【表格】{{ rankListUrl }} </n-text>
-            </li>
-            <li>
-              <n-text type="info"> 【0~1数字】{{ numberUrl }} </n-text>
+            <li v-for="item in apiList" :key="item.value">
+              <n-text type="info"> {{item.value}} </n-text>
             </li>
           </ul>
         </n-tooltip>
@@ -82,6 +76,18 @@ const { requestOriginUrl } = toRefs(chartEditStore.getRequestGlobalConfig)
 // 是否展示数据分析
 const loading = ref(false)
 const showMatching = ref(false)
+
+const apiList = [
+  {
+    value: `【图表】${ chartDataUrl }`
+  },
+  {
+    value: `【表格】${ rankListUrl }`
+  },
+  {
+    value: `【0~1数字】${ numberUrl }`
+  }
+]
 
 // 选项
 const selectOptions: SelectHttpType[] = [

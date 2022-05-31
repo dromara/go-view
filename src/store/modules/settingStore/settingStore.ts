@@ -4,10 +4,10 @@ import { asideCollapsedWidth } from '@/settings/designSetting'
 import { SettingStoreType, ToolsStatusEnum } from './settingStore.d'
 import { setLocalStorage, getLocalStorage } from '@/utils'
 import { StorageEnum } from '@/enums/storageEnum'
-const { GO_SYSTEM_SETTING_STORE } = StorageEnum
+const { GO_SETTING_STORE } = StorageEnum
 
 const storageSetting: SettingStoreType = getLocalStorage(
-  GO_SYSTEM_SETTING_STORE
+  GO_SETTING_STORE
 )
 
 // 全局设置
@@ -45,7 +45,7 @@ export const useSettingStore = defineStore({
       this.$patch(state => {
         state[key] = value
       })
-      setLocalStorage(GO_SYSTEM_SETTING_STORE, this.$state)
+      setLocalStorage(GO_SETTING_STORE, this.$state)
     }
   }
 })

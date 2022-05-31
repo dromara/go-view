@@ -22,7 +22,7 @@ module.exports = {
     const actions = [
       {
         type: 'add',
-        path: `${process.cwd()}/src/store/modules/${dataName}Store/${dataName}Store}.ts`, // 这里的name就是上面定义的键
+        path: `${process.cwd()}/src/store/modules/${dataName}Store/${dataName}Store.ts`, // 这里的name就是上面定义的键
         templateFile: './store-template/index.hbs',
         data: {
           name: data.name,
@@ -32,7 +32,11 @@ module.exports = {
       {
         type: 'add',
         path: `${process.cwd()}/src/store/modules/${dataName}Store/${dataName}Store.d.ts`, // 这里的name就是上面定义的键
-        templateFile: './store-template/index.d.hbs'
+        templateFile: './store-template/index.d.hbs',
+        data: {
+          name: data.name,
+          upperDataName,
+        }
       },
     ]
     

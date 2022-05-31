@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, h } from 'vue';
+import { ref, computed } from 'vue';
 import { useSettingStore } from '@/store/modules/settingStore/settingStore'
 import { ToolsStatusEnum } from '@/store/modules/settingStore/settingStore.d'
 import { exportHandle } from './utils'
