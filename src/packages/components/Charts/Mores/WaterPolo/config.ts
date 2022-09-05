@@ -3,6 +3,37 @@ import { CreateComponentType } from '@/packages/index.d'
 import { WaterPoloConfig } from './index'
 import cloneDeep from 'lodash/cloneDeep'
 
+export const shapes = [
+  {
+    label: '圆形',
+    value: 'circle'
+  },
+  {
+    label: '正方形',
+    value: 'rect'
+  },
+  {
+    label: '带圆角的正方形',
+    value: 'roundRect'
+  },
+  {
+    label: '正三角形',
+    value: 'triangle'
+  },
+  {
+    label: '菱形',
+    value: 'diamond'
+  },
+  {
+    label: '水滴',
+    value: 'pin'
+  },
+  {
+    label: '箭头',
+    value: 'arrow'
+  },
+]
+
 export const includes = []
 
 export const option = {
@@ -10,6 +41,7 @@ export const option = {
   series: [
     {
       type: 'liquidFill',
+      shape: shapes[0].value,
       radius: '90%',
       data: [0],
       center: ['50%', '50%'],

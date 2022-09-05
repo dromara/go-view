@@ -8,9 +8,9 @@
     </n-text>
     <div
       class="item-right"
-      justify="space-between"
       :style="{
-        gridTemplateColumns: alone ? '1fr' : '1fr 1fr'
+        gridTemplateColumns: alone ? '1fr' : '1fr 1fr',
+        ...itemRightStyle
       }"
     >
       <slot></slot>
@@ -27,6 +27,11 @@ defineProps({
   alone: {
     type: Boolean,
     default: false,
+    required: false
+  },
+  itemRightStyle: {
+    type: Object,
+    default: () => {},
     required: false
   }
 })
@@ -48,7 +53,6 @@ $leftWidth: 60px;
   .item-right {
     display: grid;
     grid-column-gap: 10px;
-    grid-template-columns: 1fr 1fr;
     width: calc(100% - #{$leftWidth});
   }
 }

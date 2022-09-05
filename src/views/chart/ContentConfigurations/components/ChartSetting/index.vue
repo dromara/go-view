@@ -3,11 +3,11 @@
     <!-- 名称 -->
     <name-setting :chartConfig="targetData.chartConfig"></name-setting>
     <!-- 尺寸 -->
-    <size-setting :chartAttr="targetData.attr"></size-setting>
+    <size-setting :isGroup="targetData.isGroup" :chartAttr="targetData.attr"></size-setting>
     <!-- 位置 -->
     <position-setting :chartAttr="targetData.attr" :canvasConfig="chartEditStore.getEditCanvasConfig"/>
     <!-- 滤镜 -->
-    <styles-setting :chartStyles="targetData.styles"></styles-setting>
+    <styles-setting :isGroup="targetData.isGroup" :chartStyles="targetData.styles"></styles-setting>
     <!-- 自定义配置项 -->
     <component :is="targetData.chartConfig.conKey" :optionData="targetData.option"></component>
   </div>

@@ -47,12 +47,29 @@
         size="small"
       ></n-switch>
     </template>
-    <setting-item-box name="名称">
+    <setting-item-box name="单位">
+      <setting-item name="名称">
+        <n-input v-model:value="xAxis.name" size="small"></n-input>
+      </setting-item>
       <setting-item name="颜色">
         <n-color-picker
           size="small"
           v-model:value="xAxis.nameTextStyle.color"
         ></n-color-picker>
+      </setting-item>
+      <setting-item name="大小">
+         <n-input-number
+          v-model:value="xAxis.nameTextStyle.fontSize"
+          :min="12"
+          size="small"
+        ></n-input-number>
+      </setting-item>
+      <setting-item name="偏移量">
+         <n-input-number
+          v-model:value="xAxis.nameGap"
+          :min="5"
+          size="small"
+        ></n-input-number>
       </setting-item>
     </setting-item-box>
     <setting-item-box name="标签">
@@ -69,6 +86,13 @@
           size="small"
           v-model:value="xAxis.axisLabel.color"
         ></n-color-picker>
+      </setting-item>
+      <setting-item name="大小">
+        <n-input-number
+          v-model:value="xAxis.axisLabel.fontSize"
+          :min="8"
+          size="small"
+        ></n-input-number>
       </setting-item>
     </setting-item-box>
     <setting-item-box name="轴线">
@@ -91,6 +115,11 @@
             v-model:value="xAxis.axisLine.onZero"
             size="small"
           ></n-switch>
+        </n-space>
+      </setting-item>
+      <setting-item v-show="inChart" name="反向">
+        <n-space>
+          <n-switch v-model:value="xAxis.inverse" size="small"></n-switch>
         </n-space>
       </setting-item>
     </setting-item-box>
@@ -155,12 +184,29 @@
         size="small"
       ></n-switch>
     </template>
-    <setting-item-box name="名称">
+    <setting-item-box name="单位">
+      <setting-item name="名称">
+        <n-input v-model:value="yAxis.name" size="small"></n-input>
+      </setting-item>
       <setting-item name="颜色">
         <n-color-picker
           size="small"
           v-model:value="yAxis.nameTextStyle.color"
         ></n-color-picker>
+      </setting-item>
+       <setting-item name="大小">
+        <n-input-number
+          v-model:value="yAxis.nameTextStyle.fontSize"
+          :min="8"
+          size="small"
+        ></n-input-number>
+      </setting-item>
+      <setting-item name="偏移量">
+         <n-input-number
+          v-model:value="yAxis.nameGap"
+          :min="5"
+          size="small"
+        ></n-input-number>
       </setting-item>
     </setting-item-box>
     <setting-item-box name="标签">
@@ -177,6 +223,13 @@
           size="small"
           v-model:value="yAxis.axisLabel.color"
         ></n-color-picker>
+      </setting-item>
+      <setting-item name="大小">
+        <n-input-number
+          v-model:value="yAxis.axisLabel.fontSize"
+          :min="8"
+          size="small"
+        ></n-input-number>
       </setting-item>
     </setting-item-box>
     <setting-item-box name="轴线">
@@ -204,6 +257,11 @@
             v-model:value="yAxis.axisLine.onZero"
             size="small"
           ></n-switch>
+        </n-space>
+      </setting-item>
+      <setting-item v-show="inChart" name="反向">
+        <n-space>
+          <n-switch v-model:value="yAxis.inverse" size="small"></n-switch>
         </n-space>
       </setting-item>
     </setting-item-box>

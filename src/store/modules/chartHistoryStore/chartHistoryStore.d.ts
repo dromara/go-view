@@ -1,4 +1,4 @@
-import { CreateComponentType } from '@/packages/index.d'
+import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { EditCanvasType } from '@/store/modules/chartEditStore/chartEditStore.d'
 
 // 操作类型枚举
@@ -25,6 +25,10 @@ export enum HistoryActionTypeEnum {
   UP = 'up',
   // 下移
   DOWN = 'down',
+  // 成组
+  GROUP = 'group',
+  // 解组
+  UN_GROUP = 'unGroup',
   // 选择历史记录
   SELECT_HISTORY = 'selectHistory'
 }
@@ -51,10 +55,11 @@ export enum HistoryStackItemEnum {
 
 // 历史记录项类型
 export interface HistoryItemType {
+  // 会有同时操作多个组件场景
   [HistoryStackItemEnum.ID]: string
   [HistoryStackItemEnum.TARGET_TYPE]: HistoryTargetTypeEnum
   [HistoryStackItemEnum.ACTION_TYPE]: HistoryActionTypeEnum
-  [HistoryStackItemEnum.HISTORY_DATA]: CreateComponentType | EditCanvasType
+  [HistoryStackItemEnum.HISTORY_DATA]: CreateComponentType[] | CreateComponentGroupType[] | EditCanvasType[]
 }
 
 // 历史 Store 类型

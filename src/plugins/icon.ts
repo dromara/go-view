@@ -53,7 +53,11 @@ import {
   ArrowForward as ArrowForwardIcon,
   Planet as PawIcon,
   Search as SearchIcon,
-  Reload as ReloadIcon
+  ChevronUpOutline as ChevronUpOutlineIcon,
+  ChevronDownOutline as ChevronDownOutlineIcon,
+  Pulse as PulseIcon,
+  Folder as FolderIcon,
+  FolderOpen as FolderOpenIcon
 } from '@vicons/ionicons5'
 
 import {
@@ -81,7 +85,11 @@ import {
   Scale as ScaleIcon,
   FitToScreen as FitToScreenIcon,
   FitToHeight as FitToHeightIcon,
-  FitToWidth as FitToWidthIcon
+  FitToWidth as FitToWidthIcon,
+  Carbon3DCursor as Carbon3DCursorIcon,
+  Carbon3DSoftware as Carbon3DSoftwareIcon,
+  Filter as FilterIcon,
+  FilterEdit as FilterEditIcon
 } from '@vicons/carbon'
 
 const ionicons5 = {
@@ -192,8 +200,18 @@ const ionicons5 = {
   PawIcon,
   // 搜索（放大镜）
   SearchIcon,
-  // 加载
-  ReloadIcon
+  // 过滤器
+  FilterIcon,
+  // 向上
+  ChevronUpOutlineIcon,
+  // 向下
+  ChevronDownOutlineIcon,
+  // 脉搏
+  PulseIcon,
+  // 文件夹
+  FolderIcon,
+  // 文件夹打开
+  FolderOpenIcon
 }
 
 const carbon = {
@@ -237,7 +255,14 @@ const carbon = {
   ScaleIcon,
   FitToScreenIcon,
   FitToHeightIcon,
-  FitToWidthIcon
+  FitToWidthIcon,
+  // 成组
+  Carbon3DCursorIcon,
+  // 解组
+  Carbon3DSoftwareIcon,
+  // 过滤器
+  FilterIcon,
+  FilterEditIcon
 }
 
 // https://www.xicons.org/#/ 还有很多

@@ -28,7 +28,7 @@ export const getEditCanvasConfigStyle = (canvas: EditCanvasConfigType) => {
   const computedBackground = canvas.selectColor
     ? { background: canvas.background }
     : {
-        background: `url(${canvas.backgroundImage}) no-repeat center/100% !important`
+        background: `url(${canvas.backgroundImage}) center center / cover no-repeat !important`
       }
   return {
     position: 'relative' as const,

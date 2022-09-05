@@ -3,6 +3,7 @@
     <n-input-number
       v-model:value="chartAttr.w"
       :min="50"
+      :disabled="isGroup"
       size="small"
       placeholder="px"
     >
@@ -13,6 +14,7 @@
     <n-input-number
       v-model:value="chartAttr.h"
       :min="50"
+      :disabled="isGroup"
       size="small"
       placeholder="px"
     >
@@ -32,6 +34,10 @@ const props = defineProps({
   chartAttr: {
     type: Object as PropType<Omit<PickCreateComponentType<'attr'>, 'node' | 'conNode'>>,
     required: true
+  },
+  isGroup: {
+    type: Boolean,
+    required: false
   }
 })
 </script>

@@ -1,5 +1,5 @@
 import image from '@/assets/images/chart/charts/bar_x.png'
-import { ConfigType, PackagesCategoryEnum } from '@/packages/index.d'
+import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
 
 export const BarCommonConfig: ConfigType = {
@@ -10,5 +10,6 @@ export const BarCommonConfig: ConfigType = {
   category: ChatCategoryEnum.BAR,
   categoryName: ChatCategoryEnumName.BAR,
   package: PackagesCategoryEnum.CHARTS,
+  chartFrame: ChartFrameEnum.ECHARTS,
   image
 }

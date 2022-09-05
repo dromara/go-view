@@ -9,10 +9,8 @@ const global = {
   // header
   doc: 'Document',
   help: 'Help',
-  contact: 'Contact Us',
+  contact: 'About Software',
   logout: 'Logout',
-  logout_success: 'Logout success！',
-  logout_failure: 'Logout Failed！',
   // system setting
   sys_set: 'System Setting',
   lang_set: 'Language Setting',
@@ -28,14 +26,8 @@ const global = {
   r_more: 'More',
 }
 
-const http = {
-  error_message: 'The interface is abnormal, please check the interface!',
-  token_overdue_message: 'Login expired, please log in again!'
-}
-
 export default {
   global,
-  http,
   login,
   project
 }

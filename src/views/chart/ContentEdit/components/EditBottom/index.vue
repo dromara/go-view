@@ -1,10 +1,6 @@
 <template>
   <div class="go-edit-bottom">
-    <div class="go-flex-items-center">
-      <edit-history></edit-history>
-      <n-divider vertical />
-      <edit-data-sync></edit-data-sync>
-    </div>
+    <edit-history></edit-history>
 
     <n-space class="bottom-ri">
       <!-- 快捷键提示 -->
@@ -59,8 +55,7 @@
 import { reactive, ref, toRefs, watchEffect } from 'vue'
 import { icon } from '@/plugins'
 import { EditHistory } from '../EditHistory/index'
-import { EditShortcutKey } from '../EditShortcutKey/index'
-import { EditDataSync } from '../EditDataSync/index'
+import EditShortcutKey from '../EditShortcutKey/index.vue'
 import { useDesignStore } from '@/store/modules/designStore/designStore'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { EditCanvasTypeEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
@@ -141,13 +136,12 @@ watchEffect(() => {
 <style lang="scss" scoped>
 $min-width: 500px;
 @include go('edit-bottom') {
+  width: 100%;
+  min-width: $min-width;
+  padding: 0 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
-  width: 100%;
-  min-width: $min-width;
-  height: 40px;
   .bottom-ri {
     position: relative;
     top: 15px;
@@ -158,6 +152,7 @@ $min-width: 500px;
       }
     }
     .scale-btn {
+      width: 90px;
       font-size: 12px;
       @include deep() {
         .n-base-selection-label {

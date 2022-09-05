@@ -1,18 +1,44 @@
 import { getUUID } from '@/utils'
-import { PublicConfigType } from '@/packages/index.d'
+import { ChartFrameEnum, PublicConfigType, CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { RequestConfigType } from '@/store/modules/chartEditStore/chartEditStore.d'
-import { RequestHttpEnum, RequestDataTypeEnum } from '@/enums/httpEnum'
+import { groupTitle } from '@/settings/designSetting'
+import {
+  RequestHttpEnum,
+  RequestDataTypeEnum,
+  RequestHttpIntervalEnum,
+  RequestContentTypeEnum,
+  RequestBodyEnum
+} from '@/enums/httpEnum'
 import { chartInitConfig } from '@/settings/designSetting'
 
+// 请求基础属性
 const requestConfig: RequestConfigType = {
   requestDataType: RequestDataTypeEnum.STATIC,
-  requestHttpType: RequestHttpEnum.GET
+  requestHttpType: RequestHttpEnum.GET,
+  requestUrl: '',
+  requestInterval: undefined,
+  requestIntervalUnit: RequestHttpIntervalEnum.SECOND,
+  requestContentType: RequestContentTypeEnum.DEFAULT,
+  requestParamsBodyType: RequestBodyEnum.NONE,
+  requestSQLContent: {
+    sql: 'select * from  where'
+  },
+  requestParams: {
+    Body: {
+      'form-data': {},
+      'x-www-form-urlencoded': {},
+      json: '',
+      xml: ''
+    },
+    Header: {},
+    Params: {}
+  }
 }
 
+// 单实例类
 export class publicConfig implements PublicConfigType {
   public id = getUUID()
-  // 重命名
-  public rename = undefined
+  public isGroup = false
   // 基本信息
   public attr = { ...chartInitConfig, zIndex: -1 }
   // 基本样式
@@ -36,18 +62,47 @@ export class publicConfig implements PublicConfigType {
     // 倾斜
     skewX: 0,
     skewY: 0,
-    
+
     // 动画
     animations: []
   }
-  // 数据
-  public data = { ...requestConfig }
-  // 数据获取
-  public requestData = []
+  // 请求
+  public request = { ...requestConfig }
+  // 数据过滤
+  public filter = undefined
 
   // 设置坐标
   public setPosition(x: number, y: number): void {
     this.attr.x = x
     this.attr.y = y
   }
+}
+
+// 成组类 (部分属性不需要, 不继承 publicConfig)
+export class PublicGroupConfigClass extends publicConfig implements CreateComponentGroupType {
+  // 成组
+  public isGroup = true
+  // 名称
+  public chartConfig = {
+    key: 'group',
+    chartKey: 'group',
+    conKey: 'group',
+    category: 'group',
+    categoryName: 'group',
+    package: 'group',
+    chartFrame: ChartFrameEnum.COMMON,
+    title: groupTitle,
+    image: ''
+  }
+  // 组成员列表
+  public groupList: Array<CreateComponentType> = []
+  // ---- 原有 ---
+  // key
+  public key = 'group'
+  // 配置
+  public option = {}
+  // 标识
+  public id = getUUID()
+  // 基本信息
+  public attr = { w: 0, h: 0, x: 0, y: 0, offsetX: 0, offsetY: 0, zIndex: -1 }
 }

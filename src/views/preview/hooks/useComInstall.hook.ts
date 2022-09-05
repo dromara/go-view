@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { ChartEditStorageType } from '../index.d'
-import { CreateComponentType } from '@/packages/index.d'
+import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { fetchChartComponent } from '@/packages/index'
 
 export const useComInstall = (localStorageInfo: ChartEditStorageType) => {
@@ -10,12 +10,20 @@ export const useComInstall = (localStorageInfo: ChartEditStorageType) => {
   const intervalTiming = setInterval(() => {
     if (window['$vue'].component) {
       clearInterval(intervalTiming)
-      localStorageInfo.componentList.forEach(async (e: CreateComponentType) => {
-        if (!window['$vue'].component(e.chartConfig.chartKey)) {
-          window['$vue'].component(
-            e.chartConfig.chartKey,
-            fetchChartComponent(e.chartConfig)
-          )
+
+      const intComponent = (target: CreateComponentType) => {
+        if (!window['$vue'].component(target.chartConfig.chartKey)) {
+          window['$vue'].component(target.chartConfig.chartKey, fetchChartComponent(target.chartConfig))
+        }
+      }
+
+      localStorageInfo.componentList.forEach(async (e: CreateComponentType | CreateComponentGroupType) => {
+        if (e.isGroup) {
+          (e as CreateComponentGroupType).groupList.forEach(groupItem => {
+            intComponent(groupItem)
+          })
+        } else {
+          intComponent(e as CreateComponentType)
         }
       })
       show.value = true

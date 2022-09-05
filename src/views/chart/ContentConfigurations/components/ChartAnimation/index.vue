@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { animations } from '@/settings/animations/index'
 import { CollapseItem } from '@/components/Pages/ChartItemSetting'
 import { useDesignStore } from '@/store/modules/designStore/designStore'
@@ -42,11 +42,15 @@ import { useTargetData } from '../hooks/useTargetData.hook'
 
 // 全局颜色
 const designStore = useDesignStore()
-const themeColor = ref(designStore.getAppTheme)
 
 const hoverPreviewAnimate = ref('')
 
 const { targetData } = useTargetData()
+
+// 颜色
+const themeColor = computed(() => {
+  return designStore.getAppTheme
+})
 
 // * 选中的动画样式
 const activeIndex = (value: string) => {

@@ -1,11 +1,5 @@
 <template>
-  <v-chart
-    ref="vChartRef"
-    :theme="themeColor"
-    :option="option.value"
-    :manual-update="isPreview()"
-    autoresize
-  ></v-chart>
+  <v-chart :theme="themeColor" :option="option.value" autoresize></v-chart>
 </template>
 
 <script setup lang="ts">
@@ -15,8 +9,8 @@ import { use } from 'echarts/core'
 import 'echarts-liquidfill/src/liquidFill.js'
 import { CanvasRenderer } from 'echarts/renderers'
 import { GridComponent } from 'echarts/components'
-import config  from './config'
-import { isPreview } from '@/utils'
+import config from './config'
+import { isPreview, isString } from '@/utils'
 import { chartColorsSearch, defaultTheme } from '@/settings/chartThemes/index'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { useChartDataFetch } from '@/hooks'
@@ -24,16 +18,16 @@ import { useChartDataFetch } from '@/hooks'
 const props = defineProps({
   themeSetting: {
     type: Object,
-    required: true,
+    required: true
   },
   themeColor: {
     type: Object,
-    required: true,
+    required: true
   },
   chartConfig: {
     type: Object as PropType<config>,
-    required: true,
-  },
+    required: true
+  }
 })
 
 use([CanvasRenderer, GridComponent])
@@ -41,7 +35,7 @@ use([CanvasRenderer, GridComponent])
 const chartEditStore = useChartEditStore()
 
 const option = reactive({
-  value: {},
+  value: {}
 })
 
 // 渐变色处理
@@ -53,36 +47,45 @@ watch(
       // 背景颜色
       props.chartConfig.option.series[0].backgroundStyle.color = themeColor[2]
       // 水球颜色
-      props.chartConfig.option.series[0].color[0].colorStops = [  
+      props.chartConfig.option.series[0].color[0].colorStops = [
         {
           offset: 0,
-          color: themeColor[0],
+          color: themeColor[0]
         },
         {
           offset: 1,
-          color: themeColor[1],
-        },
+          color: themeColor[1]
+        }
       ]
     }
     option.value = props.chartConfig.option
   },
   {
-    immediate: true,
+    immediate: true
   }
 )
 
-const updateDataset = (newData: string | number) => {
-  props.chartConfig.option.series[0].data = [parseFloat(`${newData}`).toFixed(2)]
-  option.value = props.chartConfig.option
+// 数据处理
+const dataHandle = (newData: number | string) => {
+  newData = isString(newData) ? parseFloat(newData) : newData
+  return parseFloat(newData.toFixed(2))
 }
 
+// 编辑
 watch(
   () => props.chartConfig.option.dataset,
-  newData => updateDataset(newData),
+  newData => {
+    props.chartConfig.option.series[0].data = [dataHandle(newData)]
+    option.value = props.chartConfig.option
+  },
   {
-    immediate: true,
+    immediate: true
   }
 )
 
-const { vChartRef } = useChartDataFetch(props.chartConfig, useChartEditStore)
+// 预览
+useChartDataFetch(props.chartConfig, useChartEditStore, (newData: number) => {
+  // @ts-ignore
+  option.value.series[0].data = [dataHandle(newData)]
+})
 </script>

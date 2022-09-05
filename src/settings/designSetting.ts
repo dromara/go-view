@@ -1,4 +1,5 @@
 import { LangEnum, PreviewScaleEnum } from '@/enums/styleEnum'
+import { RequestHttpIntervalEnum } from '@/enums/httpEnum'
 import designColor from './designColor.json'
 
 // 默认语言
@@ -6,6 +7,9 @@ export const lang = LangEnum.ZH
 
 // 水印文字
 export const watermarkText = "GoView 低代码平台"
+
+// 分组名称
+export const groupTitle = "分组"
 
 // 主题配置
 export const theme = {
@@ -21,7 +25,10 @@ export const chartInitConfig = {
   x: 50,
   y: 50,
   w: 500,
-  h: 300
+  h: 300,
+  // 不建议动 offset
+  offsetX: 0,
+  offsetY: 0,
 }
 
 // dialog 图标的大小
@@ -36,7 +43,7 @@ export const asideCollapsedWidth = 60
 // 弹窗是否可以通过点击遮罩关闭
 export const maskClosable = false
 
-// 修改边框圆角
+// 全局边框圆角
 export const borderRadius = '6px'
 
 // 轮播间隔
@@ -48,11 +55,17 @@ export const backgroundImageSize = 5
 // 预览展示方式
 export const previewScaleType = PreviewScaleEnum.FIT
 
-// 数据请求间隔（s）
+// 数据请求间隔
 export const requestInterval = 30
 
-// 工作台自动保存间隔（s）
-export const saveInterval = 30
+// 数据请求间隔单位
+export const requestIntervalUnit = RequestHttpIntervalEnum.SECOND
 
 // 工作区域历史记录存储最大数量
 export const editHistoryMax = 100
+
+// 拖拽时蒙层的 z-index，需比所有图表高
+export const canvasModelIndex = 9999
+
+// 框选时蒙层的 z-index，需比所有图表高
+export const selectBoxIndex = canvasModelIndex + 10

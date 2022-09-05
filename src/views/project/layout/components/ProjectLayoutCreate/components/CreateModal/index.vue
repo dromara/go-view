@@ -18,7 +18,7 @@
             :disabled="item.disabled"
             v-for="item in typeList"
             :key="item.key"
-            @click="btnHandle(item.key)"
+            @click="btnHandle"
           >
             <component :is="item.title"></component>
             <template #icon>
@@ -35,12 +35,10 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue'
+import { watch, reactive } from 'vue'
 import { icon } from '@/plugins'
 import { PageEnum, ChartEnum } from '@/enums/pageEnum'
-import { ResultEnum } from '@/enums/httpEnum'
 import { fetchPathByName, routerTurnByPath, renderLang, getUUID } from '@/utils'
-import { createProjectApi } from '@/api/path'
 
 const { FishIcon, CloseIcon } = icon.ionicons5
 const { StoreIcon, ObjectStorageIcon } = icon.carbon
@@ -50,7 +48,7 @@ const props = defineProps({
   show: Boolean
 })
 
-const typeList = [
+const typeList = reactive([
   {
     title: renderLang('project.new_project'),
     key: ChartEnum.CHART_HOME_NAME,
@@ -69,7 +67,7 @@ const typeList = [
     icon: StoreIcon,
     disabled: true
   }
-]
+])
 
 // 解决点击模态层不会触发 @on-after-leave 的问题
 watch(props, newValue => {
@@ -84,32 +82,11 @@ const closeHandle = () => {
 }
 
 // 处理按钮点击
-const btnHandle = async (key: string) => {
-  switch (key) {
-    case ChartEnum.CHART_HOME_NAME:
-      try {
-        // 新增项目
-        const res:any = await createProjectApi({
-          // 项目名称
-          projectName: getUUID(),
-          // remarks
-          remarks: null,
-          // 图片地址
-          indexImage: null,
-        })
-        if(res.code === ResultEnum.SUCCESS) {
-          window['$message'].success(window['$t']('project.create_success'))
-
-          const { id } = res.data
-          const path = fetchPathByName(ChartEnum.CHART_HOME_NAME, 'href')
-          routerTurnByPath(path, [id], undefined, true)
-          closeHandle()
-        }
-      } catch (error) {
-        window['$message'].error(window['$t']('project.create_failure'))
-      }
-      break;
-  }
+const btnHandle = (key: string) => {
+  closeHandle()
+  const id = getUUID()
+  const path = fetchPathByName(ChartEnum.CHART_HOME_NAME, 'href')
+  routerTurnByPath(path, [id], undefined, true)
 }
 </script>
 <style lang="scss" scoped>

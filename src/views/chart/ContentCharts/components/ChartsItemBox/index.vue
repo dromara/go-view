@@ -45,7 +45,7 @@ const dragStartHandle = (e: DragEvent, item: ConfigType) => {
   componentInstall(item.chartKey, fetchChartComponent(item))
   componentInstall(item.conKey, fetchConfigComponent(item))
   // 将配置项绑定到拖拽属性上
-  e!.dataTransfer!.setData(DragKeyEnum.DROG_KEY, JSON.stringify(omit(item, ['image'])))
+  e!.dataTransfer!.setData(DragKeyEnum.DRAG_KEY, JSON.stringify(omit(item, ['image'])))
   // 修改状态
   chartEditStore.setEditCanvas(EditCanvasTypeEnum.IS_CREATE, true)
 }

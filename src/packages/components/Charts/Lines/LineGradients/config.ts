@@ -21,7 +21,6 @@ const option = {
   xAxis: {
     show: true,
     type: 'category',
-    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
   },
   yAxis: {
     show: true,

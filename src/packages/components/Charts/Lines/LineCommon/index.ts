@@ -1,5 +1,5 @@
 import image from '@/assets/images/chart/charts/line.png'
-import { ConfigType, PackagesCategoryEnum } from '@/packages/index.d'
+import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
 
 export const LineCommonConfig: ConfigType = {
@@ -10,5 +10,6 @@ export const LineCommonConfig: ConfigType = {
   category: ChatCategoryEnum.LINE,
   categoryName: ChatCategoryEnumName.LINE,
   package: PackagesCategoryEnum.CHARTS,
+  chartFrame: ChartFrameEnum.ECHARTS,
   image
 }

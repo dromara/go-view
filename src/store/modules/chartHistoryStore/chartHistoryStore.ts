@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { CreateComponentType } from '@/packages/index.d'
+import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { EditCanvasType } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { loadingStart, loadingFinish, loadingError } from '@/utils'
 import { editHistoryMax } from '@/settings/designSetting'
@@ -35,31 +35,26 @@ export const useChartHistoryStore = defineStore({
      * @param targetType 对象类型（默认图表）
      */
     createStackItem(
-      item: CreateComponentType | EditCanvasType,
+      item: CreateComponentType[] | CreateComponentGroupType[] | EditCanvasType[],
       actionType: HistoryActionTypeEnum,
       targetType: HistoryTargetTypeEnum = HistoryTargetTypeEnum.CHART
     ) {
-      // 优化性能转为freeze
-      this.pushBackStackItem(Object.freeze({
-        [HistoryStackItemEnum.ID]: new Date().getTime().toString(),
-        [HistoryStackItemEnum.HISTORY_DATA]: item,
-        [HistoryStackItemEnum.ACTION_TYPE]: actionType,
-        [HistoryStackItemEnum.TARGET_TYPE]: targetType
-      } as const))
+      // 优化性能转为 freeze
+      this.pushBackStackItem(
+        Object.freeze({
+          [HistoryStackItemEnum.ID]: new Date().getTime().toString(),
+          [HistoryStackItemEnum.HISTORY_DATA]: item,
+          [HistoryStackItemEnum.ACTION_TYPE]: actionType,
+          [HistoryStackItemEnum.TARGET_TYPE]: targetType
+        } as const)
+      )
     },
     // * 画布初始化
     canvasInit(canvas: EditCanvasType) {
-      this.createStackItem(
-        canvas,
-        HistoryActionTypeEnum.ADD,
-        HistoryTargetTypeEnum.CANVAS
-      )
+      this.createStackItem([canvas], HistoryActionTypeEnum.ADD, HistoryTargetTypeEnum.CANVAS)
     },
     // * 推入后退栈
-    pushBackStackItem(
-      item: HistoryItemType | Array<HistoryItemType>,
-      notClear = false
-    ): void {
+    pushBackStackItem(item: HistoryItemType | Array<HistoryItemType>, notClear = false): void {
       if (item instanceof Array) this.backStack = [...this.backStack, ...item]
       else this.backStack.push(item)
       this.backStack.splice(0, this.backStack.length - editHistoryMax)
@@ -69,30 +64,17 @@ export const useChartHistoryStore = defineStore({
     },
     // * 推入前进栈
     pushForwardStack(item: HistoryItemType | Array<HistoryItemType>): void {
-      if (item instanceof Array)
-        this.forwardStack = [...this.forwardStack, ...item]
+      if (item instanceof Array) this.forwardStack = [...this.forwardStack, ...item]
       else this.forwardStack.push(item)
     },
     // * 移出后退栈
-    popBackStackItem(
-      index?: number
-    ): HistoryItemType[] | HistoryItemType | undefined {
-      const length = this.backStack.length
-      if (index && length >= index) {
-        return this.backStack.splice(-index)
-      }
+    popBackStackItem(): HistoryItemType | undefined {
       if (this.backStack.length > 0) {
         return this.backStack.pop()
       }
     },
     // * 移出前进栈
-    popForwardStack(
-      index?: number
-    ): HistoryItemType[] | HistoryItemType | undefined {
-      const length = this.forwardStack.length
-      if (index && length >= index) {
-        return this.forwardStack.splice(-index)
-      }
+    popForwardStack(): HistoryItemType | undefined {
       if (this.forwardStack.length > 0) {
         return this.forwardStack.pop()
       }
@@ -104,7 +86,7 @@ export const useChartHistoryStore = defineStore({
     // * 清空后退栈(保留初始化)
     clearBackStack() {
       const canvasHistory = this.getBackStack[0]
-      this.backStack =  [canvasHistory]
+      this.backStack = [canvasHistory]
     },
     // * 撤回
     backAction() {
@@ -148,59 +130,43 @@ export const useChartHistoryStore = defineStore({
       }
     },
     // * 新增组件记录
-    createAddHistory(item: CreateComponentType) {
-      this.createStackItem(
-        item,
-        HistoryActionTypeEnum.ADD,
-        HistoryTargetTypeEnum.CHART
-      )
+    createAddHistory(item: Array<CreateComponentType | CreateComponentGroupType>) {
+      this.createStackItem(item, HistoryActionTypeEnum.ADD, HistoryTargetTypeEnum.CHART)
     },
     // * 更新属性记录（大小、图表属性）
-    createUpdateHistory(item: CreateComponentType) {
-      this.createStackItem(
-        item,
-        HistoryActionTypeEnum.UPDATE,
-        HistoryTargetTypeEnum.CHART
-      )
+    createUpdateHistory(item: Array<CreateComponentType | CreateComponentGroupType>) {
+      this.createStackItem(item, HistoryActionTypeEnum.UPDATE, HistoryTargetTypeEnum.CHART)
     },
     // * 删除组件记录
-    createDeleteHistory(item: CreateComponentType) {
-      this.createStackItem(
-        item,
-        HistoryActionTypeEnum.DELETE,
-        HistoryTargetTypeEnum.CHART
-      )
+    createDeleteHistory(item: Array<CreateComponentType | CreateComponentGroupType>) {
+      this.createStackItem(item, HistoryActionTypeEnum.DELETE, HistoryTargetTypeEnum.CHART)
     },
     // * 移动组件记录
-    createMoveHistory(item: CreateComponentType) {
-      this.createStackItem(
-        item,
-        HistoryActionTypeEnum.MOVE,
-        HistoryTargetTypeEnum.CHART
-      )
+    createMoveHistory(item: Array<CreateComponentType | CreateComponentGroupType>) {
+      this.createStackItem(item, HistoryActionTypeEnum.MOVE, HistoryTargetTypeEnum.CHART)
     },
     // * 改变层级组件记录
-    createLaryerHistory(
-      item: CreateComponentType,
+    createLayerHistory(
+      item: Array<CreateComponentType | CreateComponentGroupType>,
       type:
         | HistoryActionTypeEnum.TOP
         | HistoryActionTypeEnum.DOWN
         | HistoryActionTypeEnum.UP
         | HistoryActionTypeEnum.BOTTOM
     ) {
-      this.createStackItem(
-        item,
-        type,
-        HistoryTargetTypeEnum.CHART
-      )
+      this.createStackItem(item, type, HistoryTargetTypeEnum.CHART)
     },
     // * 剪切组件记录
-    createPasteHistory(item: CreateComponentType) {
-      this.createStackItem(
-        item,
-        HistoryActionTypeEnum.CUT,
-        HistoryTargetTypeEnum.CHART
-      )
+    createPasteHistory(item: Array<CreateComponentType | CreateComponentGroupType>) {
+      this.createStackItem(item, HistoryActionTypeEnum.CUT, HistoryTargetTypeEnum.CHART)
+    },
+    // * 创建分组
+    createGroupHistory(item: Array<CreateComponentType | CreateComponentGroupType>) {
+      this.createStackItem(item, HistoryActionTypeEnum.GROUP, HistoryTargetTypeEnum.CHART)
+    },
+    // * 解除分组
+    createUnGroupHistory(item: Array<CreateComponentType | CreateComponentGroupType>) {
+      this.createStackItem(item, HistoryActionTypeEnum.UN_GROUP, HistoryTargetTypeEnum.CHART)
     }
   }
 })

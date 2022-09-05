@@ -1,8 +1,16 @@
 # 最新的代码将在码云 [Gitee] 上更新，请前往查看👇：https://gitee.com/MTrun/go-view
+
 ## 总览
+
 ![logo](readme/logo-t-y.png)
 
-GoView 是一个高效的拖拽式低代码数据可视化开发平台，将图表或页面元素封装为基础组件，无需编写代码即可制作数据大屏，减少心智负担。当然低代码也不是 “银弹”，希望所有人员都能理智看待此技术。
+GoView 是一个高效的拖拽式低代码数据可视化开发平台，将图表或页面元素封装为基础组件，无需编写代码即可制作数据大屏，减少心智负担。
+
+### 😶 纯 **前端** 分支： **`master`**
+
+### 👻 携带 **后端** 请求分支: **`master-fetch`**
+
+### 📚 GoView **文档** 地址：[http://www.mtruning.club:81/](http://www.mtruning.club:81/)
 
 项目纯前端-Demo 地址：[https://www.mtruning.club](https://www.mtruning.club)
 
@@ -12,9 +20,11 @@ GoView 是一个高效的拖拽式低代码数据可视化开发平台，将图�
 
 文档-源码地址：[https://gitee.com/MTrun/go-view-doc](https://gitee.com/MTrun/go-view-doc)
 
-纯前端分支：`master`
+### 🤯 后端项目
 
-携带后端请求分支: `master-fetch`
+后端项目gitee地址：[https://gitee.com/MTrun/go-view-serve](https://gitee.com/MTrun/go-view-serve)
+
+接口说明地址：[https://docs.apipost.cn/preview/5aa85d10a59d66ce/ddb813732007ad2b?target_id=84dbc5b0-158f-4bcb-8f74-793ac604ada3#3e053622-1e76-43f9-a039-756aee822dbb](https://docs.apipost.cn/preview/5aa85d10a59d66ce/ddb813732007ad2b?target_id=84dbc5b0-158f-4bcb-8f74-793ac604ada3#3e053622-1e76-43f9-a039-756aee822dbb)
 
 技术点：
 
@@ -28,9 +38,17 @@ GoView 是一个高效的拖拽式低代码数据可视化开发平台，将图�
 
 - 封装：项目进行了详细的工具类封装如：路由、存储、加/解密、文件处理、主题、NaiveUI 全局方法、组件等
 
+工作台：
+![项目截图](readme/go-view-canvas.png)
 
-项目截图：
-![项目截图](readme/goView-canvas.png)
+请求配置：
+![项目截图](readme/go-view-fetch.png)
+
+数据过滤：
+![项目截图](readme/go-view-filter.png)
+
+主题色：
+![项目截图](readme/go-view-color.png)
 
 主要技术栈为：
 
@@ -39,24 +57,25 @@ GoView 是一个高效的拖拽式低代码数据可视化开发平台，将图�
 | Vue                 | 3.2.x | TypeScript4 | 4.6.x  |
 | Vite                | 2.9.x | NaiveUI     | 2.27.x |
 | ECharts             | 5.3.x | Pinia       | 2.0.x  |
-| 详见 `package.json` | 😁    | 🥰          | 🤗    |
+| 详见 `package.json` | 😁    | 🥰          | 🤗     |
 
 开发环境:
 
 | 名称 | 版本    | 名称    | 版本  |
 | ---- | ------- | ------- | ----- |
 | node | 16.14.x | npm     | 8.5.x |
-| pnpm | 7.1.x  | windows | 11    |
+| pnpm | 7.1.x   | windows | 11    |
 
 已完成图表：
 
-| 分类   | 名称             | 名称       | 名称     |
-| ------ | ---------------- | ---------- | ------ |
-| 图表   | 柱状图           | 横向柱状图 | 折线图   |
-| \*     | 单/多 折线面积图 | 饼图       | 水球图   |
-| 信息   | 文字             | 图片       | 😶      |
-| 列表   | 滚动排名列表     | 🤠         | 🤓      |
-| 小组件 | 边框-01~13       | 装饰-01~05 | 数字翻牌 |
+| 分类   | 名称             | 名称             | 名称     |
+| ------ | ---------------- | ---------------- | -------- |
+| 图表   | 柱状图           | 横向柱状图       | 折线图   |
+| \*     | 单/多 折线面积图 | 饼图             | 水球图   |
+| \*     | 环形图           | NaiveUI 多种进度 | 🤠       |
+| 信息   | 文字             | 图片             | 😶       |
+| 列表   | 滚动排名列表     | 滚动表格         | 🤓       |
+| 小组件 | 边框-01~13       | 装饰-01~05       | 数字翻牌 |
 
 ## 浏览器支持
 
@@ -64,11 +83,18 @@ GoView 是一个高效的拖拽式低代码数据可视化开发平台，将图�
 
 ## 安装
 
-本项目采用` pnpm` 进行包管理，经反馈若采用 `npm/yarn` 等方式安装依赖会导致错误，请使用 `pnpm` 安装依赖包。
+本项目采用` pnpm` 进行包管理
 
 ```shell
-#pnpm（建议使用nrm切换到淘宝源）
+#建议使用 nrm 切换到淘宝源 https://registry.npmmirror.com/
+#pnpm
 pnpm install
+
+#yarn
+yarn install
+
+#npm
+npm install
 ```
 
 ## 启动
@@ -104,11 +130,24 @@ make dist
 
 ```
 
-## 交流
+## 代码提交
 
+- feat: 新功能
+- fix: 修复 Bug
+- docs: 文档修改
+- perf: 性能优化
+- revert: 版本回退
+- ci: CICD 集成相关
+- test: 添加测试代码
+- refactor: 代码重构
+- build: 影响项目构建或依赖修改
+- style: 不影响程序逻辑的代码修改
+- chore: 不属于以上类型的其他类型(日常事务)
+
+## 交流
 
 QQ 群：1030129384
 
-![QQ群](readme/goView-QQ.png)
+![QQ群](readme/go-view-qq.png)
 
 ![渲染海报](readme/logo-poster.png)

@@ -26,7 +26,9 @@
         <!-- 中间 -->
         <div class="list-content-img">
           <img
-            :src="cardData?.image"
+            :src="
+              requireUrl('project/moke-20211219181327.png')
+            "
             :alt="cardData?.title"
           />
         </div>
@@ -41,7 +43,7 @@
           <n-space>
             <n-text>
               <n-badge
-                class="animation-twinkle"
+                class="go-animation-twinkle"
                 dot
                 :color="cardData?.release ? '#34c749' : '#fcbc40'"
              ></n-badge>
@@ -73,11 +75,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, PropType } from 'vue'
+import { reactive } from 'vue'
 import { renderIcon, renderLang } from '@/utils'
 import { icon } from '@/plugins'
 import { MacOsControlBtn } from '@/components/Tips/MacOsControlBtn'
-import { Chartype } from '../../index.d'
 
 const { HammerIcon } = icon.ionicons5
 
@@ -85,8 +86,13 @@ const emit = defineEmits(['close', 'edit'])
 
 const props = defineProps({
   modalShow: Boolean,
-  cardData: Object as PropType<Chartype>
+  cardData: Object
 })
+
+// 处理url获取
+const requireUrl = (name: string) => {
+  return new URL(`../../../../../assets/images/${name}`, import.meta.url).href
+}
 
 const fnBtnList = reactive([
   {
@@ -118,14 +124,12 @@ const closeHandle = () => {
 <style lang="scss" scoped>
 $padding: 30px;
 $contentHeight: calc(80vh);
-$imageHeight: calc(80vh - 110px);
 $contentWidth: calc(82vw);
 
 @include go('modal-box') {
   width: $contentWidth;
-  height: $contentHeight;
   .list-content {
-    margin-top: 20px;
+    margin-top: 28px;
     border-radius: $--border-radius-base;
     overflow: hidden;
     @include background-image('background-point');
@@ -140,9 +144,8 @@ $contentWidth: calc(82vw);
     }
     &-img {
       @extend .go-flex-center;
-      padding: 6px 0;
       img {
-        height: $imageHeight;
+        max-height: $contentHeight;
         min-height: 200px;
         max-width: 100%;
         @extend .go-border-radius;

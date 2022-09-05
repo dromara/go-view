@@ -10,12 +10,8 @@ import { globalThemeJson } from '@/settings/chartThemes/index'
  * @param excludes 排除元素
  * @returns object
  */
-export const mergeTheme = <T, U>(
-  option: T,
-  themeSetting: U,
-  includes: string[]
-) => {
-  return option = merge({}, pick(themeSetting, includes), option)
+export const mergeTheme = <T, U>(option: T, themeSetting: U, includes: string[]) => {
+  return (option = merge({}, pick(themeSetting, includes), option))
 }
 
 /**

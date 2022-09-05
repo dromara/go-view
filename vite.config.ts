@@ -1,17 +1,17 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import { OUTPUT_DIR, brotliSize, chunkSizeWarningLimit, terserOptions, rollupOptions } from './build/constant'
 import viteCompression from 'vite-plugin-compression'
-import { viteMockServe} from "vite-plugin-mock";
-import { axiosPre } from './src/settings/httpSetting'
+import { viteMockServe } from 'vite-plugin-mock'
+import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 
 function pathResolve(dir: string) {
   return resolve(process.cwd(), '.', dir)
 }
 
-export default ({ mode }) => defineConfig({
-  base: process.env.NODE_ENV === 'production' ? './' : '/',
+export default defineConfig({
+  base: '/',
   // 路径重定向
   resolve: {
     alias: [
@@ -35,34 +35,22 @@ export default ({ mode }) => defineConfig({
       }
     }
   },
-  // 开发服务器配置
-  server: {
-    host: true,
-    open: true,
-    port: 3000,
-    proxy: {
-      [axiosPre]: {
-        // @ts-ignore
-        target: loadEnv(mode, process.cwd()).VITE_DEV_PATH,
-        changeOrigin: true,
-        ws: true,
-        secure: true,
-      }
-    }
-  },
   plugins: [
     vue(),
+    monacoEditorPlugin({
+      languageWorkers: ['editorWorkerService', 'typescript', 'json', 'html']
+    }),
     viteMockServe({
-			mockPath: "/src/api/mock",
+      mockPath: '/src/api/mock',
       // 开发打包开关
-			localEnabled: true,
+      localEnabled: true,
       // 生产打包开关
       prodEnabled: true,
       // 打开后，可以读取 ts 文件模块。 请注意，打开后将无法监视.js 文件
       supportTs: true,
       // 监视文件更改
-      watchFiles: true,
-		}),
+      watchFiles: true
+    }),
     // 压缩
     viteCompression({
       verbose: true,

@@ -1,5 +1,5 @@
 <template>
-  <collapse-item name="图片" :expanded="true">
+  <collapse-item name="属性" :expanded="true">
     <setting-item-box name="路径" :alone="true">
       <setting-item>
         <n-input v-model:value="optionData.dataset" size="small"></n-input>

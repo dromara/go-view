@@ -19,6 +19,12 @@ export const option = {
   textColor: '#CDD2F8FF',
   borderColor: '#1370fb80',
   carousel: 'single',
+  //序号字体大小
+  indexFontSize: 12,
+  //左侧数据字体大小
+  leftFontSize: 12,
+  //右侧数据字体大小
+  rightFontSize: 12,
   // 格式化
   valueFormatter(item: { value: any}) { return item.value}
 }

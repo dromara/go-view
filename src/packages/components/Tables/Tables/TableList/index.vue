@@ -7,9 +7,9 @@
       :style="`height: ${status.heights[i]}px;`"
     >
       <div class="ranking-info">
-        <div class="rank" :style="`color: ${color}`">No.{{ item.ranking }}</div>
-        <div class="info-name" v-html="item.name" />
-        <div class="ranking-value" :style="`color: ${textColor}`">
+        <div class="rank" :style="`color: ${color};font-size: ${indexFontSize}px`">No.{{ item.ranking }}</div>
+        <div class="info-name" :style="`font-size: ${leftFontSize}px`" v-html="item.name" />
+        <div class="ranking-value" :style="`color: ${textColor};font-size: ${rightFontSize}px`">
           {{
             status.mergedConfig.valueFormatter
               ? status.mergedConfig.valueFormatter(item)
@@ -43,7 +43,7 @@ const props = defineProps({
   },
 })
 const { w, h } = toRefs(props.chartConfig.attr)
-const { rowNum, unit, color, textColor, borderColor } = toRefs(
+const { rowNum, unit, color, textColor, borderColor, indexFontSize, leftFontSize, rightFontSize } = toRefs(
   props.chartConfig.option
 )
 
@@ -164,7 +164,7 @@ watch(
   }
 )
 
-// 数据更新
+// 数据更新（配置时触发）
 watch(
   () => props.chartConfig.option.dataset,
   () => {
@@ -172,7 +172,11 @@ watch(
   }
 )
 
-useChartDataFetch(props.chartConfig, useChartEditStore)
+// 数据callback处理（预览时触发）
+useChartDataFetch(props.chartConfig, useChartEditStore, (resData: any[]) => {
+  props.chartConfig.option.dataset = resData
+  onRestart()
+})
 
 onUnmounted(() => {
   stopAnimation()
@@ -197,9 +201,10 @@ onUnmounted(() => {
     display: flex;
     width: 100%;
     font-size: 13px;
+    align-items: center;
 
     .rank {
-      width: 40px;
+      margin-right: 5px;
     }
 
     .info-name {

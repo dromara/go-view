@@ -7,6 +7,7 @@ import { useSync } from '@/views/chart/hooks/useSync.hook'
 export const useFile = () => {
   const importUploadFileListRef = ref()
   const { updateComponent } = useSync()
+
   // 上传-前置
   //@ts-ignore
   const importBeforeUpload = ({ file }) => {
@@ -31,15 +32,15 @@ export const useFile = () => {
             negativeText: '覆盖（不可撤回）',
             negativeButtonProps: { type: 'info', ghost: false },
             // 新增
-            onNegativeCallback: async () => {
+            onPositiveCallback: async () => {
               fileData = JSON.parse(fileData)
-              await updateComponent(fileData, true)
+              await updateComponent(fileData, false, true)
               window['$message'].success('导入成功！')
             },
             // 覆盖
-            onPositiveCallback: async () => {
+            onNegativeCallback: async () => {
               fileData = JSON.parse(fileData)
-              await updateComponent(fileData)
+              await updateComponent(fileData, true, true)
               window['$message'].success('导入成功！')
             }
           })

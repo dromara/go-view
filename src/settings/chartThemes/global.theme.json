@@ -12,11 +12,16 @@
   },
   "xAxis": {
     "show": true,
+    "name": "",
+    "nameGap": 15,
     "nameTextStyle": {
-      "color": "#B9B8CE"
+      "color": "#B9B8CE",
+      "fontSize": 12
     },
+    "inverse": false,
     "axisLabel": {
       "show": true,
+      "fontSize": 12,
       "color": "#B9B8CE"
     },
     "position": "bottom",
@@ -42,11 +47,16 @@
   },
   "yAxis": {
     "show": true,
+    "name": "",
+    "nameGap": 15,
     "nameTextStyle": {
-      "color": "#B9B8CE"
+      "color": "#B9B8CE",
+      "fontSize": 12
     },
+    "inverse": false,
     "axisLabel": {
       "show": true,
+      "fontSize": 12,
       "color": "#B9B8CE"
     },
     "position": "left",

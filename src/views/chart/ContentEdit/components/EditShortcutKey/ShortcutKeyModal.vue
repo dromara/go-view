@@ -1,9 +1,5 @@
 <template>
-  <n-modal
-    v-model:show="modelShow"
-    :mask-closable="true"
-    @afterLeave="closeHandle"
-  >
+  <n-modal v-model:show="modelShow" :mask-closable="true" @afterLeave="closeHandle">
     <n-table class="model-content" :bordered="false" :single-line="false">
       <thead>
         <tr>
@@ -24,9 +20,7 @@
           <td>{{ item.label }}</td>
           <td>{{ item.win }}</td>
           <td>
-            <n-gradient-text :size="22">{{
-              item.mac.substr(0, 1)
-            }}</n-gradient-text>
+            <n-gradient-text :size="22">{{ item.mac.substr(0, 1) }}</n-gradient-text>
             + {{ item.mac.substr(3) }}
           </td>
         </tr>
@@ -44,7 +38,7 @@ const { CloseIcon } = icon.ionicons5
 const emit = defineEmits(['update:modelShow'])
 
 defineProps({
-  modelShow: Boolean,
+  modelShow: Boolean
 })
 
 // 快捷键
@@ -52,58 +46,68 @@ const shortcutKeyOptions = [
   {
     label: '向上移动',
     win: `${WinKeyboard.CTRL.toUpperCase()} + ↑ `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + ↑ `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + ↑ `
   },
   {
     label: '向右移动',
     win: `${WinKeyboard.CTRL.toUpperCase()} + → `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + → `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + → `
   },
   {
     label: '向下移动',
     win: `${WinKeyboard.CTRL.toUpperCase()} + ↓ `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + ↓ `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + ↓ `
   },
   {
     label: '向左移动',
     win: `${WinKeyboard.CTRL.toUpperCase()} + ← `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + ← `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + ← `
   },
   {
     label: '删除',
     win: 'Delete'.toUpperCase(),
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + Backspace `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + Backspace `
   },
   {
     label: '复制',
     win: `${WinKeyboard.CTRL.toUpperCase()} + C `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + C `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + C `
   },
   {
     label: '剪切',
     win: `${WinKeyboard.CTRL.toUpperCase()} + X `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + X `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + X `
   },
   {
     label: '粘贴',
     win: `${WinKeyboard.CTRL.toUpperCase()} + V `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + V `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + V `
   },
   {
     label: '后退',
     win: `${WinKeyboard.CTRL.toUpperCase()} + Z `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + Z `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + Z `
   },
   {
     label: '前进',
     win: `${WinKeyboard.CTRL.toUpperCase()} + ${WinKeyboard.SHIFT.toUpperCase()} + Z `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + ${MacKeyboard.SHIFT.toUpperCase()} + Z `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + ${MacKeyboard.SHIFT.toUpperCase()} + Z `
   },
   {
-    label: '保存',
-    win: `${WinKeyboard.CTRL.toUpperCase()} + S `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + S `,
+    label: '多选',
+    win: `${WinKeyboard.CTRL.toUpperCase()} + 🖱️ `,
+    mac: `${MacKeyboard.CTRL_SOURCE_KEY.toUpperCase()} + 🖱️ `
   },
+  {
+    label: '创建分组',
+    win: `${WinKeyboard.CTRL.toUpperCase()} + G / 🖱️ `,
+    mac: `${MacKeyboard.CTRL_SOURCE_KEY.toUpperCase()} + G / 🖱️`
+  },
+  {
+    label: '解除分组',
+    win: `${WinKeyboard.CTRL.toUpperCase()} + ${WinKeyboard.SHIFT.toUpperCase()} + G `,
+    mac: `${MacKeyboard.CTRL_SOURCE_KEY.toUpperCase()} + ${WinKeyboard.SHIFT.toUpperCase()} + G `
+  }
 ]
 const closeHandle = () => {
   emit('update:modelShow', false)

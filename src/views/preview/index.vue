@@ -1,7 +1,5 @@
 <template>
-  <div
-    :class="`go-preview ${localStorageInfo.editCanvasConfig.previewScaleType}`"
-  >
+  <div :class="`go-preview ${localStorageInfo.editCanvasConfig.previewScaleType}`">
     <template v-if="showEntity">
       <!-- 实体区域 -->
       <div ref="entityRef" class="go-preview-entity">
@@ -10,9 +8,7 @@
           <!-- 展示层 -->
           <div :style="previewRefStyle" v-if="show">
             <!-- 渲染层 -->
-            <preview-render-list
-              :localStorageInfo="localStorageInfo"
-            ></preview-render-list>
+            <preview-render-list :localStorageInfo="localStorageInfo"></preview-render-list>
           </div>
         </div>
       </div>
@@ -23,9 +19,7 @@
         <!-- 展示层 -->
         <div :style="previewRefStyle" v-if="show">
           <!-- 渲染层 -->
-          <preview-render-list
-            :localStorageInfo="localStorageInfo"
-          ></preview-render-list>
+          <preview-render-list :localStorageInfo="localStorageInfo"></preview-render-list>
         </div>
       </div>
     </template>
@@ -43,21 +37,18 @@ import { useStore } from './hooks/useStore.hook'
 import { PreviewScaleEnum } from '@/enums/styleEnum'
 import type { ChartEditStorageType } from './index.d'
 
-const localStorageInfo: ChartEditStorageType =
-  getSessionStorageInfo() as ChartEditStorageType
+const localStorageInfo: ChartEditStorageType = getSessionStorageInfo() as ChartEditStorageType
 
 const previewRefStyle = computed(() => {
   return {
     ...getEditCanvasConfigStyle(localStorageInfo.editCanvasConfig),
-    ...getFilterStyle(localStorageInfo.editCanvasConfig),
+    ...getFilterStyle(localStorageInfo.editCanvasConfig)
   }
 })
 
 const showEntity = computed(() => {
   const type = localStorageInfo.editCanvasConfig.previewScaleType
-  return (
-    type === PreviewScaleEnum.SCROLL_Y || type === PreviewScaleEnum.SCROLL_X
-  )
+  return type === PreviewScaleEnum.SCROLL_Y || type === PreviewScaleEnum.SCROLL_X
 })
 
 useStore(localStorageInfo)

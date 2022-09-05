@@ -37,7 +37,9 @@ const props = defineProps({
   hidden: {
     request: false,
     type: Array,
-    default: []
+    default() {
+      return []
+    }
   },
   // 使用全屏功能
   narrow: {
@@ -76,7 +78,7 @@ const btnList: {
     icon: RemoveIcon
   },
   {
-    title: isFull ? '缩小' : '放大',
+    title: isFull.value ? '缩小' : '放大',
     key: props.narrow ? 'fullResize' : 'resize',
     icon: ResizeIcon
   }

@@ -96,7 +96,7 @@
     </n-space>
 
     <!-- 滤镜 -->
-    <styles-setting :is-canvas="true" :chartStyles="canvasConfig"></styles-setting>
+    <styles-setting :isCanvas="true" :chartStyles="canvasConfig"></styles-setting>
     <n-divider style="margin: 10px 0;"></n-divider>
 
     <!-- 主题选择和全局配置 -->
@@ -128,20 +128,16 @@ import { backgroundImageSize } from '@/settings/designSetting'
 import { FileTypeEnum } from '@/enums/fileTypeEnum'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { EditCanvasConfigEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
-import { useSystemStore } from '@/store/modules/systemStore/systemStore'
 import { StylesSetting } from '@/components/Pages/ChartItemSetting'
 import { UploadCustomRequestOptions } from 'naive-ui'
-import { fileToUrl, loadAsyncComponent, fetchRouteParamsLocation } from '@/utils'
+import { fileToUrl, loadAsyncComponent } from '@/utils'
 import { PreviewScaleEnum } from '@/enums/styleEnum'
-import { ResultEnum } from '@/enums/httpEnum'
 import { icon } from '@/plugins'
-import { uploadFile} from '@/api/path'
 
 const { ColorPaletteIcon } = icon.ionicons5
-const { ZAxisIcon, ScaleIcon, FitToScreenIcon, FitToHeightIcon, FitToWidthIcon } = icon.carbon
+const { ScaleIcon, FitToScreenIcon, FitToHeightIcon, FitToWidthIcon } = icon.carbon
 
 const chartEditStore = useChartEditStore()
-const systemStore = useSystemStore()
 const canvasConfig = chartEditStore.getEditCanvasConfig
 const editCanvas = chartEditStore.getEditCanvas
 
@@ -150,9 +146,6 @@ const switchSelectColorLoading = ref(false)
 
 const ChartThemeColor = loadAsyncComponent(() =>
   import('./components/ChartThemeColor/index.vue')
-)
-const ChartDataSetting = loadAsyncComponent(() =>
-  import('./components/ChartDataSetting/index.vue')
 )
 
 // 北京默认展示颜色列表
@@ -173,12 +166,6 @@ const globalTabList = [
     title: '主题颜色',
     icon: ColorPaletteIcon,
     render: ChartThemeColor
-  },
-  {
-    key: 'ChartSysSetting',
-    title: '数据配置',
-    icon: ZAxisIcon,
-    render: ChartDataSetting
   }
 ]
 
@@ -240,7 +227,7 @@ const beforeUploadHandle = async ({ file }) => {
 // 清除背景
 const clearImage = () => {
   chartEditStore.setEditCanvasConfig(
-    EditCanvasConfigEnum.BACKGROUND_IAMGE,
+    EditCanvasConfigEnum.BACKGROUND_IMAGE,
     undefined
   )
   chartEditStore.setEditCanvasConfig(
@@ -274,34 +261,17 @@ const switchSelectColorHandle = () => {
 // 自定义上传操作
 const customRequest = (options: UploadCustomRequestOptions) => {
   const { file } = options
-  nextTick(async () => {
-    if(!systemStore.getFetchInfo.OSSUrl) {
-      window['$message'].error('添加图片失败，请刷新页面重试！')
-      return
-    }
+  nextTick(() => {
     if (file.file) {
-      // 修改名称
-      const newNameFile = new File(
-        [file.file],
-        `${fetchRouteParamsLocation()}_index_background.png`,
-        { type: file.file.type }
+      const ImageUrl = fileToUrl(file.file)
+      chartEditStore.setEditCanvasConfig(
+        EditCanvasConfigEnum.BACKGROUND_IMAGE,
+        ImageUrl
       )
-      let uploadParams = new FormData()
-      uploadParams.append('object', newNameFile)
-      const uploadRes:any = await uploadFile(systemStore.getFetchInfo.OSSUrl ,uploadParams)
-
-      if(uploadRes.code === ResultEnum.SUCCESS) {
-        chartEditStore.setEditCanvasConfig(
-          EditCanvasConfigEnum.BACKGROUND_IAMGE,
-          uploadRes.data.objectContent.httpRequest.uri
-        )
-        chartEditStore.setEditCanvasConfig(
-          EditCanvasConfigEnum.SELECT_COLOR,
-          false
-        )
-        return
-      }
-      window['$message'].error('添加图片失败，请稍后重试！')
+      chartEditStore.setEditCanvasConfig(
+        EditCanvasConfigEnum.SELECT_COLOR,
+        false
+      )
     } else {
       window['$message'].error('添加图片失败，请稍后重试！')
     }

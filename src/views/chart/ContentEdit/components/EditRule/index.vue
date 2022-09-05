@@ -1,9 +1,10 @@
 <template>
   <sketch-rule
+    v-if="configShow"
     :thick="thick"
     :scale="scale"
-    :width="width"
-    :height="height"
+    :width="canvasBox().width"
+    :height="canvasBox().height"
     :startX="startX"
     :startY="startY"
     :lines="lines"
@@ -11,22 +12,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs } from 'vue'
+import { ref, toRefs, computed, watch } from 'vue'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { useDesignStore } from '@/store/modules/designStore/designStore'
 
 const chartEditStore = useChartEditStore()
 const designStore = useDesignStore()
-const themeColor = ref(designStore.getAppTheme)
 
 const { width, height } = toRefs(chartEditStore.getEditCanvasConfig)
 
-// 初始化标尺的缩放
-const scale = 1
+const configShow = ref(true)
+
 // x轴标尺开始的坐标数值
-const startX = 20
+const startX = -10
 // y轴标尺开始的坐标数值
-const startY = 20
+const startY = -10
 // 标尺的厚度
 const thick = 20
 // 初始化水平标尺上的参考线
@@ -34,24 +34,59 @@ const lines = {
   h: [],
   v: []
 }
+
+const canvasBox = () => {
+  const layoutDom = document.getElementById('go-chart-edit-layout')
+  if (layoutDom) {
+    return {
+      height: layoutDom.clientHeight - 40,
+      width: layoutDom.clientWidth
+    }
+  }
+  return {
+    width: width.value,
+    height: height.value
+  }
+}
+
+const scale = computed(() => {
+  return chartEditStore.getEditCanvas.scale
+})
+
+// 颜色
+const themeColor = computed(() => {
+  return designStore.getAppTheme
+})
+
+// 处理标尺重制大小
+watch(
+  () => scale.value,
+  () => {
+    configShow.value = false
+    setTimeout(() => {
+      configShow.value = true
+    })
+  }
+)
 </script>
 
 <style>
-
 /* 使用 SCSS 会报错，直接使用最基础的 CSS 进行修改，
 此库有计划 Vue3 版本，但是开发的时候还没发布 */
 
 #mb-ruler {
-  top: 0; 
+  top: 0;
   left: 0;
 }
-
+/* 适配底部的工具栏不遮盖 */
+#mb-ruler .v-container {
+  height: calc(100% - 65px) !important;
+}
 /* 横线 */
 #mb-ruler .v-container .lines .line {
   /* 最大缩放 200% */
-  width: 200vw!important;
+  width: 200vw !important;
   border-top: 1px dashed v-bind('themeColor') !important;
-  
 }
 #mb-ruler .v-container .indicator {
   border-bottom: 1px dashed v-bind('themeColor') !important;
@@ -59,7 +94,7 @@ const lines = {
 /* 竖线 */
 #mb-ruler .h-container .lines .line {
   /* 最大缩放 200% */
-  height: 200vh!important;
+  height: 200vh !important;
   border-left: 1px dashed v-bind('themeColor') !important;
 }
 #mb-ruler .h-container .indicator {
@@ -77,7 +112,7 @@ const lines = {
   font-weight: bolder;
 }
 
-#mb-ruler .corner{
-  border-width: 0!important;
+#mb-ruler .corner {
+  border-width: 0 !important;
 }
 </style>

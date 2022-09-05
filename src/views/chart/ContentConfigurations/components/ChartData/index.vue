@@ -2,16 +2,14 @@
   <div class="go-chart-configurations-data" v-if="targetData">
     <setting-item-box name="请求方式" :alone="true">
       <n-select
-        v-model:value="targetData.data.requestDataType"
+        v-model:value="targetData.request.requestDataType"
         :options="selectOptions"
       />
     </setting-item-box>
 
-    <n-divider style="margin: 10px 0;"></n-divider>
-
     <!-- 静态 -->
     <chart-data-static
-      v-if="targetData.data.requestDataType === RequestDataTypeEnum.STATIC"
+      v-if="targetData.request.requestDataType === RequestDataTypeEnum.STATIC"
     ></chart-data-static>
 
     <!-- 动态 -->
@@ -41,9 +39,3 @@ const selectOptions: SelectCreateDataType[] = [
   }
 ]
 </script>
-
-<style></style>
-<style lang="scss" scoped>
-@include go('chart-configurations-data') {
-}
-</style>

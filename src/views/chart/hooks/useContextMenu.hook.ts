@@ -1,87 +1,109 @@
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, toRaw } from 'vue'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-import { CreateComponentType } from '@/packages/index.d'
+import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { renderIcon, loadingError } from '@/utils'
 import { icon } from '@/plugins'
 import { MenuOptionsItemType } from './useContextMenu.hook.d'
 import { MenuEnum } from '@/enums/editPageEnum'
+import cloneDeep from 'lodash/cloneDeep'
 
-const {
-  CopyIcon,
-  CutIcon,
-  ClipboardOutlineIcon,
-  TrashIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-} = icon.ionicons5
-const { UpToTopIcon, DownToBottomIcon, PaintBrushIcon } = icon.carbon
+const { CopyIcon, CutIcon, ClipboardOutlineIcon, TrashIcon, ChevronDownIcon, ChevronUpIcon } = icon.ionicons5
+const { UpToTopIcon, DownToBottomIcon, PaintBrushIcon, Carbon3DSoftwareIcon, Carbon3DCursorIcon } = icon.carbon
 
 const chartEditStore = useChartEditStore()
 
-// * 默认选项
-const defaultOptions: MenuOptionsItemType[] = [
+/**
+ * 分割线
+ * @param {number} n > 2
+ * @returns
+ */
+export const divider = (n:number = 3) => {
+  return {
+    type: 'divider',
+    key: `d${n}`
+  }
+}
+
+// * 默认单组件选项
+export const defaultOptions: MenuOptionsItemType[] = [
   {
     label: '复制',
     key: MenuEnum.COPY,
     icon: renderIcon(CopyIcon),
-    fnHandle: chartEditStore.setCopy,
+    fnHandle: chartEditStore.setCopy
   },
   {
     label: '剪切',
     key: MenuEnum.CUT,
     icon: renderIcon(CutIcon),
-    fnHandle: chartEditStore.setCut,
+    fnHandle: chartEditStore.setCut
   },
   {
     label: '粘贴',
     key: MenuEnum.PARSE,
     icon: renderIcon(ClipboardOutlineIcon),
-    fnHandle: chartEditStore.setParse,
+    fnHandle: chartEditStore.setParse
   },
   {
     type: 'divider',
-    key: 'd1',
+    key: 'd1'
   },
   {
     label: '置顶',
     key: MenuEnum.TOP,
     icon: renderIcon(UpToTopIcon),
-    fnHandle: chartEditStore.setTop,
+    fnHandle: chartEditStore.setTop
   },
   {
     label: '置底',
     key: MenuEnum.BOTTOM,
     icon: renderIcon(DownToBottomIcon),
-    fnHandle: chartEditStore.setBottom,
+    fnHandle: chartEditStore.setBottom
   },
   {
     label: '上移一层',
     key: MenuEnum.UP,
     icon: renderIcon(ChevronUpIcon),
-    fnHandle: chartEditStore.setUp,
+    fnHandle: chartEditStore.setUp
   },
   {
     label: '下移一层',
     key: MenuEnum.DOWN,
     icon: renderIcon(ChevronDownIcon),
-    fnHandle: chartEditStore.setDown,
+    fnHandle: chartEditStore.setDown
   },
   {
     type: 'divider',
-    key: 'd2',
+    key: 'd2'
   },
   {
     label: '清空剪贴板',
     key: MenuEnum.CLEAR,
     icon: renderIcon(PaintBrushIcon),
-    fnHandle: chartEditStore.setRecordChart,
+    fnHandle: chartEditStore.setRecordChart
   },
   {
     label: '删除',
     key: MenuEnum.DELETE,
     icon: renderIcon(TrashIcon),
-    fnHandle: chartEditStore.removeComponentList,
+    fnHandle: chartEditStore.removeComponentList
+  }
+]
+
+// * 默认多选组件选项
+export const defaultMultiSelectOptions: MenuOptionsItemType[] = [
+  {
+    label: '创建分组',
+    key: MenuEnum.GROUP,
+    icon: renderIcon(Carbon3DSoftwareIcon),
+    fnHandle: chartEditStore.setGroup
   },
+  {
+    label: '解除分组',
+    key: MenuEnum.UN_GROUP,
+    icon: renderIcon(Carbon3DCursorIcon),
+    fnHandle: chartEditStore.setUnGroup
+  }
 ]
 
 // * 无数据传递拥有的选项
@@ -95,9 +117,11 @@ const defaultNoItemKeys = [MenuEnum.PARSE, MenuEnum.CLEAR]
  */
 const pickOption = (options: MenuOptionsItemType[], pickList?: MenuEnum[]) => {
   if (!pickList) return options
-  return options.filter((op: MenuOptionsItemType) => {
-    return pickList.findIndex((e: MenuEnum) => e === op.key) !== -1
+  const list: MenuOptionsItemType[] = []
+  pickList.forEach(e => {
+    list.push(...options.filter(op => op.key === e))
   })
+  return list
 }
 
 /**
@@ -120,36 +144,49 @@ const menuOptions = ref<MenuOptionsItemType[]>([])
 const handleContextMenu = (
   e: MouseEvent,
   // 右键对象
-  item?: CreateComponentType,
+  targetInstance?: CreateComponentType | CreateComponentGroupType,
   // 判断函数
   optionsHandle?: Function,
   // 隐藏选项列表
   hideOptionsList?: MenuEnum[],
   // 挑选选项列表
-  pickOptionsList?: MenuEnum[],
+  pickOptionsList?: MenuEnum[]
 ) => {
   e.stopPropagation()
   e.preventDefault()
+
   let target = e.target
   while (target instanceof SVGElement) {
     target = target.parentNode
   }
+
+  // 展示列表
   chartEditStore.setRightMenuShow(false)
 
-  // * 设置默认选项
-  menuOptions.value = defaultOptions
+  // * 多选默认选项
+  if (chartEditStore.getTargetChart.selectId.length > 1) {
+    menuOptions.value = defaultMultiSelectOptions
+  } else {
+    // * 单选默认选项
+    menuOptions.value = defaultOptions
+  }
 
-  if (!item) {
-    menuOptions.value = pickOption(menuOptions.value, defaultNoItemKeys)
+  if (!targetInstance) {
+    menuOptions.value = pickOption(toRaw(menuOptions.value), defaultNoItemKeys)
   }
   if (hideOptionsList) {
-    menuOptions.value = hideOption(menuOptions.value, hideOptionsList)
+    menuOptions.value = hideOption([...defaultMultiSelectOptions, divider(), ...defaultOptions], hideOptionsList)
   }
   if (pickOptionsList) {
-    menuOptions.value = hideOption(menuOptions.value, pickOptionsList)
+    menuOptions.value = pickOption([...defaultMultiSelectOptions, divider(), ...defaultOptions], pickOptionsList)
   }
   if (optionsHandle) {
-    menuOptions.value = optionsHandle(menuOptions.value)
+    // 自定义函数能够拿到当前选项和所有选项
+    menuOptions.value = optionsHandle(
+      cloneDeep(toRaw(menuOptions.value)),
+      [...defaultMultiSelectOptions, ...defaultOptions],
+      targetInstance
+    )
   }
   nextTick().then(() => {
     chartEditStore.setMousePosition(e.clientX, e.clientY)
@@ -163,7 +200,6 @@ const handleContextMenu = (
  * @returns
  */
 export const useContextMenu = () => {
-
   // 设置默认项
   menuOptions.value = defaultOptions
 
@@ -175,9 +211,7 @@ export const useContextMenu = () => {
   // * 事件处理
   const handleMenuSelect = (key: string) => {
     chartEditStore.setRightMenuShow(false)
-    const targetItem: MenuOptionsItemType[] = menuOptions.value.filter(
-      (e: MenuOptionsItemType) => e.key === key
-    )
+    const targetItem: MenuOptionsItemType[] = menuOptions.value.filter((e: MenuOptionsItemType) => e.key === key)
 
     menuOptions.value.forEach((e: MenuOptionsItemType) => {
       if (e.key === key) {
@@ -189,12 +223,14 @@ export const useContextMenu = () => {
       }
     })
   }
-  
+
   return {
     menuOptions,
+    defaultOptions,
+    defaultMultiSelectOptions,
     handleContextMenu,
     onClickOutSide,
     handleMenuSelect,
-    mousePosition: chartEditStore.getMousePosition,
+    mousePosition: chartEditStore.getMousePosition
   }
 }

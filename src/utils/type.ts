@@ -1,3 +1,5 @@
+import isObject from 'lodash/isObject'
+
 export function isString(p: any): p is string {
   return typeof p === 'string'
 }
@@ -20,4 +22,12 @@ export function isNull(p: any): p is null {
 
 export function isArray(p: any): p is [] {
   return Array.isArray(p)
+}
+
+export const toNumber = (number: number | string, toFixedNumber = 2) => {
+  return isString(number) ? parseFloat(parseFloat(number).toFixed(2)) : number
+}
+
+export const toString = (str: any) => {
+  return isNumber(str) ? `${str}` : (isObject(str) ? JSON.stringify(str) : str)
 }

@@ -22,15 +22,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs, computed } from 'vue'
+import { toRefs, computed } from 'vue'
 import { requireErrorImg } from '@/utils'
 import { useDesignStore } from '@/store/modules/designStore/designStore'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 
 // 全局颜色
 const designStore = useDesignStore()
-const themeColor = ref(designStore.getAppTheme)
 const chartEditStore = useChartEditStore()
+
+// 颜色
+const themeColor = computed(() => {
+  return designStore.getAppTheme
+})
 
 const props = defineProps({
   componentData: {
@@ -43,7 +47,8 @@ const { image } = toRefs(props.componentData.chartConfig)
 
 // 计算当前选中目标
 const select = computed(() => {
-  return props.componentData.id === chartEditStore.getTargetChart.selectId
+  const id = props.componentData.id
+  return chartEditStore.getTargetChart.selectId.find((e: string) => e === id)
 })
 
 const hover = computed(() => {
@@ -59,7 +64,7 @@ $textSize: 10px;
   position: relative;
   height: $centerHeight;
   width: 90%;
-  margin: 10px 5%;
+  margin: 5px 5%;
   margin-bottom: 5px;
   border-radius: 5px;
   cursor: pointer;

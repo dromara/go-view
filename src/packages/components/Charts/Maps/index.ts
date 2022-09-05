@@ -1,3 +1,3 @@
-import { MapChineConfig } from './MapChine/index'
+import { MapChinaConfig } from './MapChina/index'
 
-export default [MapChineConfig]
+export default [MapChinaConfig]

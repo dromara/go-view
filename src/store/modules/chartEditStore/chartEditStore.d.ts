@@ -1,29 +1,16 @@
-import { CreateComponentType, FilterEnum} from '@/packages/index.d'
+import { CreateComponentType, CreateComponentGroupType, FilterEnum } from '@/packages/index.d'
 import { HistoryActionTypeEnum } from '@/store/modules/chartHistoryStore/chartHistoryStore.d'
-import { RequestHttpEnum, RequestDataTypeEnum } from '@/enums/httpEnum'
-import { SyncEnum } from '@/enums/editPageEnum'
+import {
+  RequestHttpEnum,
+  RequestContentTypeEnum,
+  RequestDataTypeEnum,
+  RequestHttpIntervalEnum,
+  RequestParams,
+  RequestBodyEnum,
+  RequestParamsObjType
+} from '@/enums/httpEnum'
 import { PreviewScaleEnum } from '@/enums/styleEnum'
-import type {
-  ChartColorsNameType,
-  GlobalThemeJsonType,
-} from '@/settings/chartThemes/index'
-
-// 项目数据枚举
-export enum ProjectInfoEnum {
-  // 名称
-  PROJECT_NAME = 'projectName',
-  // 描述
-  REMARKS = 'remarks',
-  // 缩略图
-  THUMBNAIL= 'thumbnail'
-}
-
-// 项目数据
-export type ProjectInfoType = {
-  projectName: string,
-  remarks: string,
-  thumbnail: string
-}
+import type { ChartColorsNameType, GlobalThemeJsonType } from '@/settings/chartThemes/index'
 
 // 编辑画布属性
 export enum EditCanvasTypeEnum {
@@ -35,10 +22,10 @@ export enum EditCanvasTypeEnum {
   LOCK_SCALE = 'lockScale',
   IS_CREATE = 'isCreate',
   IS_DRAG = 'isDrag',
-  SAVE_STATUS = 'saveStatus'
+  IS_SELECT = 'isSelect'
 }
 
-// 编辑区域（临时）
+// 编辑区域
 export type EditCanvasType = {
   // 编辑区域 DOM
   [EditCanvasTypeEnum.EDIT_LAYOUT_DOM]: HTMLElement | null
@@ -55,28 +42,23 @@ export type EditCanvasType = {
   [EditCanvasTypeEnum.IS_CREATE]: boolean
   // 拖拽中
   [EditCanvasTypeEnum.IS_DRAG]: boolean
-  // 保存状态
-  [EditCanvasTypeEnum.SAVE_STATUS]: SyncEnum
+  // 框选中
+  [EditCanvasTypeEnum.IS_SELECT]: boolean
 }
 
-// 画布数据/滤镜/背景色/宽高主题等
+// 滤镜/背景色/宽高主题等
 export enum EditCanvasConfigEnum {
   WIDTH = 'width',
   HEIGHT = 'height',
   CHART_THEME_COLOR = 'chartThemeColor',
   CHART_THEME_SETTING = 'chartThemeSetting',
   BACKGROUND = 'background',
-  BACKGROUND_IAMGE = 'backgroundImage',
+  BACKGROUND_IMAGE = 'backgroundImage',
   SELECT_COLOR = 'selectColor',
-  PREVIEW_SCALE_TYPE = 'previewScaleType',
+  PREVIEW_SCALE_TYPE = 'previewScaleType'
 }
 
-// 画布属性（需保存）
-export type EditCanvasConfigType = {
-  // 项目名称
-  [EditCanvasConfigEnum.PROJECT_NAME]: string,
-  // 项目描述
-  [EditCanvasConfigEnum.REMARKS]: string,
+export interface EditCanvasConfigType {
   // 滤镜-色相
   [FilterEnum.HUE_ROTATE]: number
   // 滤镜-饱和度
@@ -99,7 +81,7 @@ export type EditCanvasConfigType = {
   [EditCanvasConfigEnum.HEIGHT]: number
   // 背景色
   [EditCanvasConfigEnum.BACKGROUND]?: string
-  [EditCanvasConfigEnum.BACKGROUND_IAMGE]?: string | null
+  [EditCanvasConfigEnum.BACKGROUND_IMAGE]?: string | null
   // 图表主题颜色
   [EditCanvasConfigEnum.CHART_THEME_COLOR]: ChartColorsNameType
   // 图表全局配置
@@ -115,7 +97,7 @@ export enum EditCanvasTypeEnum {
   START_X = 'startX',
   START_Y = 'startY',
   X = 'x',
-  Y = 'y',
+  Y = 'y'
 }
 
 // 鼠标位置
@@ -133,18 +115,17 @@ export type MousePositionType = {
 // 操作目标
 export type TargetChartType = {
   hoverId?: string
-  selectId?: string
+  selectId: string[]
 }
 
 // 数据记录
 export type RecordChartType = {
-  charts: CreateComponentType | CreateComponentType[]
+  charts: CreateComponentType | CreateComponentGroupType | Array<CreateComponentType | CreateComponentGroupType>
   type: HistoryActionTypeEnum.CUT | HistoryActionTypeEnum.COPY
 }
 
 // Store 枚举
 export enum ChartEditStoreEnum {
-  PROJECT_INFO = 'projectInfo',
   EDIT_RANGE = 'editRange',
   EDIT_CANVAS = 'editCanvas',
   RIGHT_MENU_SHOW = 'rightMenuShow',
@@ -154,30 +135,47 @@ export enum ChartEditStoreEnum {
   // 以下需要存储
   EDIT_CANVAS_CONFIG = 'editCanvasConfig',
   REQUEST_GLOBAL_CONFIG = 'requestGlobalConfig',
-  COMPONENT_LIST = 'componentList',
+  COMPONENT_LIST = 'componentList'
+}
+
+// 请求公共类型
+type RequestPublicConfigType = {
+  // 时间单位（时分秒）
+  requestIntervalUnit: RequestHttpIntervalEnum
+  // 请求内容
+  requestParams: RequestParams
 }
 
 // 全局的图表请求配置
-export type RequestGlobalConfigType = {
+export interface RequestGlobalConfigType extends RequestPublicConfigType {
+  // 组件定制轮询时间
+  requestInterval: number
   // 请求源地址
   requestOriginUrl?: string
-  // 轮询时间
-  requestInterval: number
 }
 
 // 单个图表请求配置
-export type RequestConfigType = {
+export interface RequestConfigType extends RequestPublicConfigType {
+  // 组件定制轮询时间
+  requestInterval?: number
   // 获取数据的方式
   requestDataType: RequestDataTypeEnum
   // 请求方式 get/post/del/put/patch
   requestHttpType: RequestHttpEnum
   // 源后续的 url
   requestUrl?: string
+  // 请求内容主体方式 普通/sql
+  requestContentType: RequestContentTypeEnum
+  // 请求体类型
+  requestParamsBodyType: RequestBodyEnum
+  // SQL 请求对象
+  requestSQLContent: {
+    sql: string
+  }
 }
 
 // Store 类型
 export interface ChartEditStoreType {
-  [ChartEditStoreEnum.PROJECT_INFO]: ProjectInfoType
   [ChartEditStoreEnum.EDIT_CANVAS]: EditCanvasType
   [ChartEditStoreEnum.EDIT_CANVAS_CONFIG]: EditCanvasConfigType
   [ChartEditStoreEnum.RIGHT_MENU_SHOW]: boolean
@@ -185,12 +183,12 @@ export interface ChartEditStoreType {
   [ChartEditStoreEnum.TARGET_CHART]: TargetChartType
   [ChartEditStoreEnum.RECORD_CHART]?: RecordChartType
   [ChartEditStoreEnum.REQUEST_GLOBAL_CONFIG]: RequestGlobalConfigType
-  [ChartEditStoreEnum.COMPONENT_LIST]: CreateComponentType[]
+  [ChartEditStoreEnum.COMPONENT_LIST]: Array<CreateComponentType | CreateComponentGroupType>
 }
 
-// 需要存储的数据内容
+// 存储数据类型
 export interface ChartEditStorage {
   [ChartEditStoreEnum.EDIT_CANVAS_CONFIG]: EditCanvasConfigType
   [ChartEditStoreEnum.REQUEST_GLOBAL_CONFIG]: RequestGlobalConfigType
-  [ChartEditStoreEnum.COMPONENT_LIST]: CreateComponentType[]
+  [ChartEditStoreEnum.COMPONENT_LIST]: Array<CreateComponentType | CreateComponentGroupType>
 }

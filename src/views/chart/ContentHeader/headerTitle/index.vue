@@ -5,7 +5,11 @@
     </n-icon>
     <n-text @click="handleFocus">
       工作空间 -
-      <n-button v-show="!focus" secondary round size="tiny">{{ comTitle }}</n-button>
+      <n-button v-show="!focus" secondary round size="tiny">
+        <span class="title">
+          {{ comTitle }}
+        </span>
+      </n-button>
     </n-text>
 
     <n-input
@@ -18,37 +22,38 @@
       round
       placeholder="请输入项目名称"
       v-model:value.trim="title"
+      @keyup.enter="handleBlur"
       @blur="handleBlur"
    ></n-input>
   </n-space>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, computed, watchEffect } from 'vue'
-import { ResultEnum } from '@/enums/httpEnum'
-import { fetchRouteParamsLocation, httpErrorHandle } from '@/utils'
-import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-import { ProjectInfoEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
-import { updateProjectApi } from '@/api/path'
-import { useSync } from '../../hooks/useSync.hook'
+import { ref, nextTick, computed } from 'vue'
+import { fetchRouteParams } from '@/utils'
 import { icon } from '@/plugins'
-
-const chartEditStore = useChartEditStore()
-const { dataSyncUpdate } = useSync()
 const { FishIcon } = icon.ionicons5
 
 const focus = ref<boolean>(false)
 const inputInstRef = ref(null)
 
-const title = ref<string>(fetchRouteParamsLocation())
+// 根据路由 id 参数获取项目信息
+const fetchProhectInfoById = () => {
+  const routeParamsRes = fetchRouteParams()
+  if (!routeParamsRes) return
+  const { id } = routeParamsRes
+  if (id.length) {
+    return id[0]
+  }
+  return ''
+}
 
-watchEffect(() => {
-  title.value = chartEditStore.getProjectInfo.projectName || ''
-})
+const title = ref<string>(fetchProhectInfoById() || '')
+
 
 const comTitle = computed(() => {
-  title.value = title.value && title.value.replace(/\s/g, "")
-  return title.value.length ? title.value : fetchRouteParamsLocation()
+  title.value = title.value.replace(/\s/g, "");
+  return title.value.length ? title.value : '新项目'
 })
 
 const handleFocus = () => {
@@ -58,17 +63,12 @@ const handleFocus = () => {
   })
 }
 
-const handleBlur = async () => {
+const handleBlur = () => {
   focus.value = false
-  chartEditStore.setProjectInfo(ProjectInfoEnum.PROJECT_NAME, title.value || '')
-  const res:any = await updateProjectApi({
-    id: fetchRouteParamsLocation(),
-    projectName: title.value,
-  })
-  if(res.code === ResultEnum.SUCCESS) {
-    dataSyncUpdate()
-  } else {
-    httpErrorHandle()
-  }
 }
 </script>
+<style lang="scss" scoped>
+.title {
+  font-size: 15px;
+}
+</style>

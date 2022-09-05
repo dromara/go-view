@@ -49,6 +49,31 @@
         ></n-color-picker>
       </SettingItem>
     </SettingItemBox>
+
+    <SettingItemBox name="字体样式">
+       <SettingItem name="序号字体">
+        <n-input-number
+          size="small"
+          v-model:value="optionData.indexFontSize"
+          :min="12"
+        />
+      </SettingItem>
+      <SettingItem name="左侧数据字体">
+        <n-input-number
+          size="small"
+          v-model:value="optionData.leftFontSize"
+          :min="12"
+        />
+      </SettingItem>
+      <SettingItem name="右侧数据字体">
+        <n-input-number
+          size="small"
+          v-model:value="optionData.rightFontSize"
+          :min="12"
+        />
+      </SettingItem>
+    </SettingItemBox>
+      
   </CollapseItem>
 </template>
 

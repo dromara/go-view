@@ -1,16 +1,9 @@
 <template>
   <CollapseItem name="内容" :expanded="true">
     <SettingItemBox name="数值">
-      <SettingItem name="起始值">
-        <n-input-number
-          v-model:value="optionData.from"
-          size="small"
-          :min="0"
-        ></n-input-number>
-      </SettingItem>
       <SettingItem name="终点值">
         <n-input-number
-          v-model:value="optionData.to"
+          v-model:value="optionData.dataset"
           size="small"
           :min="1"
         ></n-input-number>
@@ -20,6 +13,13 @@
           v-model:value="optionData.numberSize"
           size="small"
           :min="1"
+        ></n-input-number>
+      </SettingItem>
+      <SettingItem name="精度">
+        <n-input-number
+          v-model:value="optionData.precision"
+          size="small"
+          :min="0"
         ></n-input-number>
       </SettingItem>
       <SettingItem>
@@ -44,7 +44,7 @@
         <n-color-picker
           size="small"
           :modes="['hex']"
-          v-model:value="optionData.suffixColor"
+          v-model:value="optionData.prefixColor"
         ></n-color-picker>
       </SettingItem>
       <SettingItem name="后缀">

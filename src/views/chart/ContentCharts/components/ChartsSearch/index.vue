@@ -39,7 +39,7 @@
             @click="selectChartHandle(item)"
           >
             <img class="list-item-img" v-lazy="item.image" alt="展示图" />
-            <n-text depth="2">{{ item.title }}</n-text>
+            <n-text class="list-item-fs" depth="2">{{ item.title }}</n-text>
           </div>
         </n-scrollbar>
         <div class="popover-modal"></div>
@@ -167,13 +167,27 @@ $width: 178px;
         position: relative;
         cursor: pointer;
         padding: 2px;
+        padding-left: 6px;
         margin-bottom: 5px;
+        &-fs {
+          font-size: 12px;
+        }
         &-img {
-          height: 30px;
+          height: 28px;
           margin-right: 5px;
           border-radius: 5px;
         }
         &:hover {
+          &::before {
+            content: '';
+            position: absolute;
+            width: 3px;
+            height: 100%;
+            left: 0;
+            top: 0;
+            border-radius: 2px;
+            background-color: v-bind('themeColor');
+          }
           &::after {
             z-index: -1;
             content: '';

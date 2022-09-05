@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { shallowReactive } from 'vue'
-import { renderIcon, fetchPathByName, routerTurnByPath, setSessionStorage, getLocalStorage } from '@/utils'
+import { renderIcon, goDialog, fetchPathByName, routerTurnByPath, setSessionStorage, getLocalStorage } from '@/utils'
 import { PreviewEnum } from '@/enums/pageEnum'
 import { StorageEnum } from '@/enums/storageEnum'
 import { useRoute } from 'vue-router'
@@ -55,7 +55,12 @@ const previewHandle = () => {
 
 // 发布
 const sendHandle = () => {
-  window['$message'].warning('该功能暂未实现（因为压根没有后台）')
+  goDialog({
+    message: '想体验发布功能，请前往 master-fetch 分支查看: https://gitee.com/MTrun/go-view/tree/master-fetch',
+    positiveText: '了然',
+    closeNegativeText: true,
+    onPositiveCallback: () => {}
+  })
 }
 
 const btnList = shallowReactive([

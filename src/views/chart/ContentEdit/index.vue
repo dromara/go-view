@@ -1,4 +1,5 @@
 <template>
+  <edit-rule></edit-rule>
   <content-box
     id="go-chart-edit-layout"
     :flex="true"
@@ -15,37 +16,49 @@
       <!-- 展示 -->
       <edit-range>
         <!-- 滤镜预览 -->
-        <div :style="{
+        <div
+          :style="{
             ...getFilterStyle(chartEditStore.getEditCanvasConfig),
             ...rangeStyle
-          }">
+          }"
+        >
           <!-- 图表 -->
-          <edit-shape-box
-            v-for="(item, index) in chartEditStore.getComponentList"
-            :key="item.id"
-            :data-id="item.id"
-            :index="index"
-            :style="useComponentStyle(item.attr, index)"
-            :item="item"
-            @mousedown="mousedownHandle($event, item)"
-            @mouseenter="mouseenterHandle($event, item)"
-            @mouseleave="mouseleaveHandle($event, item)"
-            @contextmenu="handleContextMenu($event, item)"
-          >
-            <component
-              class="edit-content-chart"
-              :class="animationsClass(item.styles.animations)"
-              :is="item.chartConfig.chartKey"
-              :chartConfig="item"
-              :themeSetting="themeSetting"
-              :themeColor="themeColor"
-              :style="{
-                ...useSizeStyle(item.attr),
-                ...getFilterStyle(item.styles),
-                ...getTranstormStyle(item.styles),
-              }"
-            ></component>
-          </edit-shape-box>
+          <div v-for="(item, index) in chartEditStore.getComponentList" :key="item.id">
+            <!-- 分组 -->
+            <edit-group
+              v-if="item.isGroup"
+              :groupData="(item as CreateComponentGroupType)"
+              :groupIndex="index"
+            ></edit-group>
+
+            <!-- 单组件 -->
+            <edit-shape-box
+              v-else
+              :data-id="item.id"
+              :index="index"
+              :style="useComponentStyle(item.attr, index)"
+              :item="item"
+              @click="mouseClickHandle($event, item)"
+              @mousedown="mousedownHandle($event, item)"
+              @mouseenter="mouseenterHandle($event, item)"
+              @mouseleave="mouseleaveHandle($event, item)"
+              @contextmenu="handleContextMenu($event, item, optionsHandle)"
+            >
+              <component
+                class="edit-content-chart"
+                :class="animationsClass(item.styles.animations)"
+                :is="item.chartConfig.chartKey"
+                :chartConfig="item"
+                :themeSetting="themeSetting"
+                :themeColor="themeColor"
+                :style="{
+                  ...useSizeStyle(item.attr),
+                  ...getFilterStyle(item.styles),
+                  ...getTransformStyle(item.styles)
+                }"
+              ></component>
+            </edit-shape-box>
+          </div>
         </div>
       </edit-range>
     </div>
@@ -65,31 +78,60 @@
 <script lang="ts" setup>
 import { onMounted, computed } from 'vue'
 import { chartColors } from '@/settings/chartThemes/index'
-import { animationsClass, getFilterStyle, getTranstormStyle } from '@/utils'
+import { MenuEnum } from '@/enums/editPageEnum'
+import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
+import { animationsClass, getFilterStyle, getTransformStyle } from '@/utils'
 import { useContextMenu } from '@/views/chart/hooks/useContextMenu.hook'
+import { MenuOptionsItemType } from '@/views/chart/hooks/useContextMenu.hook.d'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 
 import { useLayout } from './hooks/useLayout.hook'
 import { useAddKeyboard } from '../hooks/useKeyboard.hook'
-import { useSync } from '../hooks/useSync.hook'
 import { dragHandle, dragoverHandle, useMouseHandle } from './hooks/useDrag.hook'
 import { useComponentStyle, useSizeStyle } from './hooks/useStyle.hook'
 
 import { ContentBox } from '../ContentBox/index'
+import { EditGroup } from './components/EditGroup'
 import { EditRange } from './components/EditRange'
+import { EditRule } from './components/EditRule'
 import { EditBottom } from './components/EditBottom'
 import { EditShapeBox } from './components/EditShapeBox'
 import { EditTools } from './components/EditTools'
 
 const chartEditStore = useChartEditStore()
 const { handleContextMenu } = useContextMenu()
-const { dataSyncFetch, intervalDataSyncUpdate } = useSync()
 
 // 布局处理
 useLayout()
 
 // 点击事件
-const { mouseenterHandle, mouseleaveHandle, mousedownHandle } = useMouseHandle()
+const { mouseenterHandle, mouseleaveHandle, mousedownHandle, mouseClickHandle } = useMouseHandle()
+
+// 右键事件
+const optionsHandle = (
+  targetList: MenuOptionsItemType[],
+  allList: MenuOptionsItemType[],
+  targetInstance: CreateComponentType
+) => {
+  // 多选
+  const moreMenuEnums = [MenuEnum.GROUP, MenuEnum.DELETE]
+  // 单选
+  const singleMenuEnums = targetList
+
+  // 多选处理
+  if (chartEditStore.getTargetChart.selectId.length > 1) {
+    const list: MenuOptionsItemType[] = []
+
+    allList.forEach(item => {
+      // 成组
+      if (moreMenuEnums.includes(item.key as MenuEnum)) {
+        list.push(item)
+      }
+    })
+    return list
+  }
+  return singleMenuEnums
+}
 
 // 主题色
 const themeSetting = computed(() => {
@@ -113,7 +155,7 @@ const rangeStyle = computed(() => {
 
   const computedBackground = selectColor
     ? { background: backgroundColor }
-    : { background: `url(${backgroundImage}) no-repeat center/100% !important` }
+    : { background: `url(${backgroundImage}) no-repeat center center / cover !important` }
 
   // @ts-ignore
   return {
@@ -123,13 +165,9 @@ const rangeStyle = computed(() => {
   }
 })
 
+// 键盘事件
 onMounted(() => {
-  // 键盘事件
   useAddKeyboard()
-  // 获取数据
-  dataSyncFetch()
-  // 定时更新数据
-  intervalDataSyncUpdate()
 })
 </script>
 
@@ -142,7 +180,7 @@ onMounted(() => {
   @include background-image('background-point');
   @include goId('chart-edit-content') {
     border-radius: 10px;
-    margin: 15px;
+    margin: 25px;
     overflow: hidden;
     @extend .go-transition;
     @include fetch-theme('box-shadow');

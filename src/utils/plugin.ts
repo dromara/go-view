@@ -28,7 +28,6 @@ export const loadingError = () => {
 /**
  * * render 对话框
  * @param { Object} params 配置参数, 详见 https://www.naiveui.com/zh-CN/light/components/dialog
- * @param { Function } dialogFn 函数
  * ```
  * 最简易的 demo
  * goDialog({
@@ -44,14 +43,12 @@ export const goDialog = (
     title?: string | (() => any)
     // 提示
     message?: string
-    // 取消提示词
-    negativeText?: string
-    // 取消按钮的属性
-    negativeButtonProps?: object,
     // 确定提示词
     positiveText?: string
-    // 确定按钮的属性
-    positiveButtonProps?: object,
+    // 取消提示词
+    negativeText?: string
+    // 是否不展示取消按钮
+    closeNegativeText?: boolean,
     // 点击遮罩是否关闭
     isMaskClosable?: boolean
     // 回调
@@ -61,17 +58,16 @@ export const goDialog = (
     promise?: boolean
     promiseResCallback?: Function
     promiseRejCallback?: Function
-  },
-  dialogFn?: Function
+    [T:string]: any
+  }
 ) => {
   const {
     type,
     title,
     message,
-    negativeText,
-    negativeButtonProps,
     positiveText,
-    positiveButtonProps,
+    negativeText,
+    closeNegativeText,
     isMaskClosable,
     onPositiveCallback,
     onNegativeCallback,
@@ -83,7 +79,7 @@ export const goDialog = (
   const typeObj = {
     // 自定义
     [DialogEnum.DELETE]: {
-      fn: dialogFn || window['$dialog'].warning,
+      fn: window['$dialog'].warning,
       message: message || '是否删除此数据?'
     },
     // 原有
@@ -108,7 +104,7 @@ export const goDialog = (
     icon: renderIcon(InformationCircleIcon, { size: dialogIconSize }),
     content: typeObj[type || DialogEnum.WARNING]['message'],
     positiveText: positiveText || '确定',
-    negativeText: negativeText || '取消',
+    negativeText: closeNegativeText ? undefined : (negativeText || '取消'),
     // 是否通过遮罩关闭
     maskClosable: isMaskClosable || maskClosable,
     onPositiveClick: async () => {

@@ -2,7 +2,7 @@
   <div class="go-border-box">
     <svg :width="w" :height="h">
       <defs>
-        <filter :id="filterId" h="150%" width="150%" x="-25%" y="-25%">
+        <filter :id="filterId" height="150%" width="150%" x="-25%" y="-25%">
           <feMorphology
             operator="dilate"
             radius="2"

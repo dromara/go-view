@@ -1,10 +1,10 @@
-import { ref, toRefs, watchEffect, nextTick } from 'vue'
+import { ref, toRefs, toRaw } from 'vue'
 import type VChart from 'vue-echarts'
-import { http } from '@/api/http'
-import { CreateComponentType, PackagesCategoryEnum } from '@/packages/index.d'
+import { customizeHttp } from '@/api/http'
+import { CreateComponentType, ChartFrameEnum } from '@/packages/index.d'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { RequestDataTypeEnum } from '@/enums/httpEnum'
-import { isPreview } from '@/utils'
+import { isPreview, newFunctionHandle, intervalUnitHandle } from '@/utils'
 
 // 获取类型
 type ChartEditStoreType = typeof useChartEditStore
@@ -17,60 +17,81 @@ type ChartEditStoreType = typeof useChartEditStore
  */
 export const useChartDataFetch = (
   targetComponent: CreateComponentType,
-  useChartEditStore: ChartEditStoreType, 
+  useChartEditStore: ChartEditStoreType,
   updateCallback?: (...args: any) => any
 ) => {
   const vChartRef = ref<typeof VChart | null>(null)
   let fetchInterval: any = 0
 
-  isPreview() &&
-    watchEffect(() => {
-      clearInterval(fetchInterval)
+  const requestIntervalFn = () => {
+    const chartEditStore = useChartEditStore()
+    
+    // 全局数据
+    const {
+      requestOriginUrl,
+      requestIntervalUnit: globalUnit,
+      requestInterval: globalRequestInterval
+    } = toRefs(chartEditStore.getRequestGlobalConfig)
 
-      const chartEditStore = useChartEditStore()
-      const { requestOriginUrl, requestInterval } = toRefs(
-        chartEditStore.getRequestGlobalConfig
-      )
-      const { requestDataType, requestHttpType, requestUrl } = toRefs(
-        targetComponent.data
-      )
-      if (requestDataType.value !== RequestDataTypeEnum.AJAX) return
+    // 目标组件
+    const {
+      requestDataType,
+      requestUrl,
+      requestIntervalUnit: targetUnit,
+      requestInterval: targetInterval
+    } = toRefs(targetComponent.request)
+
+    // 组件类型
+    const { chartFrame } = targetComponent.chartConfig
+
+    // 非请求类型
+    if (requestDataType.value !== RequestDataTypeEnum.AJAX) return
+
+    try {
       // 处理地址
-      if (requestUrl?.value && requestInterval.value > 0) {
+      // @ts-ignore
+      if (requestUrl?.value) {
         // requestOriginUrl 允许为空
-        const completePath =
-          requestOriginUrl && requestOriginUrl.value + requestUrl.value
+        const completePath = requestOriginUrl && requestOriginUrl.value + requestUrl.value
         if (!completePath) return
 
-        fetchInterval = setInterval(async () => {
-          const res:any = await http(requestHttpType.value)(completePath || '', {})
-          if (res.data) {
-            // 是否是 Echarts 组件
-            const isECharts =
-              targetComponent.chartConfig.package ===
-              PackagesCategoryEnum.CHARTS
+        clearInterval(fetchInterval)
 
+        const fetchFn = async () => {
+          const res = await customizeHttp(toRaw(targetComponent.request), toRaw(chartEditStore.requestGlobalConfig))
+          if (res && res.data) {
             try {
-              if (isECharts && vChartRef?.value?.setOption) {
-                nextTick(() => {
-                  if (vChartRef.value) {
-                    vChartRef.value.setOption({ dataset: res.data })
-                  }
-                })
-              } else {
-                // 若遵守规范使用 datase 作为数据 key，则省自动赋值数据
-                targetComponent.option.dataset && (targetComponent.option.dataset = res.data)
-              }
+              const filter = targetComponent.filter
+              // 更新回调函数
               if (updateCallback) {
-                updateCallback(res.data)
+                updateCallback(newFunctionHandle(res.data, filter))
+              } else {
+                // eCharts 组件配合 vChart 库更新方式
+                if (chartFrame === ChartFrameEnum.ECHARTS) {
+                  if (vChartRef.value) {
+                    vChartRef.value.setOption({ dataset: newFunctionHandle(res.data, filter) })
+                  }
+                }
               }
             } catch (error) {
               console.error(error)
             }
           }
-        }, requestInterval.value * 1000)
-      }
-    })
+        }
 
+        // 立即调用
+        fetchFn()
+
+        // 定时时间
+        const time = targetInterval && targetInterval.value ? targetInterval.value : globalRequestInterval.value
+        // 单位
+        const unit = targetInterval && targetInterval.value ? targetUnit.value : globalUnit.value
+        // 开启轮询
+        if (time) fetchInterval = setInterval(fetchFn, intervalUnitHandle(time, unit))
+      }
+    } catch (error) {}
+  }
+
+  isPreview() && requestIntervalFn()
   return { vChartRef }
 }

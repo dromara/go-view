@@ -4,11 +4,13 @@ import { NumberConfig } from './index'
 import cloneDeep from 'lodash/cloneDeep'
 
 export const option = {
-  from: 50000,
-  to: 100000,
+  // 数据说明
+  dataset: 100000,
+  from: 0,
   dur: 3,
+  precision: 0,
   showSeparator: true,
-  numberSize: 24,
+  numberSize: 34,
   numberColor: '#4a9ef8',
   prefixText: '￥',
   prefixColor: '#4a9ef8',

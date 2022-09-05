@@ -6,7 +6,7 @@ import { EditCanvasConfigType } from '@/store/modules/chartEditStore/chartEditSt
 type AttrType = PickCreateComponentType<'attr'>
 type StylesType = PickCreateComponentType<'styles'>
 
-// 动画
+// * 动画
 export const animationsClass = (animations: string[]) => {
   if (animations.length) {
     return `animate__animated  animate__${animations[0]}`
@@ -14,7 +14,7 @@ export const animationsClass = (animations: string[]) => {
   return ''
 }
 
-// 滤镜
+// * 滤镜
 export const getFilterStyle = (styles: StylesType | EditCanvasConfigType) => {
   const { opacity, saturate, contrast, hueRotate, brightness } = styles
   return {
@@ -23,8 +23,8 @@ export const getFilterStyle = (styles: StylesType | EditCanvasConfigType) => {
   }
 }
 
-// 变换
-export const getTranstormStyle = (styles: StylesType) => {
+// * 变换
+export const getTransformStyle = (styles: StylesType) => {
   const { rotateZ, rotateX, rotateY, skewX, skewY } = styles
   return {
     transform: `rotateZ(${rotateZ || 0}deg) rotateX(${rotateX || 0}deg) rotateY(${rotateY || 0}deg) skewX(${skewX || 0}deg) skewY(${skewY || 0}deg)`,

@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { EditCanvasConfigEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
 import {
@@ -46,8 +46,13 @@ const chartEditStore = useChartEditStore()
 
 // 全局颜色
 const designStore = useDesignStore()
-const themeColor = ref(designStore.getAppTheme)
 
+// 颜色
+const themeColor = computed(() => {
+  return designStore.getAppTheme
+})
+
+// 选中名称
 const selectName = computed(() => {
   return chartEditStore.getEditCanvasConfig.chartThemeColor
 })

@@ -15,6 +15,8 @@ export const historyActionTypeName = {
   [HistoryActionTypeEnum.BOTTOM]: '层级置底',
   [HistoryActionTypeEnum.UP]: '层级上移',
   [HistoryActionTypeEnum.DOWN]: '层级下移',
+  [HistoryActionTypeEnum.GROUP]: '创建分组',
+  [HistoryActionTypeEnum.UN_GROUP]: '解除分组',
   [HistoryActionTypeEnum.SELECT_HISTORY]: '选择记录',
   
   [HistoryTargetTypeEnum.CANVAS]: '画布初始化'

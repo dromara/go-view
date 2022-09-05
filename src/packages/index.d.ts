@@ -1,6 +1,17 @@
 import type { GlobalThemeJsonType } from '@/settings/chartThemes/index'
 import type { RequestConfigType } from '@/store/modules/chartEditStore/chartEditStore.d'
 
+export enum ChartFrameEnum {
+  // 支持 dataset 的 echarts 框架
+  ECHARTS = 'echarts',
+  // UI 组件框架
+  NAIVE_UI = 'naiveUI',
+  // 自定义带数据组件
+  COMMON = 'common',
+  // 无数据变更
+  STATIC = 'static'
+}
+
 // 组件配置
 export type ConfigType = {
   key: string
@@ -10,19 +21,18 @@ export type ConfigType = {
   category: string
   categoryName: string
   package: string
+  chartFrame?: ChartFrameEnum
   image: string | (() => Promise<typeof import('*.png')>)
 }
 
 // 数据请求
 interface requestConfig {
-  data: RequestConfigType,
-  // 暂时约定为数据存储区域（未使用）
-  requestData: any
+  request: RequestConfigType
 }
 
 // Echarts 数据类型
 interface EchartsDataType {
-  dimensions: string[],
+  dimensions: string[]
   source: any[]
 }
 
@@ -46,41 +56,47 @@ export enum FilterEnum {
 
   // 倾斜
   SKEW_X = 'skewX',
-  SKEW_Y = 'skewY',
+  SKEW_Y = 'skewY'
 }
 
 // 组件实例类
-export interface PublicConfigType extends requestConfig {
+export interface PublicConfigType {
   id: string
-  rename?: string
-  attr: { x: number; y: number; w: number; h: number; zIndex: number }
+  isGroup: boolean
+  attr: { x: number; y: number; w: number; h: number; zIndex: number; offsetX: number; offsetY: number; }
   styles: {
-    [FilterEnum.OPACITY]: number;
-    [FilterEnum.SATURATE]: number;
-    [FilterEnum.CONTRAST]: number;
-    [FilterEnum.HUE_ROTATE]: number;
-    [FilterEnum.BRIGHTNESS]: number;
+    [FilterEnum.OPACITY]: number
+    [FilterEnum.SATURATE]: number
+    [FilterEnum.CONTRAST]: number
+    [FilterEnum.HUE_ROTATE]: number
+    [FilterEnum.BRIGHTNESS]: number
 
-    [FilterEnum.ROTATE_Z]: number;
-    [FilterEnum.ROTATE_X]: number;
-    [FilterEnum.ROTATE_Y]: number;
+    [FilterEnum.ROTATE_Z]: number
+    [FilterEnum.ROTATE_X]: number
+    [FilterEnum.ROTATE_Y]: number
 
-    [FilterEnum.SKEW_X]: number;
-    [FilterEnum.SKEW_Y]: number;
+    [FilterEnum.SKEW_X]: number
+    [FilterEnum.SKEW_Y]: number
     // 动画
     animations: string[]
   }
+  filter?: string
   setPosition: Function
 }
 
-export interface CreateComponentType extends PublicConfigType {
+export interface CreateComponentType extends PublicConfigType, requestConfig {
   key: string
   chartConfig: ConfigType
   option: GlobalThemeJsonType
 }
 
+// 组件成组实例类
+export interface CreateComponentGroupType extends CreateComponentType {
+  groupList: Array<CreateComponentType>
+}
+
 // 获取组件实例类中某个key对应value类型的方法
-export type PickCreateComponentType<T extends keyof CreateComponentType> = Pick<CreateComponentType,T>[T]
+export type PickCreateComponentType<T extends keyof CreateComponentType> = Pick<CreateComponentType, T>[T]
 
 // 包分类枚举
 export enum PackagesCategoryEnum {
