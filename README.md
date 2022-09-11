@@ -1,6 +1,6 @@
-# 最新的代码将在码云 [Gitee] 上更新，请前往查看👇：https://gitee.com/MTrun/go-view
+### 最新的代码将第一时间在码云 [Gitee] 上更新，更建议您前往码云进行查看👉：https://gitee.com/MTrun/go-view
 
-## 总览
+##
 
 ![logo](readme/logo-t-y.png)
 
