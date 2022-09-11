@@ -7,7 +7,6 @@ import { useSync } from '@/views/chart/hooks/useSync.hook'
 export const useFile = () => {
   const importUploadFileListRef = ref()
   const { updateComponent } = useSync()
-
   // 上传-前置
   //@ts-ignore
   const importBeforeUpload = ({ file }) => {

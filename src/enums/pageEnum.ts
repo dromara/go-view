@@ -20,9 +20,14 @@ export enum PageEnum {
   //重定向
   REDIRECT = '/redirect',
   REDIRECT_NAME = 'Redirect',
+
+  // 未发布
+  REDIRECT_UN_PUBLISH = '/redirect/unPublish',
+  REDIRECT_UN_PUBLISH_NAME = 'redirect-un-publish',
+
+  // 重载
   RELOAD = '/reload',
   RELOAD_NAME = 'Reload',
-
 
   // 首页
   BASE_HOME = '/project',

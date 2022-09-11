@@ -1,4 +1,39 @@
 export default {
+  // 单图表
+  fetchMockSingleData: {
+    code: 0,
+    status: 200,
+    msg: '请求成功',
+    data: {
+      dimensions: ['product', 'dataOne'],
+      source: [
+        {
+          product: '@name',
+          'dataOne|0-900': 3,
+        },
+        {
+          product: '@name',
+          'dataOne|0-900': 3,
+        },
+        {
+          product: '@name',
+          'dataOne|0-900': 3,
+        },
+        {
+          product: '@name',
+          'dataOne|0-900': 3,
+        },
+        {
+          product: '@name',
+          'dataOne|0-900': 3,
+        },
+        {
+          product: '@name',
+          'dataOne|0-900': 3,
+        }
+      ]
+    }
+  },
   // 图表
   fetchMockData: {
     code: 0,
@@ -79,29 +114,72 @@ export default {
       ['行10列1', '行10列2', '行10列3']
     ]
   },
-  // 获取数字
+  // 获取数字-浮点型
   fetchNumberFloat: {
     code: 0,
     status: 200,
     msg: '请求成功',
     data: '@float(0, 0.99, 1, 4)'
   },
+  // 获取数字-整型
   fetchNumberInt: {
     code: 0,
     status: 200,
     msg: '请求成功',
     data: '@integer(0, 100)'
   },
+  // 文字
   fetchText: {
     code: 0,
     status: 200,
     msg: '请求成功',
     data: '@paragraph(1, 10)'
   },
+  // 图片
   fetchImage: (num: number) => ({
     code: 0,
     status: 200,
     msg: '请求成功',
     data: `https://robohash.org/${num}`
-  })
+  }),
+  // 雷达
+  fetchRadar: {
+    code: 0,
+    status: 200,
+    msg: '请求成功',
+    data: {
+      radarIndicator: [
+        { name: '@name', max: 10000 },
+        { name: '@name', max: 10000 },
+        { name: '@name', max: 10000 },
+        { name: '@name', max: 10000 },
+        { name: '@name', max: 10000 },
+        { name: '@name', max: 10000 }
+      ],
+      seriesData: [
+        {
+          value: [
+            '@integer(0, 10000)',
+            '@integer(0, 10000)',
+            '@integer(0, 10000)',
+            '@integer(0, 10000)',
+            '@integer(0, 10000)',
+            '@integer(0, 10000)'
+          ],
+          name: 'data1'
+        },
+        {
+          value: [
+            '@integer(0, 10000)',
+            '@integer(0, 10000)',
+            '@integer(0, 10000)',
+            '@integer(0, 10000)',
+            '@integer(0, 10000)',
+            '@integer(0, 10000)'
+          ],
+          name: 'data2'
+        }
+      ]
+    }
+  }
 }

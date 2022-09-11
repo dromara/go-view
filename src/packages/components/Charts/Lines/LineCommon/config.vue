@@ -6,20 +6,6 @@
     :expanded="true"
   >
     <SettingItemBox name="线条">
-      <SettingItem name="颜色">
-        <n-color-picker
-          size="small"
-          :modes="['hex']"
-          v-model:value="item.lineStyle.color.colorStops[0].color"
-       ></n-color-picker>
-      </SettingItem>
-      <SettingItem name="颜色">
-        <n-color-picker
-          size="small"
-          :modes="['hex']"
-          v-model:value="item.lineStyle.color.colorStops[1].color"
-       ></n-color-picker>
-      </SettingItem>
       <SettingItem name="宽度">
         <n-input-number
           v-model:value="item.lineStyle.width"
@@ -35,26 +21,6 @@
           size="small"
           :options="lineConf.lineStyle.type"
        ></n-select>
-      </SettingItem>
-    </SettingItemBox>
-    <SettingItemBox name="阴影" :alone="true">
-      <SettingItem name="颜色">
-        <n-color-picker
-          size="small"
-          :modes="['hex']"
-          v-model:value="item.lineStyle.shadowColor"
-      ></n-color-picker>
-      </SettingItem>
-      
-    </SettingItemBox>
-    <SettingItemBox name="设置">
-     <SettingItem name="阴影">
-        <n-button
-          size="small"
-          @click="item.lineStyle.shadowColor = 'rgba(0, 0, 0, 0)'"
-        >
-          去除阴影
-        </n-button>
       </SettingItem>
     </SettingItemBox>
   </CollapseItem>

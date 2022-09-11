@@ -164,21 +164,23 @@ const dimensionsAndSourceHandle = () => {
 watch(
   () => targetData.value?.option?.dataset,
   (
-    newData: {
+    newData?: {
       source: any
       dimensions: any
     } | null
   ) => {
-    if (newData && isObject(newData)) {
-      // 只有 Echarts 数据才有对应的格式
+    if (newData && targetData?.value?.chartConfig?.chartFrame === ChartFrameEnum.ECHARTS) {
+      // 只有 DataSet 数据才有对应的格式
       source.value = newData
       if (isCharts.value) {
         dimensions.value = newData.dimensions
         dimensionsAndSource.value = dimensionsAndSourceHandle()
       }
-    } else {
+    } else if (newData !== undefined && newData !== null) {
       dimensionsAndSource.value = null
       source.value = newData
+    } else {
+      source.value = '此组件无数据源'
     }
   },
   {

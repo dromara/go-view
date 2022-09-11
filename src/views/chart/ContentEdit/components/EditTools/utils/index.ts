@@ -9,7 +9,7 @@ export const exportHandle = () => {
 
   // 导出数据
   downloadTextFile(
-    JSON.stringify(chartEditStore.getStorageInfo || [], (k, v) => {
+    JSON.stringify(chartEditStore.getStorageInfo || {}, (k, v) => {
       return v === undefined ? null : v
     }),
     undefined,

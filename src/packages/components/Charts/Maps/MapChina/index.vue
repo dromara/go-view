@@ -14,8 +14,8 @@ import { useChartDataFetch } from '@/hooks'
 import { mergeTheme } from '@/packages/public/chart'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { isPreview } from '@/utils'
-import dataJson from './data.json'
 import mapJson from './map.json'
+import mapJsonWithoutHainanIsLands from './mapWithoutHainanIsLands.json'
 import { DatasetComponent, GridComponent, TooltipComponent, LegendComponent, GeoComponent } from 'echarts/components'
 
 const props = defineProps({
@@ -58,13 +58,32 @@ const dataSetHandle = (dataset: any) => {
   })
 }
 
+const mapTypeHandle = (show: boolean) => {
+  show
+    ? registerMap('china', { geoJSON: mapJson as any, specialAreas: {} })
+    : registerMap('china', { geoJSON: mapJsonWithoutHainanIsLands as any, specialAreas: {} })
+  option.value = props.chartConfig.option
+}
+
+watch(
+  () => props.chartConfig.option.series[1].itemStyle.showHainanIsLands,
+  newData => {
+    mapTypeHandle(newData)
+  },
+  {
+    deep: true,
+    immediate: true
+  }
+)
+
 watch(
   () => props.chartConfig.option.dataset,
   newData => {
     dataSetHandle(newData)
   },
   {
-    immediate: true
+    immediate: true,
+    deep: false
   }
 )
 

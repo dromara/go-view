@@ -56,11 +56,12 @@ import {
   SettingItemBox,
   SettingItem,
 } from '@/components/Pages/ChartItemSetting'
+import { GlobalThemeJsonType } from '@/settings/chartThemes/index'
 import { option } from './config'
 
 const props = defineProps({
   optionData: {
-    type: Object as PropType<typeof option>,
+    type: Object as PropType<typeof option & GlobalThemeJsonType>,
     required: true,
   },
 })

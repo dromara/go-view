@@ -1,25 +1,29 @@
 <template>
-  <v-chart ref="vChartRef" :theme="themeColor" :option="option" :manual-update="isPreview()" autoresize></v-chart>
+  <v-chart
+    ref="vChartRef"
+    :theme="themeColor"
+    :option="option"
+    :manual-update="isPreview()"
+    :update-options="{
+      replaceMerge: replaceMergeArr
+    }"
+    autoresize
+  ></v-chart>
 </template>
 
 <script setup lang="ts">
-import { computed, PropType } from 'vue'
+import { ref, nextTick, computed, watch, PropType } from 'vue'
 import VChart from 'vue-echarts'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart } from 'echarts/charts'
-import { includes } from './config'
+import config, { includes, seriesItem } from './config'
 import { mergeTheme } from '@/packages/public/chart'
 import { useChartDataFetch } from '@/hooks'
 import { CreateComponentType } from '@/packages/index.d'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { isPreview } from '@/utils'
-import {
-  DatasetComponent,
-  GridComponent,
-  TooltipComponent,
-  LegendComponent
-} from 'echarts/components'
+import { DatasetComponent, GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
 
 const props = defineProps({
   themeSetting: {
@@ -31,23 +35,39 @@ const props = defineProps({
     required: true
   },
   chartConfig: {
-    type: Object as PropType<CreateComponentType>,
+    type: Object as PropType<config>,
     required: true
   }
 })
 
-use([
-  DatasetComponent,
-  CanvasRenderer,
-  BarChart,
-  GridComponent,
-  TooltipComponent,
-  LegendComponent
-])
+use([DatasetComponent, CanvasRenderer, BarChart, GridComponent, TooltipComponent, LegendComponent])
+
+const replaceMergeArr = ref<string[]>()
 
 const option = computed(() => {
   return mergeTheme(props.chartConfig.option, props.themeSetting, includes)
 })
+
+// dataset 无法变更条数的补丁
+watch(
+  () => props.chartConfig.option.dataset,
+  (newData, oldData) => {
+    if (newData.dimensions.length !== oldData.dimensions.length) {
+      const seriesArr = []
+      for (let i = 0; i < newData.dimensions.length - 1; i++) {
+        seriesArr.push(seriesItem)
+      }
+      replaceMergeArr.value = ['series']
+      props.chartConfig.option.series = seriesArr
+      nextTick(() => {
+        replaceMergeArr.value = []
+      })
+    }
+  },
+  {
+    deep: false
+  }
+)
 
 const { vChartRef } = useChartDataFetch(props.chartConfig, useChartEditStore)
 </script>

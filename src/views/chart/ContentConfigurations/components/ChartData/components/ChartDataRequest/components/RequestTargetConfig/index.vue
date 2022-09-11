@@ -62,7 +62,17 @@ import { selectTypeOptions, selectTimeOptions } from '@/views/chart/ContentConfi
 import { RequestHeader } from '../RequestHeader'
 import { isDev } from '@/utils'
 import { icon } from '@/plugins'
-import { chartDataUrl, rankListUrl, scrollBoardUrl, numberFloatUrl, numberIntUrl, textUrl, imageUrl } from '@/api/mock'
+import {
+  chartDataUrl,
+  chartSingleDataUrl,
+  rankListUrl,
+  scrollBoardUrl,
+  numberFloatUrl,
+  numberIntUrl,
+  textUrl,
+  imageUrl,
+  radarUrl
+} from '@/api/mock'
 
 const { HelpOutlineIcon } = icon.ionicons5
 const { targetData, chartEditStore } = useTargetData()
@@ -72,6 +82,9 @@ const { requestInterval, requestIntervalUnit, requestHttpType, requestUrl } = to
 const apiList = [
   {
     value: `【图表】${chartDataUrl}`
+  },
+  {
+    value: `【单数据图表】${chartSingleDataUrl}`
   },
   {
     value: `【文本】${textUrl}`
@@ -90,6 +103,9 @@ const apiList = [
   },
   {
     value: `【滚动表格】${scrollBoardUrl}`
+  },
+  {
+    value: `【雷达】${radarUrl}`
   }
 ]
 </script>

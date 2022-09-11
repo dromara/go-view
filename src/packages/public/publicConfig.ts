@@ -36,7 +36,7 @@ const requestConfig: RequestConfigType = {
 }
 
 // 单实例类
-export class publicConfig implements PublicConfigType {
+export class PublicConfigClass implements PublicConfigType {
   public id = getUUID()
   public isGroup = false
   // 基本信息
@@ -78,8 +78,8 @@ export class publicConfig implements PublicConfigType {
   }
 }
 
-// 成组类 (部分属性不需要, 不继承 publicConfig)
-export class PublicGroupConfigClass extends publicConfig implements CreateComponentGroupType {
+// 多选成组类
+export class PublicGroupConfigClass extends PublicConfigClass implements CreateComponentGroupType {
   // 成组
   public isGroup = true
   // 名称

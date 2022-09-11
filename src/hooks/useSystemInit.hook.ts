@@ -10,7 +10,7 @@ export const useSystemInit = async () => {
 
   // 获取 OSS 信息
   const getOssUrl = async () => {
-    const res: any = await ossUrlApi({})
+    const res = await ossUrlApi({}) as unknown as MyResponseType
     if (res.code === ResultEnum.SUCCESS) {
       systemStore.setItem(SystemStoreEnum.FETCH_INFO, {
         OSSUrl: res.data?.bucketURL

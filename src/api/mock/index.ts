@@ -4,12 +4,14 @@ import { RequestHttpEnum } from '@/enums/httpEnum'
 
 // 单个X数据
 export const chartDataUrl = '/mock/chartData'
+export const chartSingleDataUrl = '/mock/chartSingleData'
 export const numberFloatUrl = '/mock/number/float'
 export const numberIntUrl = '/mock/number/int'
 export const textUrl = '/mock/text'
 export const imageUrl = '/mock/image'
 export const rankListUrl = '/mock/rankList'
 export const scrollBoardUrl = '/mock/scrollBoard'
+export const radarUrl = '/mock/radarData'
 
 const mockObject: MockMethod[] = [
   {
@@ -18,6 +20,11 @@ const mockObject: MockMethod[] = [
     url: chartDataUrl,
     method: RequestHttpEnum.GET,
     response: () => test.fetchMockData
+  },
+  {
+    url: chartSingleDataUrl,
+    method: RequestHttpEnum.GET,
+    response: () => test.fetchMockSingleData
   },
   {
     url: numberFloatUrl,
@@ -48,7 +55,12 @@ const mockObject: MockMethod[] = [
     url: scrollBoardUrl,
     method: RequestHttpEnum.GET,
     response: () => test.fetchScrollBoard
-  }
+  },
+  {
+    url: radarUrl,
+    method: RequestHttpEnum.GET,
+    response: () => test.fetchRadar
+  },
 ]
 
 export default mockObject

@@ -62,16 +62,15 @@ export const useChartDataFetch = (
           if (res && res.data) {
             try {
               const filter = targetComponent.filter
+              // eCharts 组件配合 vChart 库更新方式
+              if (chartFrame === ChartFrameEnum.ECHARTS) {
+                if (vChartRef.value) {
+                  vChartRef.value.setOption({ dataset: newFunctionHandle(res.data, filter) })
+                }
+              }
               // 更新回调函数
               if (updateCallback) {
                 updateCallback(newFunctionHandle(res.data, filter))
-              } else {
-                // eCharts 组件配合 vChart 库更新方式
-                if (chartFrame === ChartFrameEnum.ECHARTS) {
-                  if (vChartRef.value) {
-                    vChartRef.value.setOption({ dataset: newFunctionHandle(res.data, filter) })
-                  }
-                }
               }
             } catch (error) {
               console.error(error)

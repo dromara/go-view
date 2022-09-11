@@ -1,4 +1,4 @@
-import { echartOptionProfixHandle, publicConfig } from '@/packages/public'
+import { echartOptionProfixHandle, PublicConfigClass } from '@/packages/public'
 import { LineGradientsConfig } from './index'
 import { CreateComponentType } from '@/packages/index.d'
 import { graphic } from 'echarts/core'
@@ -20,7 +20,7 @@ const option = {
   },
   xAxis: {
     show: true,
-    type: 'category',
+    type: 'category'
   },
   yAxis: {
     show: true,
@@ -33,7 +33,7 @@ const option = {
       smooth: false,
       lineStyle: {
         width: 3,
-        type: 'solid',
+        type: 'solid'
       },
       areaStyle: {
         opacity: 0.8,
@@ -47,7 +47,7 @@ const option = {
             color: 'rgba(0,0,0,0)'
           }
         ])
-      },
+      }
     },
     {
       type: 'line',
@@ -69,13 +69,12 @@ const option = {
             color: 'rgba(0,0,0,0)'
           }
         ])
-      },
+      }
     }
   ]
 }
 
-export default class Config extends publicConfig
-  implements CreateComponentType {
+export default class Config extends PublicConfigClass implements CreateComponentType {
   public key: string = LineGradientsConfig.key
   public chartConfig = LineGradientsConfig
   // 图表配置项

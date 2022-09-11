@@ -6,8 +6,13 @@
       </span>
     </template>
     <span :style="`color:${numberColor};font-size:${numberSize}px`">
-      <n-number-animation :from="option.from" :to="option.dataset" :duration="dur * 1000" :show-separator="showSeparator"
-        :precision="precision"></n-number-animation>
+      <n-number-animation
+        :from="option.from"
+        :to="option.dataset"
+        :duration="dur * 1000"
+        :show-separator="showSeparator"
+        :precision="precision"
+      ></n-number-animation>
     </span>
     <template #suffix>
       <span :style="`color:${suffixColor};font-size:${numberSize}px`">
@@ -26,25 +31,16 @@ import { useChartDataFetch } from '@/hooks'
 const props = defineProps({
   chartConfig: {
     type: Object as PropType<CreateComponentType>,
-    required: true,
-  },
+    required: true
+  }
 })
 const option = reactive({
   from: 0,
-  dataset: 0,
+  dataset: 0
 })
 const { w, h } = toRefs(props.chartConfig.attr)
-let {
-  dur,
-  showSeparator,
-  prefixText,
-  prefixColor,
-  suffixText,
-  suffixColor,
-  precision,
-  numberSize,
-  numberColor,
-} = toRefs(props.chartConfig.option)
+let { dur, showSeparator, prefixText, prefixColor, suffixText, suffixColor, precision, numberSize, numberColor } =
+  toRefs(props.chartConfig.option)
 
 const updateNumber = (newData: number) => {
   // 原来的目标值作为新的数字动画的起始值
@@ -56,14 +52,19 @@ watch(
   () => props.chartConfig.option.from,
   () => {
     option.from = props.chartConfig.option.from
-  }, { immediate: true }
+  },
+  { immediate: true }
 )
 
 watch(
   () => props.chartConfig.option.dataset,
   () => {
     option.dataset = props.chartConfig.option.dataset
-  }, { immediate: true }
+  },
+  {
+    immediate: true,
+    deep: false
+  }
 )
 
 useChartDataFetch(props.chartConfig, useChartEditStore, updateNumber)

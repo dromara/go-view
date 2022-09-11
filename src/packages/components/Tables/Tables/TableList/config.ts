@@ -1,4 +1,4 @@
-import { publicConfig } from '@/packages/public'
+import { PublicConfigClass } from '@/packages/public'
 import { CreateComponentType } from '@/packages/index.d'
 import { TableListConfig } from './index'
 import cloneDeep from 'lodash/cloneDeep'
@@ -29,7 +29,7 @@ export const option = {
   valueFormatter(item: { value: any}) { return item.value}
 }
 
-export default class Config extends publicConfig implements CreateComponentType {
+export default class Config extends PublicConfigClass implements CreateComponentType {
   public key = TableListConfig.key
   public chartConfig = cloneDeep(TableListConfig)
   public option = cloneDeep(option)

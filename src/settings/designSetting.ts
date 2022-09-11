@@ -55,8 +55,11 @@ export const backgroundImageSize = 5
 // 预览展示方式
 export const previewScaleType = PreviewScaleEnum.FIT
 
-// 数据请求间隔
+// 数据请求间隔（s）
 export const requestInterval = 30
+
+// 工作台自动保存间隔（s）
+export const saveInterval = 30
 
 // 数据请求间隔单位
 export const requestIntervalUnit = RequestHttpIntervalEnum.SECOND

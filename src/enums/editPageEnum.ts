@@ -40,8 +40,8 @@ export enum MenuEnum {
   UN_GROUP = 'unGroup',
   // 后退
   BACK = 'back',
-  // 前进
-  FORWORD = 'forward'
+  FORWORD = 'forward',
+  SAVE = 'save'
 }
 
 // Win 键盘枚举
@@ -63,4 +63,16 @@ export enum MacKeyboard {
   CTRL_SOURCE_KEY = "⌘",
   SHIFT_SOURCE_KEY = "⇧",
   ALT_SOURCE_KEY = "⌥"
+}
+
+// 同步状态枚举
+export enum SyncEnum {
+  // 等待
+  PENDING,
+  // 开始
+  START,
+  // 成功
+  SUCCESS,
+  // 失败
+  FAILURE
 }

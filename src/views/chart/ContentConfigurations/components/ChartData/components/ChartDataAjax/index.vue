@@ -79,7 +79,7 @@
     <!-- 骨架图 -->
     <go-skeleton :load="loading" :repeat="3"></go-skeleton>
     <!-- 请求配置model -->
-    <chart-data-request v-model:modelShow="requestShow"></chart-data-request>
+    <chart-data-request v-model:modelShow="requestShow" @sendHandle="sendHandle"></chart-data-request>
   </div>
 </template>
 

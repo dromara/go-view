@@ -1,10 +1,19 @@
-import { echartOptionProfixHandle, publicConfig } from '@/packages/public'
+import { echartOptionProfixHandle, PublicConfigClass } from '@/packages/public'
 import { BarCommonConfig } from './index'
 import { CreateComponentType } from '@/packages/index.d'
 import cloneDeep from 'lodash/cloneDeep'
 import dataJson from './data.json'
 
 export const includes = ['legend', 'xAxis', 'yAxis']
+
+export const seriesItem = {
+  type: 'bar',
+  barWidth: null,
+  itemStyle: {
+    color: null,
+    borderRadius: 0
+  }
+}
 
 export const option = {
   tooltip: {
@@ -27,27 +36,10 @@ export const option = {
     type: 'value'
   },
   dataset: { ...dataJson },
-  series: [
-    {
-      type: 'bar',
-      barWidth: null,
-      itemStyle: {
-        color: null,
-        borderRadius: 0
-      }
-    },
-    {
-      type: 'bar',
-      barWidth: null,
-      itemStyle: {
-        color: null,
-        borderRadius: 0
-      }
-    }
-  ]
+  series: [seriesItem, seriesItem]
 }
 
-export default class Config extends publicConfig implements CreateComponentType {
+export default class Config extends PublicConfigClass implements CreateComponentType {
   public key = BarCommonConfig.key
   public chartConfig = cloneDeep(BarCommonConfig)
   // 图表配置项

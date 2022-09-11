@@ -1,4 +1,4 @@
-import { echartOptionProfixHandle, publicConfig } from '@/packages/public'
+import { echartOptionProfixHandle, PublicConfigClass } from '@/packages/public'
 import { LineGradientSingleConfig } from './index'
 import { CreateComponentType } from '@/packages/index.d'
 import { graphic } from 'echarts/core'
@@ -20,7 +20,7 @@ const options = {
   },
   xAxis: {
     show: true,
-    type: 'category',
+    type: 'category'
   },
   yAxis: {
     show: true,
@@ -52,8 +52,7 @@ const options = {
   ]
 }
 
-export default class Config extends publicConfig
-  implements CreateComponentType {
+export default class Config extends PublicConfigClass implements CreateComponentType {
   public key: string = LineGradientSingleConfig.key
   public chartConfig = LineGradientSingleConfig
   // 图表配置项

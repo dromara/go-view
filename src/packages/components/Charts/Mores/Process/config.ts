@@ -1,4 +1,4 @@
-import { publicConfig } from '@/packages/public'
+import { PublicConfigClass } from '@/packages/public'
 import { CreateComponentType } from '@/packages/index.d'
 import { ProcessConfig } from './index'
 import { chartInitConfig } from '@/settings/designSetting'
@@ -53,7 +53,7 @@ export const option = {
   offsetDegree: 0
 }
 
-export default class Config extends publicConfig implements CreateComponentType {
+export default class Config extends PublicConfigClass implements CreateComponentType {
   public key = ProcessConfig.key
   public attr = { ...chartInitConfig, h: 500, zIndex: -1 }
   public chartConfig = cloneDeep(ProcessConfig)

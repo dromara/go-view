@@ -43,7 +43,7 @@ const props = defineProps({
   }
 })
 
-const { image } = toRefs(props.componentData.chartConfig)
+const { image } = props.componentData.chartConfig
 
 // 计算当前选中目标
 const select = computed(() => {

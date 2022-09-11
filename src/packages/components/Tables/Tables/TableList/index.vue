@@ -169,6 +169,9 @@ watch(
   () => props.chartConfig.option.dataset,
   () => {
     onRestart()
+  },
+  {
+    deep: false
   }
 )
 

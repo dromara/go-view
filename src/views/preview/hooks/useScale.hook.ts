@@ -4,6 +4,7 @@ import type { ChartEditStorageType } from '../index.d'
 import { PreviewScaleEnum } from '@/enums/styleEnum'
 
 export const useScale = (localStorageInfo: ChartEditStorageType) => {
+
   const entityRef = ref()
   const previewRef = ref()
   const width = ref(localStorageInfo.editCanvasConfig.width)

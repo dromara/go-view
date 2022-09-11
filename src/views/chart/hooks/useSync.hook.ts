@@ -1,8 +1,19 @@
-import { getUUID } from '@/utils'
+import { onUnmounted } from 'vue';
+import html2canvas from 'html2canvas'
+import { getUUID, httpErrorHandle, fetchRouteParamsLocation, base64toFile } from '@/utils'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-import { ChartEditStoreEnum, ChartEditStorage } from '@/store/modules/chartEditStore/chartEditStore.d'
+import { EditCanvasTypeEnum, ChartEditStoreEnum, ProjectInfoEnum, ChartEditStorage } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { useChartHistoryStore } from '@/store/modules/chartHistoryStore/chartHistoryStore'
+import { useSystemStore } from '@/store/modules/systemStore/systemStore'
 import { fetchChartComponent, fetchConfigComponent, createComponent } from '@/packages/index'
+import { saveInterval } from '@/settings/designSetting'
+import throttle from 'lodash/throttle'
+// 接口状态
+import { ResultEnum } from '@/enums/httpEnum'
+// 接口
+import { saveProjectApi, fetchProjectApi, uploadFile, updateProjectApi } from '@/api/path'
+// 画布枚举
+import { SyncEnum } from '@/enums/editPageEnum'
 import { CreateComponentType, CreateComponentGroupType, ConfigType } from '@/packages/index.d'
 import { PublicGroupConfigClass } from '@/packages/public/publicConfig'
 
@@ -10,6 +21,7 @@ import { PublicGroupConfigClass } from '@/packages/public/publicConfig'
 export const useSync = () => {
   const chartEditStore = useChartEditStore()
   const chartHistoryStore = useChartHistoryStore()
+  const systemStore = useSystemStore()
 
   /**
    * * 组件动态注册
@@ -105,7 +117,120 @@ export const useSync = () => {
     }
   }
 
+  /**
+   * * 赋值全局数据
+   * @param projectData 项目数据
+   * @returns 
+   */
+  const updateStoreInfo = (projectData: {
+    id: string,
+    projectName: string,
+    indexImage: string,
+    remarks: string,
+    state: number
+  }) => {
+    const { projectName, remarks, indexImage, state } = projectData
+    // 名称
+    chartEditStore.setProjectInfo(ProjectInfoEnum.PROJECT_NAME, projectName)
+    // 描述
+    chartEditStore.setProjectInfo(ProjectInfoEnum.REMARKS, remarks)
+    // 缩略图
+    chartEditStore.setProjectInfo(ProjectInfoEnum.THUMBNAIL, indexImage)
+    // 发布
+    chartEditStore.setProjectInfo(ProjectInfoEnum.RELEASE, state === 1)
+  }
+
+  // * 数据获取
+  const dataSyncFetch = async () => {
+    chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.START)
+    try {
+      const res = await fetchProjectApi({ projectId: fetchRouteParamsLocation() }) as unknown as MyResponseType
+      if (res.code === ResultEnum.SUCCESS) {
+        if (res.data) {
+          updateStoreInfo(res.data)
+          // 更新全局数据
+          await updateComponent(JSON.parse(res.data.content))
+          return
+        }
+        setTimeout(() => {
+          chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.SUCCESS)
+        }, 1000)
+        return
+      }
+      chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.FAILURE)
+    } catch (error) {
+      chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.FAILURE)
+      httpErrorHandle()
+    }
+  }
+
+  // * 数据保存
+  const dataSyncUpdate = throttle(async () => {
+    if(!fetchRouteParamsLocation()) return
+
+    if(!systemStore.getFetchInfo.OSSUrl) {
+      window['$message'].error('数据保存失败，请刷新页面重试！')
+      return
+    }
+
+    chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.START)
+
+    // 获取缩略图片
+    const range = document.querySelector('.go-edit-range') as HTMLElement
+    // 生成图片
+    const canvasImage: HTMLCanvasElement = await html2canvas(range, {
+      backgroundColor: null,
+      allowTaint: true,
+      useCORS: true
+    })
+    
+    // 上传预览图
+    let uploadParams = new FormData()
+    uploadParams.append('object', base64toFile(canvasImage.toDataURL(), `${fetchRouteParamsLocation()}_index_preview.png`))
+    const uploadRes = await uploadFile(systemStore.getFetchInfo.OSSUrl, uploadParams) as unknown as MyResponseType
+    // 保存预览图
+    if(uploadRes.code === ResultEnum.SUCCESS) {
+      await updateProjectApi({
+        id: fetchRouteParamsLocation(),
+        indexImage: uploadRes.data.objectContent.httpRequest.uri
+      })
+    }
+
+    // 保存数据
+    let params = new FormData()
+    params.append('projectId', fetchRouteParamsLocation())
+    params.append('content', JSON.stringify(chartEditStore.getStorageInfo || {}))
+    const res= await saveProjectApi(params) as unknown as MyResponseType
+
+    if (res.code === ResultEnum.SUCCESS) {
+      // 成功状态
+      setTimeout(() => {
+        chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.SUCCESS)
+      }, 1000)
+      return
+    }
+    // 失败状态
+    chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.FAILURE)
+  }, 3000)
+
+  // * 定时处理
+  const intervalDataSyncUpdate = () => {
+    // 定时获取数据
+    const syncTiming = setInterval(() => {
+      dataSyncUpdate()
+    }, saveInterval * 1000)
+
+    // 销毁
+    onUnmounted(() => {
+      clearInterval(syncTiming)
+    })
+  }
+
   return {
-    updateComponent
+    updateComponent,
+    updateStoreInfo,
+    dataSyncFetch,
+    dataSyncUpdate,
+    intervalDataSyncUpdate
   }
 }

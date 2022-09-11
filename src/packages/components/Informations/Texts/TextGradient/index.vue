@@ -32,7 +32,8 @@ watch(
     option.dataset = newData
   },
   {
-    immediate: true
+    immediate: true,
+    deep: false
   }
 )
 

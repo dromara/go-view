@@ -50,7 +50,8 @@ watch(
   () => props.chartConfig.option.dataset,
   newData => dataHandle(newData),
   {
-    immediate: true
+    immediate: true,
+    deep: false
   }
 )
 

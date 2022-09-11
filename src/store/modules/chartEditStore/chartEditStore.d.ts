@@ -1,5 +1,6 @@
 import { CreateComponentType, CreateComponentGroupType, FilterEnum } from '@/packages/index.d'
 import { HistoryActionTypeEnum } from '@/store/modules/chartHistoryStore/chartHistoryStore.d'
+import { SyncEnum } from '@/enums/editPageEnum'
 import {
   RequestHttpEnum,
   RequestContentTypeEnum,
@@ -12,6 +13,26 @@ import {
 import { PreviewScaleEnum } from '@/enums/styleEnum'
 import type { ChartColorsNameType, GlobalThemeJsonType } from '@/settings/chartThemes/index'
 
+// 项目数据枚举
+export enum ProjectInfoEnum {
+  // 名称
+  PROJECT_NAME = 'projectName',
+  // 描述
+  REMARKS = 'remarks',
+  // 缩略图
+  THUMBNAIL= 'thumbnail',
+  // 是否公开发布
+  RELEASE = 'release'
+}
+
+// 项目数据
+export type ProjectInfoType = {
+  [ProjectInfoEnum.PROJECT_NAME]: string,
+  [ProjectInfoEnum.REMARKS]: string,
+  [ProjectInfoEnum.THUMBNAIL]: string,
+  [ProjectInfoEnum.RELEASE]: boolean
+}
+
 // 编辑画布属性
 export enum EditCanvasTypeEnum {
   EDIT_LAYOUT_DOM = 'editLayoutDom',
@@ -20,12 +41,13 @@ export enum EditCanvasTypeEnum {
   SCALE = 'scale',
   USER_SCALE = 'userScale',
   LOCK_SCALE = 'lockScale',
+  SAVE_STATUS = 'saveStatus',
   IS_CREATE = 'isCreate',
   IS_DRAG = 'isDrag',
   IS_SELECT = 'isSelect'
 }
 
-// 编辑区域
+// 编辑区域（临时）
 export type EditCanvasType = {
   // 编辑区域 DOM
   [EditCanvasTypeEnum.EDIT_LAYOUT_DOM]: HTMLElement | null
@@ -42,11 +64,13 @@ export type EditCanvasType = {
   [EditCanvasTypeEnum.IS_CREATE]: boolean
   // 拖拽中
   [EditCanvasTypeEnum.IS_DRAG]: boolean
+  // 保存状态
+  [EditCanvasTypeEnum.SAVE_STATUS]: SyncEnum
   // 框选中
   [EditCanvasTypeEnum.IS_SELECT]: boolean
 }
 
-// 滤镜/背景色/宽高主题等
+// 画布数据/滤镜/背景色/宽高主题等
 export enum EditCanvasConfigEnum {
   WIDTH = 'width',
   HEIGHT = 'height',
@@ -58,7 +82,12 @@ export enum EditCanvasConfigEnum {
   PREVIEW_SCALE_TYPE = 'previewScaleType'
 }
 
-export interface EditCanvasConfigType {
+// 画布属性（需保存）
+export type EditCanvasConfigType = {
+  // 项目名称
+  [EditCanvasConfigEnum.PROJECT_NAME]: string,
+  // 项目描述
+  [EditCanvasConfigEnum.REMARKS]: string,
   // 滤镜-色相
   [FilterEnum.HUE_ROTATE]: number
   // 滤镜-饱和度
@@ -126,6 +155,7 @@ export type RecordChartType = {
 
 // Store 枚举
 export enum ChartEditStoreEnum {
+  PROJECT_INFO = 'projectInfo',
   EDIT_RANGE = 'editRange',
   EDIT_CANVAS = 'editCanvas',
   RIGHT_MENU_SHOW = 'rightMenuShow',
@@ -176,6 +206,7 @@ export interface RequestConfigType extends RequestPublicConfigType {
 
 // Store 类型
 export interface ChartEditStoreType {
+  [ChartEditStoreEnum.PROJECT_INFO]: ProjectInfoType
   [ChartEditStoreEnum.EDIT_CANVAS]: EditCanvasType
   [ChartEditStoreEnum.EDIT_CANVAS_CONFIG]: EditCanvasConfigType
   [ChartEditStoreEnum.RIGHT_MENU_SHOW]: boolean

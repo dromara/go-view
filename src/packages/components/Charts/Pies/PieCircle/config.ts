@@ -1,4 +1,4 @@
-import { echartOptionProfixHandle, publicConfig } from '@/packages/public'
+import { echartOptionProfixHandle, PublicConfigClass } from '@/packages/public'
 import { PieCircleConfig } from './index'
 import { CreateComponentType } from '@/packages/index.d'
 
@@ -54,7 +54,7 @@ const option = {
   ]
 }
 
-export default class Config extends publicConfig implements CreateComponentType {
+export default class Config extends PublicConfigClass implements CreateComponentType {
   public key: string = PieCircleConfig.key
 
   public chartConfig = PieCircleConfig

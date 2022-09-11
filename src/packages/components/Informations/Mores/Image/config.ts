@@ -1,4 +1,4 @@
-import { publicConfig } from '@/packages/public'
+import { PublicConfigClass } from '@/packages/public'
 import { CreateComponentType } from '@/packages/index.d'
 import { ImageConfig } from './index'
 import cloneDeep from 'lodash/cloneDeep'
@@ -13,7 +13,7 @@ export const option = {
   borderRadius: 10
 }
 
-export default class Config extends publicConfig implements CreateComponentType
+export default class Config extends PublicConfigClass implements CreateComponentType
 {
   public key = ImageConfig.key
   public chartConfig = cloneDeep(ImageConfig)

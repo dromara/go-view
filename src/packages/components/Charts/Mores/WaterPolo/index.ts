@@ -10,6 +10,6 @@ export const WaterPoloConfig: ConfigType = {
   category: ChatCategoryEnum.MORE,
   categoryName: ChatCategoryEnumName.MORE,
   package: PackagesCategoryEnum.CHARTS,
-  chartFrame: ChartFrameEnum.ECHARTS,
+  chartFrame: ChartFrameEnum.COMMON,
   image
 }

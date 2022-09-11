@@ -43,6 +43,11 @@
           ></n-input-number>
         </SettingItem>
       </SettingItemBox>
+      <SettingItemBox name="其他">
+        <SettingItem>
+          <n-checkbox v-model:checked="seriesList[1].itemStyle.showHainanIsLands" size="small">显示南海群岛</n-checkbox>
+        </SettingItem>
+      </SettingItemBox>
     </CollapseItem>
     <CollapseItem name="标记" :expanded="true">
       <SettingItemBox name="样式">

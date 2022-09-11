@@ -7,6 +7,7 @@
     :showBottom="true"
     :depth="1"
     :xScroll="true"
+    @mousedown="mousedownHandleUnStop"
     @drop="dragHandle"
     @dragover="dragoverHandle"
     @dragenter="dragoverHandle"
@@ -87,7 +88,8 @@ import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore
 
 import { useLayout } from './hooks/useLayout.hook'
 import { useAddKeyboard } from '../hooks/useKeyboard.hook'
-import { dragHandle, dragoverHandle, useMouseHandle } from './hooks/useDrag.hook'
+import { useSync } from '../hooks/useSync.hook'
+import { dragHandle, dragoverHandle, mousedownHandleUnStop, useMouseHandle } from './hooks/useDrag.hook'
 import { useComponentStyle, useSizeStyle } from './hooks/useStyle.hook'
 
 import { ContentBox } from '../ContentBox/index'
@@ -100,6 +102,7 @@ import { EditTools } from './components/EditTools'
 
 const chartEditStore = useChartEditStore()
 const { handleContextMenu } = useContextMenu()
+const { dataSyncFetch, intervalDataSyncUpdate } = useSync()
 
 // 布局处理
 useLayout()
@@ -165,9 +168,13 @@ const rangeStyle = computed(() => {
   }
 })
 
-// 键盘事件
 onMounted(() => {
+  // 键盘事件
   useAddKeyboard()
+  // 获取数据
+  dataSyncFetch()
+  // 定时更新数据
+  intervalDataSyncUpdate()
 })
 </script>
 

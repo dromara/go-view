@@ -53,6 +53,7 @@ import {
   ArrowForward as ArrowForwardIcon,
   Planet as PawIcon,
   Search as SearchIcon,
+  Reload as ReloadIcon,
   ChevronUpOutline as ChevronUpOutlineIcon,
   ChevronDownOutline as ChevronDownOutlineIcon,
   Pulse as PulseIcon,
@@ -86,6 +87,7 @@ import {
   FitToScreen as FitToScreenIcon,
   FitToHeight as FitToHeightIcon,
   FitToWidth as FitToWidthIcon,
+  Save as SaveIcon,
   Carbon3DCursor as Carbon3DCursorIcon,
   Carbon3DSoftware as Carbon3DSoftwareIcon,
   Filter as FilterIcon,
@@ -200,6 +202,8 @@ const ionicons5 = {
   PawIcon,
   // 搜索（放大镜）
   SearchIcon,
+  // 加载
+  ReloadIcon,
   // 过滤器
   FilterIcon,
   // 向上
@@ -256,6 +260,8 @@ const carbon = {
   FitToScreenIcon,
   FitToHeightIcon,
   FitToWidthIcon,
+  // 保存
+  SaveIcon,
   // 成组
   Carbon3DCursorIcon,
   // 解组

@@ -1,4 +1,4 @@
-import { echartOptionProfixHandle, publicConfig } from '@/packages/public'
+import { echartOptionProfixHandle, PublicConfigClass } from '@/packages/public'
 import { PieCommonConfig } from './index'
 import { CreateComponentType } from '@/packages/index.d'
 import dataJson from './data.json'
@@ -44,7 +44,7 @@ const option = {
   ]
 }
 
-export default class Config extends publicConfig implements CreateComponentType {
+export default class Config extends PublicConfigClass implements CreateComponentType {
   public key: string = PieCommonConfig.key
 
   public chartConfig = PieCommonConfig

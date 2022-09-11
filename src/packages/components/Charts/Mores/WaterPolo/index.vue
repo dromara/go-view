@@ -79,7 +79,8 @@ watch(
     option.value = props.chartConfig.option
   },
   {
-    immediate: true
+    immediate: true,
+    deep: false
   }
 )
 

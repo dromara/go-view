@@ -33,7 +33,7 @@ import { useTargetData } from '../../../hooks/useTargetData.hook'
 import { RequestGlobalConfig } from './components/RequestGlobalConfig'
 import { RequestTargetConfig } from './components/RequestTargetConfig'
 
-const emit = defineEmits(['update:modelShow'])
+const emit = defineEmits(['update:modelShow', 'sendHandle'])
 
 const { targetData } = useTargetData()
 // 解构基础配置
@@ -50,6 +50,7 @@ defineProps({
 
 const closeHandle = () => {
   emit('update:modelShow', false)
+  emit('sendHandle')
 }
 </script>
 

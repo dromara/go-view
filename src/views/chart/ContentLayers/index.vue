@@ -17,7 +17,7 @@
       <n-text class="not-layer-text">暂无图层~</n-text>
     </n-space>
     <!-- https://github.com/SortableJS/vue.draggable.next -->
-    <draggable item-key="id" v-model="reverseList" ghostClass="ghost" @change="onMoveCallback">
+    <draggable item-key="id" v-model="layerList" ghostClass="ghost" @change="onMoveCallback">
       <template #item="{ element }">
         <div class="go-content-layer-box">
           <!-- 组合 -->
@@ -27,7 +27,7 @@
             v-else
             :componentData="element"
             @mousedown="mousedownHandle($event, element)"
-            @mouseenter="mouseenterHandle(element)" 
+            @mouseenter="mouseenterHandle(element)"
             @mouseleave="mouseleaveHandle(element)"
             @contextmenu="handleContextMenu($event, element, optionsHandle)"
           ></layers-list-item>
@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toRaw } from 'vue'
+import { computed, ref, watch } from 'vue'
 import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
 import { ContentBox } from '../ContentBox/index'
@@ -58,8 +58,22 @@ import { icon } from '@/plugins'
 const { LayersIcon } = icon.ionicons5
 const chartLayoutStore = useChartLayoutStore()
 const chartEditStore = useChartEditStore()
-
 const { handleContextMenu, onClickOutSide } = useContextMenu()
+
+const layerList = ref<any>([])
+
+// 逆序展示
+const reverseList = computed(() => {
+  const list: Array<CreateComponentType | CreateComponentGroupType> = cloneDeep(chartEditStore.getComponentList)
+  return list.reverse()
+})
+
+watch(
+  () => reverseList.value,
+  newValue => {
+    layerList.value = newValue
+  }
+)
 
 // 右键事件
 const optionsHandle = (
@@ -80,12 +94,6 @@ const optionsHandle = (
   }
   return targetList
 }
- 
-// 逆序展示
-const reverseList = computed(() => {
-  const list: Array<CreateComponentType | CreateComponentGroupType> = cloneDeep(chartEditStore.getComponentList)
-  return list.reverse()
-})
 
 // 缩小
 const backHandle = () => {
@@ -95,14 +103,13 @@ const backHandle = () => {
 // 移动结束处理
 const onMoveCallback = (val: any) => {
   const { oldIndex, newIndex } = val.moved
-  const moveTarget = toRaw(val.moved.element)
   if (newIndex - oldIndex > 0) {
     // 从上往下
-    chartEditStore.getComponentList.splice(-(oldIndex + 1), 1)
+    const moveTarget = chartEditStore.getComponentList.splice(-(oldIndex + 1), 1)[0]
     chartEditStore.getComponentList.splice(-newIndex, 0, moveTarget)
   } else {
     // 从下往上
-    chartEditStore.getComponentList.splice(-(oldIndex + 1), 1)
+    const moveTarget = chartEditStore.getComponentList.splice(-(oldIndex + 1), 1)[0]
     if (newIndex === 0) {
       chartEditStore.getComponentList.push(moveTarget)
     } else {

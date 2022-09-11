@@ -13,7 +13,7 @@ export const get = (url: string, params?: object) => {
   return axiosInstance({
     url: url,
     method: RequestHttpEnum.GET,
-    params: params
+    params: params,
   })
 }
 

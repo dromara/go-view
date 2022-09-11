@@ -58,6 +58,9 @@ watch(
   () => props.chartConfig.option.dataset,
   (newData: any) => {
     option.dataset = toNumber(newData, 2)
+  },
+  {
+    deep: false
   }
 )
 // 预览更新

@@ -18,7 +18,7 @@ import { zhCN, dateZhCN, NConfigProvider } from 'naive-ui'
 import { GoAppProvider } from '@/components/GoAppProvider'
 import { I18n } from '@/components/I18n'
 
-import { useDarkThemeHook, useThemeOverridesHook, useCode } from '@/hooks'
+import { useSystemInit, useDarkThemeHook, useThemeOverridesHook, useCode } from '@/hooks'
 
 // 暗黑主题
 const darkTheme = useDarkThemeHook()
@@ -28,4 +28,7 @@ const overridesTheme = useThemeOverridesHook()
 
 // 代码主题
 const hljsTheme = useCode()
+
+// 系统全局数据初始化
+useSystemInit()
 </script>
