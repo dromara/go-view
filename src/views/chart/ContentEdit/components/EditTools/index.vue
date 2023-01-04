@@ -1,17 +1,14 @@
 <template>
   <div
     class="go-chart-edit-tools"
-    :class="[
-      settingStore.getChartToolsStatus,
-      isMini ? 'isMini' : 'unMini',
-    ]"
+    :class="[settingStore.getChartToolsStatus, isMiniComputed ? 'isMini' : 'unMini']"
     @click="isMini && (isMini = false)"
     @mouseenter="toolsMouseoverHandle"
     @mouseleave="toolsMouseoutHandle"
   >
     <!-- PawIcon -->
     <n-icon
-      v-show="settingStore.getChartToolsStatus === ToolsStatusEnum.ASIDE"
+      v-show="settingStore.getChartToolsStatus === ToolsStatusEnum.ASIDE && isMiniComputed"
       class="asideLogo"
       size="22"
     >
@@ -19,20 +16,15 @@
     </n-icon>
 
     <n-tooltip
-      v-for="(item, index) in btnList"
+      v-for="(item, index) in btnListComputed"
       :key="item.key"
-      :disabled="!isAside || asideTootipDis"
+      :disabled="!isAside || (isHide && asideTootipDis)"
       trigger="hover"
       placement="left"
     >
       <template #trigger>
-        <div class="btn-item" :class="[btnList.length - 1 === index && 'go-111mt-0']">
-          <n-button
-            v-if="item.type === TypeEnum.BUTTON"
-            :circle="isAside"
-            secondary
-            @click="item.handle"
-          >
+        <div class="btn-item">
+          <n-button v-if="item.type === TypeEnum.BUTTON" :circle="isAside" secondary @click="item.handle">
             <template #icon>
               <n-icon size="22" v-if="isAside">
                 <component :is="item.icon"></component>
@@ -65,61 +57,151 @@
       <span>{{ item.name }}</span>
     </n-tooltip>
   </div>
+  <!-- 系统设置 model -->
+  <go-system-set v-model:modelShow="globalSettingModel"></go-system-set>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 import { useSettingStore } from '@/store/modules/settingStore/settingStore'
 import { ToolsStatusEnum } from '@/store/modules/settingStore/settingStore.d'
+import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
+import { fetchRouteParamsLocation, fetchPathByName, routerTurnByPath, setSessionStorage, getLocalStorage } from '@/utils'
+import { EditEnum } from '@/enums/pageEnum'
+import { StorageEnum } from '@/enums/storageEnum'
+import { useRoute } from 'vue-router'
+import { GoSystemSet } from '@/components/GoSystemSet/index'
 import { exportHandle } from './utils'
 import { useFile } from './hooks/useFile.hooks'
+import { useSyncUpdate } from './hooks/useSyncUpdate.hook'
 import { BtnListType, TypeEnum } from './index.d'
 import { icon } from '@/plugins'
 
-const { DownloadIcon, ShareIcon, PawIcon } = icon.ionicons5
+const { DownloadIcon, ShareIcon, PawIcon, SettingsSharpIcon, CreateIcon } = icon.ionicons5
 const settingStore = useSettingStore()
+const chartEditStore = useChartEditStore()
+const routerParamsInfo = useRoute()
+// 初始化编辑 JSON 模块
+useSyncUpdate()
+
 // 鼠标悬停定时器
 let mouseTime: any = null
+// 系统设置 model
+const globalSettingModel = ref(false)
 // 最小化
 const isMini = ref<boolean>(true)
-// 是否是侧边栏
-const isAside = computed(() => settingStore.getChartToolsStatus === ToolsStatusEnum.ASIDE)
 // 控制 tootip 提示时机
 const asideTootipDis = ref(true)
 // 文件上传
 const { importUploadFileListRef, importCustomRequest, importBeforeUpload } = useFile()
 
-const btnList: BtnListType[] = [{
-  key: 'import',
-  type: TypeEnum.IMPORTUPLOAD,
-  name: '导入',
-  icon: DownloadIcon,
-}, {
-  key: 'export',
-  type: TypeEnum.BUTTON,
-  name: '导出',
-  icon: ShareIcon,
-  handle: exportHandle
-}]
+// 是否是侧边栏
+const isAside = computed(() => settingStore.getChartToolsStatus === ToolsStatusEnum.ASIDE)
 
+// 是否隐藏（悬浮展示）
+const isHide = computed(() => settingStore.getChartToolsStatusHide)
+
+// 是否展示最小化（与全局配置相关）
+const isMiniComputed = computed(() => isMini.value && isHide.value)
+
+// 页面渲染配置
+const btnListComputed = computed(() => {
+  if (!isAside.value) return btnList
+  const reverseArr: BtnListType[] = []
+  btnList.map(item => {
+    reverseArr.unshift(item)
+  })
+  return reverseArr
+})
+
+// 鼠标移入
 const toolsMouseoverHandle = () => {
   mouseTime = setTimeout(() => {
     if (isMini.value) {
       isMini.value = false
       asideTootipDis.value = true
     }
-  }, 200);
+  }, 200)
   setTimeout(() => {
     asideTootipDis.value = false
   }, 400)
 }
 
+// 鼠标移出
 const toolsMouseoutHandle = () => {
   clearTimeout(mouseTime)
   if (!isMini.value) {
     isMini.value = true
   }
 }
+
+// 编辑处理
+const editHandle = () => {
+  window['$message'].warning('将开启失焦更新！')
+//   window['$message'].warning('将开启失焦更新与 5 秒同步更新！')
+  setTimeout(() => {
+    // 获取id路径
+    const path = fetchPathByName(EditEnum.CHART_EDIT_NAME, 'href')
+    if (!path) return
+    const id = fetchRouteParamsLocation()
+    updateToSession(id)
+    routerTurnByPath(path, [id], undefined, true)
+  }, 1000)
+}
+
+// 把内存中的数据同步到SessionStorage 便于传递给新窗口初始化数据
+const updateToSession = (id: string) => {
+  const storageInfo = chartEditStore.getStorageInfo
+  const sessionStorageInfo = getLocalStorage(StorageEnum.GO_CHART_STORAGE_LIST) || []
+
+  if (sessionStorageInfo?.length) {
+    const repeateIndex = sessionStorageInfo.findIndex((e: { id: string }) => e.id === id)
+    // 重复替换
+    if (repeateIndex !== -1) {
+      sessionStorageInfo.splice(repeateIndex, 1, { ...storageInfo, id })
+      setSessionStorage(StorageEnum.GO_CHART_STORAGE_LIST, sessionStorageInfo)
+    } else {
+      sessionStorageInfo.push({ ...storageInfo, id })
+      setSessionStorage(StorageEnum.GO_CHART_STORAGE_LIST, sessionStorageInfo)
+    }
+  } else {
+    setSessionStorage(StorageEnum.GO_CHART_STORAGE_LIST, [{ ...storageInfo, id }])
+  }
+}
+
+
+// 配置列表
+const btnList: BtnListType[] = [
+  {
+    key: 'export',
+    type: TypeEnum.BUTTON,
+    name: '导出',
+    icon: ShareIcon,
+    handle: exportHandle
+  },
+  {
+    key: 'import',
+    type: TypeEnum.IMPORTUPLOAD,
+    name: '导入',
+    icon: DownloadIcon
+  },
+  {
+    key: 'edit',
+    type: TypeEnum.BUTTON,
+    name: '编辑',
+    icon: CreateIcon,
+    handle: editHandle
+  },
+  {
+    key: 'setting',
+    type: TypeEnum.BUTTON,
+    name: '设置',
+    icon: SettingsSharpIcon,
+    handle: () => {
+      globalSettingModel.value = true
+    }
+  }
+]
 </script>
 
 <style lang="scss" scoped>
@@ -129,11 +211,11 @@ $dockBottom: 60px;
 $dockMiniWidth: 200px;
 $dockMiniBottom: 53px;
 
-$asideHeight: 90px;
+$asideHeight: 130px;
 $asideMiniHeight: 22px;
 $asideBottom: 70px;
 
-@include go("chart-edit-tools") {
+@include go('chart-edit-tools') {
   @extend .go-background-filter;
   position: absolute;
   display: flex;
@@ -141,22 +223,25 @@ $asideBottom: 70px;
   align-items: center;
   border-radius: 25px;
   border: 1px solid;
-  mix-blend-mode: luminosity;
-  @include fetch-border-color("hover-border-color-shallow");
+  @include fetch-border-color('hover-border-color-shallow');
   &.aside {
     flex-direction: column-reverse;
     height: auto;
     right: 20px;
-    padding: 20px 8px;
+    padding: 30px 8px;
     bottom: $asideBottom;
     overflow: hidden;
     transition: height ease 0.4s;
     .btn-item {
       margin-bottom: 10px;
+      &:first-of-type {
+        margin-bottom: 0;
+      }
       @include deep() {
         .n-button__icon {
-          margin-right: 4px;
-          margin-bottom: 14px;
+          margin-right: 0;
+          margin-left: 0;
+          margin-bottom: 12px;
         }
       }
     }
@@ -223,14 +308,12 @@ $asideBottom: 70px;
           height: 0;
           padding: 5px;
           bottom: $dockMiniBottom;
-          mix-blend-mode: screen;
         }
         100% {
           height: $dockHeight;
           padding: 8px 30px;
           bottom: $dockBottom;
           border-radius: 25px;
-          mix-blend-mode: none;
         }
       }
     }
@@ -243,7 +326,6 @@ $asideBottom: 70px;
       border-radius: 8px;
       cursor: pointer;
       border: 0px;
-      mix-blend-mode: screen;
       animation: dock-mini-in 1s ease forwards;
       @keyframes dock-mini-in {
         0% {
@@ -266,7 +348,6 @@ $asideBottom: 70px;
           height: 0;
           padding: 5px;
           bottom: $dockMiniBottom;
-          mix-blend-mode: screen;
         }
       }
       .btn-item {
@@ -276,7 +357,7 @@ $asideBottom: 70px;
       }
     }
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       left: 0;
       width: 100%;

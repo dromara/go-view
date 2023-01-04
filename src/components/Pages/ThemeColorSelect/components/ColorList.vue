@@ -99,6 +99,7 @@ const colorSelectHandle = (color: AppThemeColorType) => {
       overflow: hidden;
       border-radius: 5px;
       @extend .go-background-filter-shallow;
+      backdrop-filter: none;
     }
     &-color {
       width: 8px;

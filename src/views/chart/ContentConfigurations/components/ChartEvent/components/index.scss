@@ -1,0 +1,51 @@
+/* 外层也要使用 */
+.func-keyword {
+  color: #b478cf;
+}
+
+.func-annotate {
+  color: #70c0e8;
+}
+
+@include go('chart-data-monaco-editor') {
+  .func-keyNameWord {
+    color: #70c0e8;
+  }
+  .tab-tip {
+    font-size: 12px;
+  }
+  &.n-card.n-modal,
+  .n-card {
+    @extend .go-background-filter;
+  }
+}
+@include deep() {
+  .n-layout,
+  .n-layout-sider {
+    background-color: transparent;
+  }
+  .collapse-show-box {
+    .n-card__content {
+      padding-left: 20px;
+      padding-right: 10px;
+    }
+  }
+  .go-editor-area {
+    max-height: 530px;
+  }
+  .checkbox--hidden:checked {
+    & + label {
+      .n-icon {
+        transition: all 0.3s;
+        transform: rotate(180deg);
+      }
+    }
+    & ~ .go-editor-area {
+      display: none;
+    }
+  }
+  // 优化代码换行
+  .n-code > pre {
+    white-space: break-spaces;
+  }
+}

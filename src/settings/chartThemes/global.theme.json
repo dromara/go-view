@@ -22,10 +22,12 @@
     "axisLabel": {
       "show": true,
       "fontSize": 12,
-      "color": "#B9B8CE"
+      "color": "#B9B8CE",
+      "rotate": 0
     },
     "position": "bottom",
     "axisLine": {
+      "show": true,
       "lineStyle": {
         "color": "#B9B8CE",
         "width": 1
@@ -57,7 +59,8 @@
     "axisLabel": {
       "show": true,
       "fontSize": 12,
-      "color": "#B9B8CE"
+      "color": "#B9B8CE",
+      "rotate": 0
     },
     "position": "left",
     "axisLine": {
@@ -87,5 +90,12 @@
     "textStyle": {
       "color": "#B9B8CE"
     }
+  },
+  "grid": {
+    "show": false,
+    "left": "10%",
+    "top": "60",
+    "right": "10%",
+    "bottom": "60"
   }
 }

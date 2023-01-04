@@ -36,8 +36,17 @@ interface EchartsDataType {
   source: any[]
 }
 
+// 组件状态
+export interface StatusType {
+  lock: boolean
+  hide: boolean
+}
+
 // 滤镜/变换枚举
 export enum FilterEnum {
+  // 是否启用
+  FILTERS_SHOW = 'filterShow',
+
   // 透明度
   OPACITY = 'opacity',
   // 饱和度
@@ -56,15 +65,58 @@ export enum FilterEnum {
 
   // 倾斜
   SKEW_X = 'skewX',
-  SKEW_Y = 'skewY'
+  SKEW_Y = 'skewY',
+
+  // 混合模式
+  BLEND_MODE = 'blendMode'
+}
+
+export const BlendModeEnumList = [
+  { label: '正常', value: 'normal' },
+  { label: '正片叠底', value: 'multiply' },
+  { label: '叠加', value: 'overlay' },
+  { label: '滤色', value: 'screen' },
+  { label: '变暗', value: 'darken' },
+  { label: '变亮', value: 'lighten' },
+  { label: '颜色减淡', value: 'color-dodge' },
+  { label: '颜色加深', value: 'color-burn;' },
+  { label: '强光', value: 'hard-light' },
+  { label: '柔光', value: 'soft-light' },
+  { label: '差值', value: 'difference' },
+  { label: '排除', value: 'exclusion' },
+  { label: '色相', value: 'hue' },
+  { label: '饱和度', value: 'saturation' },
+  { label: '颜色', value: 'color' },
+  { label: '亮度', value: 'luminosity' }
+]
+
+// 基础事件类型(vue不加 on)
+export enum BaseEvent {
+  // 点击
+  ON_CLICK = 'click',
+  // 双击
+  ON_DBL_CLICK = 'dblclick',
+  // 移入
+  ON_MOUSE_ENTER = 'mouseenter',
+  // 移出
+  ON_MOUSE_LEAVE = 'mouseleave',
+}
+
+// vue3 生命周期事件
+export enum EventLife { 
+  // 渲染之后
+  VNODE_MOUNTED = 'vnodeMounted',
+  // 渲染之前
+  VNODE_BEFORE_MOUNT = 'vnodeBeforeMount',
 }
 
 // 组件实例类
 export interface PublicConfigType {
   id: string
   isGroup: boolean
-  attr: { x: number; y: number; w: number; h: number; zIndex: number; offsetX: number; offsetY: number; }
+  attr: { x: number; y: number; w: number; h: number; zIndex: number; offsetX: number; offsetY: number }
   styles: {
+    [FilterEnum.FILTERS_SHOW]: boolean
     [FilterEnum.OPACITY]: number
     [FilterEnum.SATURATE]: number
     [FilterEnum.CONTRAST]: number
@@ -77,17 +129,26 @@ export interface PublicConfigType {
 
     [FilterEnum.SKEW_X]: number
     [FilterEnum.SKEW_Y]: number
+    [FilterEnum.BLEND_MODE]: string
     // 动画
     animations: string[]
   }
   filter?: string
-  setPosition: Function
+  status: StatusType
+  events: {
+    baseEvent: {
+      [K in BaseEvent]?: string
+    },
+    advancedEvents: {
+      [K in EventLife]?: string
+    }
+  }
 }
 
 export interface CreateComponentType extends PublicConfigType, requestConfig {
   key: string
   chartConfig: ConfigType
-  option: GlobalThemeJsonType
+  option: GlobalThemeJsonType,
 }
 
 // 组件成组实例类

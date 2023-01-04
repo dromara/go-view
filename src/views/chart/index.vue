@@ -32,6 +32,8 @@
     :on-clickoutside="onClickOutSide"
     @select="handleMenuSelect"
   ></n-dropdown>
+  <!-- 加载蒙层 -->
+  <content-load></content-load>
 </template>
 
 <script setup lang="ts">
@@ -53,6 +55,7 @@ const HeaderTitle = loadAsyncComponent(() => import('./ContentHeader/headerTitle
 const ContentLayers = loadAsyncComponent(() => import('./ContentLayers/index.vue'))
 const ContentCharts = loadAsyncComponent(() => import('./ContentCharts/index.vue'))
 const ContentConfigurations = loadAsyncComponent(() => import('./ContentConfigurations/index.vue'))
+const ContentLoad = loadAsyncComponent(() => import('./ContentLoad/index.vue'))
 
 // 右键
 const {

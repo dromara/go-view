@@ -57,7 +57,11 @@ const option = shallowReactive({
 watch(
   () => props.chartConfig.option.dataset,
   (newData: any) => {
-    option.dataset = toNumber(newData, 2)
+    try {
+      option.dataset = toNumber(newData, 2)
+    } catch (error) {
+      console.log(error)
+    }
   },
   {
     deep: false

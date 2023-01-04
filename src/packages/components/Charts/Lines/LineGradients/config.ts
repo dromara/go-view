@@ -3,14 +3,12 @@ import { LineGradientsConfig } from './index'
 import { CreateComponentType } from '@/packages/index.d'
 import { graphic } from 'echarts/core'
 import { defaultTheme, chartColorsSearch } from '@/settings/chartThemes/index'
+import cloneDeep from 'lodash/cloneDeep'
 import dataJson from './data.json'
 
-export const includes = ['legend', 'xAxis', 'yAxis']
+export const includes = ['legend', 'xAxis', 'yAxis', 'grid']
 
 const option = {
-  legend: {
-    show: true
-  },
   tooltip: {
     show: true,
     trigger: 'axis',
@@ -31,6 +29,13 @@ const option = {
     {
       type: 'line',
       smooth: false,
+      symbolSize: 5, //设定实心点的大小
+      label: {
+        show: true,
+        position: 'top',
+        color: '#fff',
+        fontSize: 12
+      },
       lineStyle: {
         width: 3,
         type: 'solid'
@@ -52,10 +57,15 @@ const option = {
     {
       type: 'line',
       smooth: false,
+      label: {
+        show: true,
+        position: 'top',
+        color: '#fff',
+        fontSize: 12
+      },
       lineStyle: {
-        normal: {
-          width: 3
-        }
+        width: 3,
+        type: 'solid'
       },
       areaStyle: {
         opacity: 0.8,
@@ -76,7 +86,7 @@ const option = {
 
 export default class Config extends PublicConfigClass implements CreateComponentType {
   public key: string = LineGradientsConfig.key
-  public chartConfig = LineGradientsConfig
+  public chartConfig = cloneDeep(LineGradientsConfig)
   // 图表配置项
   public option = echartOptionProfixHandle(option, includes)
 }

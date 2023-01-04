@@ -27,6 +27,7 @@ import {
   LockClosedOutline as LockClosedOutlineIcon,
   HelpCircleOutline as HelpOutlineIcon,
   CodeSlash as CodeSlashIcon,
+  Create as CreateIcon,
   Rocket as RocketIcon,
   Duplicate as DuplicateIcon,
   DuplicateOutline as DuplicateOutlineIcon,
@@ -58,7 +59,13 @@ import {
   ChevronDownOutline as ChevronDownOutlineIcon,
   Pulse as PulseIcon,
   Folder as FolderIcon,
-  FolderOpen as FolderOpenIcon
+  FolderOpen as FolderOpenIcon,
+  Image as ImageIcon,
+  Images as ImagesIcon,
+  List as ListIcon,
+  EyeOutline as EyeOutlineIcon,
+  EyeOffOutline as EyeOffOutlineIcon,
+  Albums as AlbumsIcon
 } from '@vicons/ionicons5'
 
 import {
@@ -91,7 +98,8 @@ import {
   Carbon3DCursor as Carbon3DCursorIcon,
   Carbon3DSoftware as Carbon3DSoftwareIcon,
   Filter as FilterIcon,
-  FilterEdit as FilterEditIcon
+  FilterEdit as FilterEditIcon,
+  Laptop as LaptopIcon
 } from '@vicons/carbon'
 
 const ionicons5 = {
@@ -103,6 +111,8 @@ const ionicons5 = {
   DuplicateOutlineIcon,
   // 代码
   CodeSlashIcon,
+  // 修改代码
+  CreateIcon,
   // 事件(火箭)
   RocketIcon,
   // 退出
@@ -215,7 +225,18 @@ const ionicons5 = {
   // 文件夹
   FolderIcon,
   // 文件夹打开
-  FolderOpenIcon
+  FolderOpenIcon,
+  // 图片
+  ImageIcon,
+  // 多个图片
+  ImagesIcon,
+  // 列表
+  ListIcon,
+  // 眼睛
+  EyeOutlineIcon,
+  EyeOffOutlineIcon,
+  // 图表列表 
+  AlbumsIcon
 }
 
 const carbon = {
@@ -268,7 +289,9 @@ const carbon = {
   Carbon3DSoftwareIcon,
   // 过滤器
   FilterIcon,
-  FilterEditIcon
+  FilterEditIcon,
+  // 图层
+  LaptopIcon
 }
 
 // https://www.xicons.org/#/ 还有很多

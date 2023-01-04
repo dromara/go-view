@@ -19,7 +19,8 @@
         <tr v-for="(item, index) in shortcutKeyOptions" :key="index">
           <td>{{ item.label }}</td>
           <td>{{ item.win }}</td>
-          <td>
+          <td v-if="item.macSource">{{ item.mac }}</td>
+          <td v-else>
             <n-gradient-text :size="22">{{ item.mac.substr(0, 1) }}</n-gradient-text>
             + {{ item.mac.substr(3) }}
           </td>
@@ -44,24 +45,35 @@ defineProps({
 // 快捷键
 const shortcutKeyOptions = [
   {
-    label: '向上移动',
-    win: `${WinKeyboard.CTRL.toUpperCase()} + ↑ `,
+    label: '拖拽画布',
+    win: `${WinKeyboard.SPACE.toUpperCase()} + 🖱️ `,
+    mac: `${MacKeyboard.SPACE.toUpperCase()} + 🖱️ `,
+    macSource: true
+  },
+  {
+    label: '向 上/右/下/左 移动',
+    win: `${WinKeyboard.CTRL.toUpperCase()} + ↑ 或 → 或 ↓ 或 ←`,
     mac: `${MacKeyboard.CTRL.toUpperCase()} + ↑ `
   },
   {
-    label: '向右移动',
-    win: `${WinKeyboard.CTRL.toUpperCase()} + → `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + → `
+    label: '锁定',
+    win: `${WinKeyboard.CTRL.toUpperCase()} + L `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + L `
   },
   {
-    label: '向下移动',
-    win: `${WinKeyboard.CTRL.toUpperCase()} + ↓ `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + ↓ `
+    label: '解锁',
+    win: `${WinKeyboard.CTRL.toUpperCase()} + ${WinKeyboard.SHIFT.toUpperCase()}+ L `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + ${MacKeyboard.SHIFT.toUpperCase()} + L `
   },
   {
-    label: '向左移动',
-    win: `${WinKeyboard.CTRL.toUpperCase()} + ← `,
-    mac: `${MacKeyboard.CTRL.toUpperCase()} + ← `
+    label: '展示',
+    win: `${WinKeyboard.CTRL.toUpperCase()} + H `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + H `
+  },
+  {
+    label: '隐藏',
+    win: `${WinKeyboard.CTRL.toUpperCase()} + ${WinKeyboard.SHIFT.toUpperCase()} + H `,
+    mac: `${MacKeyboard.CTRL.toUpperCase()} + ${MacKeyboard.SHIFT.toUpperCase()} + H `
   },
   {
     label: '删除',

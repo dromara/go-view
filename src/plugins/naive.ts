@@ -1,4 +1,4 @@
-import type { App } from 'vue';
+import type { App } from 'vue'
 import {
   create,
   NA,
@@ -7,7 +7,9 @@ import {
   NH2,
   NH3,
   NH4,
+  NH5,
   NCode,
+  NCountdown,
   NText,
   NTime,
   NEllipsis,
@@ -98,7 +100,7 @@ import {
   NWatermark,
   NEmpty,
   NCollapseTransition
-} from 'naive-ui';
+} from 'naive-ui'
 
 const naive = create({
   components: [
@@ -108,7 +110,9 @@ const naive = create({
     NH2,
     NH3,
     NH4,
+    NH5,
     NCode,
+    NCountdown,
     NText,
     NTime,
     NEllipsis,
@@ -199,9 +203,9 @@ const naive = create({
     NWatermark,
     NEmpty,
     NCollapseTransition
-  ],
-});
+  ]
+})
 
 export function setupNaive(app: App<Element>) {
-  app.use(naive);
+  app.use(naive)
 }

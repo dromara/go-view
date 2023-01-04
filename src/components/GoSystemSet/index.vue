@@ -69,21 +69,20 @@
 </template>
 
 <script script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { ListType } from './index.d'
 import { useSettingStore } from '@/store/modules/settingStore/settingStore'
 import { SettingStoreEnums, ToolsStatusEnum } from '@/store/modules/settingStore/settingStore.d'
 import { icon } from '@/plugins'
 
-const { HelpOutlineIcon, CloseIcon } = icon.ionicons5
-
-const emit = defineEmits(['update:modelShow'])
-
-defineProps({
+const props = defineProps({
   modelShow: Boolean
 })
 
+const emit = defineEmits(['update:modelShow'])
+const { HelpOutlineIcon, CloseIcon } = icon.ionicons5
 const settingStore = useSettingStore()
+const modelShow = ref(false)
 
 const list = reactive<ListType[]>([
   {
@@ -114,6 +113,13 @@ const list = reactive<ListType[]>([
     name: '',
     desc: '',
     value: ''
+  },
+  {
+    key: SettingStoreEnums.CHART_TOOLS_STATUS_HIDE,
+    value: settingStore.getChartToolsStatusHide,
+    type: 'switch',
+    name: '隐藏工具栏',
+    desc: '鼠标移入时，会展示切换到展开模式',
   },
   {
     key: SettingStoreEnums.CHART_TOOLS_STATUS,
@@ -161,6 +167,10 @@ const list = reactive<ListType[]>([
   }
 ])
 
+watch(() => props.modelShow, (newValue) => {
+  modelShow.value = newValue
+})
+
 const closeHandle = () => {
   emit('update:modelShow', false)
 }
@@ -183,11 +193,14 @@ const handleChange = (e: MouseEvent, item: ListType) => {
     width: 100px;
   }
   .select-min-width {
-    width: 110px;
+    width: 115px;
   }
   @include deep() {
-    .n-list-item:not(:last-child) {
-      border-bottom: 0;
+    .n-list-item {
+      border-bottom: 0!important;
+    }
+    .n-list-item__divider {
+      display: none!important;
     }
   }
 }

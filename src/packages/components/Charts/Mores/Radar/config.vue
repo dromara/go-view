@@ -1,8 +1,7 @@
 <template>
   <div>
     <!-- Echarts 全局设置 -->
-    <global-setting :optionData="optionData" :in-chart="true"></global-setting>
-
+    <global-setting :optionData="optionData"></global-setting>
     <CollapseItem name="雷达" :expanded="true">
       <SettingItemBox name="样式">
         <SettingItem>
@@ -12,10 +11,15 @@
           <n-checkbox v-model:checked="radarConfig.splitLine.show">分割线</n-checkbox>
         </SettingItem>
         <SettingItem name="雷达形状">
-          <n-select v-model:value="radarConfig.shape" size="small" :options="RadarShapeEnumList" placeholder="选择形状" />
+          <n-select
+            v-model:value="radarConfig.shape"
+            size="small"
+            :options="RadarShapeEnumList"
+            placeholder="选择形状"
+          />
         </SettingItem>
       </SettingItemBox>
-      
+
       <SettingItemBox name="坐标轴">
         <SettingItem>
           <n-checkbox v-model:checked="radarConfig.axisLine.show">轴线</n-checkbox>
@@ -45,7 +49,7 @@
           ></n-slider>
         </setting-item>
       </SettingItemBox>
-      
+
       <SettingItemBox name="偏移">
         <setting-item :name="`X 轴值：${radarProp.center[0]}%`">
           <n-slider

@@ -1,24 +1,47 @@
 <template>
   <div class="dv-scroll-board">
-    <div class="header" v-if="status.header.length && status.mergedConfig"
-      :style="`background-color: ${status.mergedConfig.headerBGC};`">
-      <div class="header-item" v-for="(headerItem, i) in status.header" :key="`${headerItem}${i}`" :style="`
+    <div
+      class="header"
+      v-if="status.header.length && status.mergedConfig"
+      :style="`background-color: ${status.mergedConfig.headerBGC};`"
+    >
+      <div
+        class="header-item"
+        v-for="(headerItem, i) in status.header"
+        :key="`${headerItem}${i}`"
+        :style="`
         height: ${status.mergedConfig.headerHeight}px;
         line-height: ${status.mergedConfig.headerHeight}px;
         width: ${status.widths[i]}px;
-      `" :align="status.aligns[i]" v-html="headerItem" />
+      `"
+        :align="status.aligns[i]"
+        v-html="headerItem"
+      />
     </div>
 
-    <div v-if="status.mergedConfig" class="rows"
-      :style="`height: ${h - (status.header.length ? status.mergedConfig.headerHeight : 0)}px;`">
-      <div class="row-item" v-for="(row, ri) in status.rows" :key="`${row.toString()}${row.scroll}`" :style="`
+    <div
+      v-if="status.mergedConfig"
+      class="rows"
+      :style="`height: ${h - (status.header.length ? status.mergedConfig.headerHeight : 0)}px;`"
+    >
+      <div
+        class="row-item"
+        v-for="(row, ri) in status.rows"
+        :key="`${row.toString()}${row.scroll}`"
+        :style="`
         height: ${status.heights[ri]}px;
         line-height: ${status.heights[ri]}px;
         background-color: ${status.mergedConfig[row.rowIndex % 2 === 0 ? 'evenRowBGC' : 'oddRowBGC']};
-      `">
-        <div class="ceil" v-for="(ceil, ci) in row.ceils" :key="`${ceil}${ri}${ci}`"
-          :style="`width: ${status.widths[ci]}px;`" :align="status.aligns[ci]" v-html="ceil" />
-
+      `"
+      >
+        <div
+          class="ceil"
+          v-for="(ceil, ci) in row.ceils"
+          :key="`${ceil}${ri}${ci}`"
+          :style="`width: ${status.widths[ci]}px;`"
+          :align="status.aligns[ci]"
+          v-html="ceil"
+        />
       </div>
     </div>
   </div>
@@ -35,8 +58,8 @@ import cloneDeep from 'lodash/cloneDeep'
 const props = defineProps({
   chartConfig: {
     type: Object as PropType<CreateComponentType>,
-    required: true,
-  },
+    required: true
+  }
 })
 
 // 这里能拿到图表宽高等
@@ -138,11 +161,13 @@ const status = reactive({
   mergedConfig: props.chartConfig.option,
   header: [],
   rowsData: [],
-  rows: [{
-    ceils: [],
-    rowIndex: 0,
-    scroll: 0
-  }],
+  rows: [
+    {
+      ceils: [],
+      rowIndex: 0,
+      scroll: 0
+    }
+  ],
   widths: [],
   heights: [0],
   avgHeight: 0,
@@ -163,7 +188,7 @@ const calcData = () => {
   animation(true)
 }
 
-onMounted(()=> {
+onMounted(() => {
   calcData()
 })
 
@@ -185,19 +210,21 @@ const calcHeaderData = () => {
 const calcRowsData = () => {
   let { dataset, index, headerBGC, rowNum } = status.mergedConfig
   if (index) {
-    dataset = dataset.map((row:any, i:number) => {
+    dataset = dataset.map((row: any, i: number) => {
       row = [...row]
-      const indexTag = `<span class="index" style="background-color: ${headerBGC};border-radius: 3px;padding: 0px 3px;">${i + 1}</span>`
+      const indexTag = `<span class="index" style="background-color: ${headerBGC};border-radius: 3px;padding: 0px 3px;">${
+        i + 1
+      }</span>`
       row.unshift(indexTag)
       return row
     })
   }
-  dataset = dataset.map((ceils:any, i:number) => ({ ceils, rowIndex: i }))
+  dataset = dataset.map((ceils: any, i: number) => ({ ceils, rowIndex: i }))
   const rowLength = dataset.length
   if (rowLength > rowNum && rowLength < 2 * rowNum) {
     dataset = [...dataset, ...dataset]
   }
-  dataset = dataset.map((d:any, i:number) => ({ ...d, scroll: i }))
+  dataset = dataset.map((d: any, i: number) => ({ ...d, scroll: i }))
 
   status.rowsData = dataset
   status.rows = dataset
@@ -206,7 +233,7 @@ const calcRowsData = () => {
 const calcWidths = () => {
   const { mergedConfig, rowsData } = status
   const { columnWidth, header } = mergedConfig
-  const usedWidth = columnWidth.reduce((all:any, ws:number) => all + ws, 0)
+  const usedWidth = columnWidth.reduce((all: any, ws: number) => all + ws, 0)
   let columnNum = 0
   if (rowsData[0]) {
     columnNum = (rowsData[0] as any).ceils.length
@@ -254,7 +281,7 @@ const animation = async (start = false) => {
   const rowLength = rowsData.length
   if (rowNum >= rowLength) return
   if (start) {
-    await new Promise(resolve => setTimeout(resolve, waitTime*1000))
+    await new Promise(resolve => setTimeout(resolve, waitTime * 1000))
     if (updater !== status.updater) return
   }
   const animationNum = carousel === 'single' ? 1 : rowNum
@@ -269,7 +296,7 @@ const animation = async (start = false) => {
   const back = animationIndex - rowLength
   if (back >= 0) animationIndex = back
   status.animationIndex = animationIndex
-  status.animationHandler = setTimeout(animation, waitTime*1000 - 300) as any
+  status.animationHandler = setTimeout(animation, waitTime * 1000 - 300) as any
 }
 
 const stopAnimation = () => {
@@ -279,9 +306,13 @@ const stopAnimation = () => {
 }
 
 const onRestart = async () => {
-  if (!status.mergedConfig) return
-  stopAnimation()
-  calcData()
+  try {
+    if (!status.mergedConfig) return
+    stopAnimation()
+    calcData()
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 watch(
@@ -304,7 +335,7 @@ watch(
   () => {
     onRestart()
   },
-  {deep:true}
+  { deep: true }
 )
 
 // 数据更新 (默认更新 dataset，若更新之后有其它操作，可添加回调函数)
@@ -316,7 +347,6 @@ useChartDataFetch(props.chartConfig, useChartEditStore, (resData: any[]) => {
 onUnmounted(() => {
   stopAnimation()
 })
-
 </script>
 
 <style lang="scss" scoped>

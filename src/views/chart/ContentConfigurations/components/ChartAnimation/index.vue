@@ -1,7 +1,7 @@
 <template>
   <div class="go-chart-configurations-animations" v-if="targetData">
     <n-button
-      class="clear-btn"
+      class="clear-btn go-my-2"
       :disabled="!targetData.styles.animations.length"
       @click="clearAnimation"
     >
@@ -72,7 +72,7 @@ const addAnimation = (item: { label: string; value: string }) => {
 
 <style lang="scss" scoped>
 @include go('chart-configurations-animations') {
-  padding: 20px 10px;
+  padding: 0;
   .clear-btn {
     width: 100%;
   }

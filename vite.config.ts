@@ -1,8 +1,9 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import { OUTPUT_DIR, brotliSize, chunkSizeWarningLimit, terserOptions, rollupOptions } from './build/constant'
 import viteCompression from 'vite-plugin-compression'
+import { axiosPre } from './src/settings/httpSetting'
 import { viteMockServe } from 'vite-plugin-mock'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 
@@ -10,18 +11,22 @@ function pathResolve(dir: string) {
   return resolve(process.cwd(), '.', dir)
 }
 
-export default defineConfig({
-  base: '/',
+export default ({ mode }) => defineConfig({
+  base: process.env.NODE_ENV === 'production' ? './' : '/',
   // 路径重定向
   resolve: {
     alias: [
       {
         find: /\/#\//,
-        replacement: pathResolve('types') + '/'
+        replacement: pathResolve('types')
       },
       {
         find: '@',
-        replacement: pathResolve('src') + '/'
+        replacement: pathResolve('src')
+      },
+      {
+        find: 'vue-i18n',
+        replacement: 'vue-i18n/dist/vue-i18n.cjs.js', //解决i8n警告
       }
     ],
     dedupe: ['vue']
@@ -32,6 +37,21 @@ export default defineConfig({
       scss: {
         javascriptEnabled: true,
         additionalData: `@import "src/styles/common/style.scss";`
+      }
+    }
+  },
+  // 开发服务器配置
+  server: {
+    host: true,
+    open: true,
+    port: 3000,
+    proxy: {
+      [axiosPre]: {
+        // @ts-ignore
+        target: loadEnv(mode, process.cwd()).VITE_DEV_PATH,
+        changeOrigin: true,
+        ws: true,
+        secure: true,
       }
     }
   },
@@ -63,7 +83,8 @@ export default defineConfig({
   build: {
     target: 'es2015',
     outDir: OUTPUT_DIR,
-    terserOptions: terserOptions,
+    // minify: 'terser', // 如果需要用terser混淆，可打开这两行
+    // terserOptions: terserOptions,
     rollupOptions: rollupOptions,
     brotliSize: brotliSize,
     chunkSizeWarningLimit: chunkSizeWarningLimit

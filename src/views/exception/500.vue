@@ -4,7 +4,7 @@
       <img src="~@/assets/images/exception/500.svg" alt="" />
     </div>
     <div class="text-center">
-      <h1>抱歉，服务器出错了</h1>
+      <h1 class="text-base text-gray-500">抱歉，服务器出错了，建议您重新登录呢</h1>
     </div>
     <n-button type="primary" secondary @click="goLogin">重新登录</n-button>
   </div>

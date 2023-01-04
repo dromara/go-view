@@ -1,7 +1,7 @@
 <template>
   <!-- 全局配置 -->
   <n-card class="n-card-shallow">
-    <n-tag type="info" :bordered="false" style="border-radius: 5px"> 全局配置 </n-tag>
+    <n-tag type="info" :bordered="false" style="border-radius: 5px"> 全局公共配置 </n-tag>
     <setting-item-box
       name="服务"
       :itemRightStyle="{

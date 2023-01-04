@@ -1,4 +1,6 @@
-import { TextCloudConfig } from './TextCloud/index'
 import { ImageConfig } from './Image/index'
+import { IframeConfig } from './Iframe/index'
+import { VideoConfig } from './Video/index'
+import { WordCloudConfig } from './WordCloud/index'
 
-export default [ImageConfig, TextCloudConfig]
+export default [WordCloudConfig, ImageConfig, VideoConfig, IframeConfig]

@@ -2,9 +2,10 @@ import { echartOptionProfixHandle, PublicConfigClass } from '@/packages/public'
 import { LineLinearSingleConfig } from './index'
 import { CreateComponentType } from '@/packages/index.d'
 import { defaultTheme, chartColorsSearch } from '@/settings/chartThemes/index'
+import cloneDeep from 'lodash/cloneDeep'
 import dataJson from './data.json'
 
-export const includes = ['legend', 'xAxis', 'yAxis']
+export const includes = ['legend', 'xAxis', 'yAxis', 'grid']
 
 export const option = {
   tooltip: {
@@ -13,9 +14,6 @@ export const option = {
     axisPointer: {
       type: 'line'
     }
-  },
-  legend: {
-    show: true
   },
   xAxis: {
     show: true,
@@ -29,6 +27,7 @@ export const option = {
   series: [
     {
       type: 'line',
+      symbolSize: 5, //设定实心点的大小
       lineStyle: {
         type: 'solid',
         width: 3,
@@ -56,7 +55,7 @@ export const option = {
 
 export default class Config extends PublicConfigClass implements CreateComponentType {
   public key: string = LineLinearSingleConfig.key
-  public chartConfig = LineLinearSingleConfig
+  public chartConfig = cloneDeep(LineLinearSingleConfig)
   // 图表配置项
   public option = echartOptionProfixHandle(option, includes)
 }

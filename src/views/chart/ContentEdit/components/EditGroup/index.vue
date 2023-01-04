@@ -11,7 +11,8 @@
         ...useComponentStyle(groupData.attr, groupIndex),
         ...useSizeStyle(groupData.attr),
         ...getFilterStyle(groupData.styles),
-        ...getTransformStyle(groupData.styles)
+        ...getTransformStyle(groupData.styles),
+        ...getBlendModeStyle(groupData.styles) as any
       }"
       @click="mouseClickHandle($event, groupData)"
       @mousedown="mousedownHandle($event, groupData)"
@@ -55,7 +56,7 @@ import { MenuEnum } from '@/enums/editPageEnum'
 import { chartColors } from '@/settings/chartThemes/index'
 import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { MenuOptionsItemType } from '@/views/chart/hooks/useContextMenu.hook.d'
-import { animationsClass, getFilterStyle, getTransformStyle } from '@/utils'
+import { animationsClass, getFilterStyle, getTransformStyle, getBlendModeStyle } from '@/utils'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { useContextMenu, divider } from '@/views/chart/hooks/useContextMenu.hook'
 import { useMouseHandle } from '../../hooks/useDrag.hook'
@@ -85,26 +86,32 @@ const optionsHandle = (
   allList: MenuOptionsItemType[],
   targetInstance: CreateComponentType
 ) => {
-  // 多选
-  const moreMenuEnums = [MenuEnum.GROUP, MenuEnum.DELETE]
-  // 单选
-  const singleMenuEnums = [MenuEnum.UN_GROUP]
-
   const filter = (menulist: MenuEnum[]) => {
-    const list: MenuOptionsItemType[] = []
-    allList.forEach(item => {
-      if (menulist.includes(item.key as MenuEnum)) {
-        list.push(item)
-      }
-    })
-    return list
+    return allList.filter(i => menulist.includes(i.key as MenuEnum))
   }
 
   // 多选处理
   if (chartEditStore.getTargetChart.selectId.length > 1) {
-    return filter(moreMenuEnums)
+    return filter([MenuEnum.GROUP, MenuEnum.DELETE])
   } else {
-    return [...filter(singleMenuEnums), divider(), ...targetList]
+    const statusMenuEnums: MenuEnum[] = []
+    if (targetInstance.status.lock) {
+      statusMenuEnums.push(MenuEnum.LOCK)
+    } else {
+      statusMenuEnums.push(MenuEnum.UNLOCK)
+    }
+    if (targetInstance.status.hide) {
+      statusMenuEnums.push(MenuEnum.HIDE)
+    } else {
+      statusMenuEnums.push(MenuEnum.SHOW)
+    }
+    // 单选
+    const singleMenuEnums = [MenuEnum.UN_GROUP]
+    return [
+      ...filter(singleMenuEnums),
+      divider(),
+      ...targetList.filter(i => !statusMenuEnums.includes(i.key as MenuEnum))
+    ]
   }
 }
 

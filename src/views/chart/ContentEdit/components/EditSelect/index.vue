@@ -93,7 +93,7 @@ watch(
     position: absolute;
     width: 100%;
     height: 100%;
-    border-radius: 10px;
+    border-radius: 5px;
     overflow: hidden;
   }
   .select-border {
@@ -107,7 +107,7 @@ watch(
   .select-background {
     top: 2px;
     left: 2px;
-    opacity: 0.03;
+    opacity: 0.2;
     background-color: v-bind('themeColor');
   }
 }

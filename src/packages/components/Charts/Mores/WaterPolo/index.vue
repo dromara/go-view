@@ -10,7 +10,7 @@ import 'echarts-liquidfill/src/liquidFill.js'
 import { CanvasRenderer } from 'echarts/renderers'
 import { GridComponent } from 'echarts/components'
 import config from './config'
-import { isPreview, isString } from '@/utils'
+import { isPreview, isString, isNumber } from '@/utils'
 import { chartColorsSearch, defaultTheme } from '@/settings/chartThemes/index'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { useChartDataFetch } from '@/hooks'
@@ -42,23 +42,27 @@ const option = reactive({
 watch(
   () => chartEditStore.getEditCanvasConfig.chartThemeColor,
   (newColor: keyof typeof chartColorsSearch) => {
-    if (!isPreview()) {
-      const themeColor = chartColorsSearch[newColor] || chartColorsSearch[defaultTheme]
-      // 背景颜色
-      props.chartConfig.option.series[0].backgroundStyle.color = themeColor[2]
-      // 水球颜色
-      props.chartConfig.option.series[0].color[0].colorStops = [
-        {
-          offset: 0,
-          color: themeColor[0]
-        },
-        {
-          offset: 1,
-          color: themeColor[1]
-        }
-      ]
+    try {
+      if (!isPreview()) {
+        const themeColor = chartColorsSearch[newColor] || chartColorsSearch[defaultTheme]
+        // 背景颜色
+        props.chartConfig.option.series[0].backgroundStyle.color = themeColor[2]
+        // 水球颜色
+        props.chartConfig.option.series[0].color[0].colorStops = [
+          {
+            offset: 0,
+            color: themeColor[0]
+          },
+          {
+            offset: 1,
+            color: themeColor[1]
+          }
+        ]
+      }
+      option.value = props.chartConfig.option
+    } catch (error) {
+      console.log(error)
     }
-    option.value = props.chartConfig.option
   },
   {
     immediate: true
@@ -75,6 +79,7 @@ const dataHandle = (newData: number | string) => {
 watch(
   () => props.chartConfig.option.dataset,
   newData => {
+    if (!isString(newData) && !isNumber(newData)) return
     props.chartConfig.option.series[0].data = [dataHandle(newData)]
     option.value = props.chartConfig.option
   },

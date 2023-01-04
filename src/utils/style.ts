@@ -15,11 +15,12 @@ export const animationsClass = (animations: string[]) => {
 }
 
 // * 滤镜
-export const getFilterStyle = (styles: StylesType | EditCanvasConfigType) => {
+export const getFilterStyle = (styles?: StylesType | EditCanvasConfigType) => {
+  if (!styles || !styles.filterShow) return {}
   const { opacity, saturate, contrast, hueRotate, brightness } = styles
   return {
     opacity: opacity,
-    filter: `saturate(${saturate}) contrast(${contrast}) hue-rotate(${hueRotate}deg) brightness(${brightness})`,
+    filter: `saturate(${saturate}) contrast(${contrast}) hue-rotate(${hueRotate}deg) brightness(${brightness})`
   }
 }
 
@@ -27,17 +28,28 @@ export const getFilterStyle = (styles: StylesType | EditCanvasConfigType) => {
 export const getTransformStyle = (styles: StylesType) => {
   const { rotateZ, rotateX, rotateY, skewX, skewY } = styles
   return {
-    transform: `rotateZ(${rotateZ || 0}deg) rotateX(${rotateX || 0}deg) rotateY(${rotateY || 0}deg) skewX(${skewX || 0}deg) skewY(${skewY || 0}deg)`,
+    transform: `rotateZ(${rotateZ || 0}deg) rotateX(${rotateX || 0}deg) rotateY(${rotateY || 0}deg) skewX(${
+      skewX || 0
+    }deg) skewY(${skewY || 0}deg)`
+  }
+}
+
+// * 混合模式
+export const getBlendModeStyle = (styles: StylesType) => {
+  if (!styles || !styles.filterShow) return {}
+  const { blendMode } = styles
+  return {
+    'mix-blend-mode': blendMode
   }
 }
 
 /**
- * * hsla 转换 
+ * * hsla 转换
  * @param color 颜色
  * @param alpha 默认1
- * @returns 
+ * @returns
  */
-export function alpha(color: string, alpha = 1 ) {
+export function alpha(color: string, alpha = 1) {
   return Color(color).alpha(alpha).toString()
 }
 
@@ -46,7 +58,7 @@ export function alpha(color: string, alpha = 1 ) {
  * rgba(10, 10, 10, 0.8) -> rgba(10, 10, 10, 0.4)
  * @param color 颜色
  * @param concentration 0~1 浓度
- * @returns 
+ * @returns
  */
 export function fade(color: string, fade: number) {
   return Color(color).fade(fade).toString()
@@ -57,7 +69,7 @@ export function fade(color: string, fade: number) {
  * hsl(100, 50%, 10%) -> hsl(100, 50%, 50%)
  * @param color 颜色
  * @param concentration 0~1 浓度
- * @returns 
+ * @returns
  */
 export function lighten(color: string, concentration: number) {
   return Color(color).lighten(concentration).toString()
@@ -68,7 +80,7 @@ export function lighten(color: string, concentration: number) {
  * hsl(100, 50%, 50%) -> hsl(100, 50%, 25%)
  * @param color 颜色
  * @param concentration 0~1 浓度
- * @returns 
+ * @returns
  */
 export function darken(color: string, concentration: number) {
   return Color(color).darken(concentration).toString()

@@ -16,6 +16,7 @@ export enum TimelineTitleEnum {
 export enum SelectCreateDataEnum {
   STATIC = '静态数据',
   AJAX = '动态请求',
+  Pond = '公共接口',
 }
 
 export interface SelectCreateDataType {

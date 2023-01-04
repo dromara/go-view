@@ -106,8 +106,8 @@ export const reloadRoutePage = () => {
  */
 export const logout = async () => {
   try {
-    const res = await logoutApi() as unknown as MyResponseType
-    if(res.code === ResultEnum.SUCCESS) {
+    const res = await logoutApi()
+    if(res && res.code === ResultEnum.SUCCESS) {
       window['$message'].success(window['$t']('global.logout_success'))
       clearCookie(RequestHttpHeaderEnum.COOKIE)
       clearLocalStorage(StorageEnum.GO_SYSTEM_STORE)

@@ -11,23 +11,23 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, toRefs, ref, reactive, watch, onMounted, onUnmounted } from "vue";
-import { CreateComponentType } from "@/packages/index.d";
-import { useChartEditStore } from "@/store/modules/chartEditStore/chartEditStore";
-import { useChartDataFetch } from "@/hooks";
+import { PropType, toRefs, ref, reactive, watch, onMounted, onUnmounted } from 'vue'
+import { CreateComponentType } from '@/packages/index.d'
+import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
+import { useChartDataFetch } from '@/hooks'
 
 const props = defineProps({
   chartConfig: {
     type: Object as PropType<CreateComponentType>,
-    required: true,
-  },
-});
-let yearMonthDay = ref("2021-2-3");
-let nowData = ref("08:00:00");
-let newData = ref("2021-2-3 08:00:00");
-let boxShadow = ref("none");
+    required: true
+  }
+})
+let yearMonthDay = ref('2021-2-3')
+let nowData = ref('08:00:00')
+let newData = ref('2021-2-3 08:00:00')
+let boxShadow = ref('none')
 
-const { w, h } = toRefs(props.chartConfig.attr);
+const { w, h } = toRefs(props.chartConfig.attr)
 
 let {
   timeColor,
@@ -39,54 +39,55 @@ let {
   hShadow,
   vShadow,
   blurShadow,
-  colorShadow,
-} = toRefs(props.chartConfig.option);
+  colorShadow
+} = toRefs(props.chartConfig.option)
 
 watch(
   props.chartConfig.option,
   () => {
-    if (props.chartConfig.option.showShadow) {
-      boxShadow.value = `${props.chartConfig.option.hShadow}px ${props.chartConfig.option.vShadow}px ${props.chartConfig.option.blurShadow}px ${props.chartConfig.option.colorShadow}`;
-    } else {
-      boxShadow.value = "none";
+    try {
+      if (props.chartConfig.option.showShadow) {
+        boxShadow.value = `${props.chartConfig.option.hShadow}px ${props.chartConfig.option.vShadow}px ${props.chartConfig.option.blurShadow}px ${props.chartConfig.option.colorShadow}`
+      } else {
+        boxShadow.value = 'none'
+      }
+    } catch (error) {
+      console.log(error)
     }
   },
   {
-    immediate: true,
+    immediate: true
   }
-);
+)
 onMounted(() => {
   const timer = setInterval(() => {
-    var datetime = new Date();
-    var year = datetime.getFullYear();
-    var month =
-      datetime.getMonth() + 1 < 10
-        ? "0" + (datetime.getMonth() + 1)
-        : datetime.getMonth() + 1;
-    var date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
-    var hh = datetime.getHours(); // 时
-    var mm = datetime.getMinutes(); // 分
-    var ss = datetime.getSeconds(); // 分
-    let time = "";
-    if (hh < 10) time += "0";
-    time += hh + ":";
-    if (mm < 10) time += "0";
-    time += mm + ":";
-    if (ss < 10) time += "0";
-    time += ss;
-    yearMonthDay.value = `${year}-${month}-${date}`;
-    nowData.value = time;
-    newData.value = yearMonthDay.value + " " + nowData.value;
-  }, 500);
-});
+    var datetime = new Date()
+    var year = datetime.getFullYear()
+    var month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1
+    var date = datetime.getDate() < 10 ? '0' + datetime.getDate() : datetime.getDate()
+    var hh = datetime.getHours() // 时
+    var mm = datetime.getMinutes() // 分
+    var ss = datetime.getSeconds() // 分
+    let time = ''
+    if (hh < 10) time += '0'
+    time += hh + ':'
+    if (mm < 10) time += '0'
+    time += mm + ':'
+    if (ss < 10) time += '0'
+    time += ss
+    yearMonthDay.value = `${year}-${month}-${date}`
+    nowData.value = time
+    newData.value = yearMonthDay.value + ' ' + nowData.value
+  }, 500)
+})
 onUnmounted(() => {
-  clearInterval();
-});
-useChartDataFetch(props.chartConfig, useChartEditStore);
+  clearInterval()
+})
+useChartDataFetch(props.chartConfig, useChartEditStore)
 </script>
 
 <style lang="scss" scoped>
-@include go("decorates-number") {
+@include go('decorates-number') {
   text-align: center;
 }
 </style>

@@ -1,5 +1,5 @@
 import image from '@/assets/images/chart/charts/tree_map.png'
-import { ConfigType, PackagesCategoryEnum } from '@/packages/index.d'
+import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
 
 export const TreeMapConfig: ConfigType = {
@@ -10,5 +10,6 @@ export const TreeMapConfig: ConfigType = {
   category: ChatCategoryEnum.MORE,
   categoryName: ChatCategoryEnumName.MORE,
   package: PackagesCategoryEnum.CHARTS,
+  chartFrame: ChartFrameEnum.COMMON,
   image
 }

@@ -1,0 +1,15 @@
+import image from '@/assets/images/chart/charts/scatter-multi.png'
+import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
+import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
+
+export const ScatterCommonConfig: ConfigType = {
+  key: 'ScatterCommon',
+  chartKey: 'VScatterCommon',
+  conKey: 'VCScatterCommon',
+  title: '散点图',
+  category: ChatCategoryEnum.SCATTER,
+  categoryName: ChatCategoryEnumName.SCATTER,
+  package: PackagesCategoryEnum.CHARTS,
+  chartFrame: ChartFrameEnum.ECHARTS,
+  image
+}

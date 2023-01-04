@@ -7,7 +7,18 @@ import { MenuOptionsItemType } from './useContextMenu.hook.d'
 import { MenuEnum } from '@/enums/editPageEnum'
 import cloneDeep from 'lodash/cloneDeep'
 
-const { CopyIcon, CutIcon, ClipboardOutlineIcon, TrashIcon, ChevronDownIcon, ChevronUpIcon } = icon.ionicons5
+const {
+  CopyIcon,
+  CutIcon,
+  ClipboardOutlineIcon,
+  TrashIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  LockOpenOutlineIcon,
+  LockClosedOutlineIcon,
+  EyeOutlineIcon,
+  EyeOffOutlineIcon
+} = icon.ionicons5
 const { UpToTopIcon, DownToBottomIcon, PaintBrushIcon, Carbon3DSoftwareIcon, Carbon3DCursorIcon } = icon.carbon
 
 const chartEditStore = useChartEditStore()
@@ -17,7 +28,7 @@ const chartEditStore = useChartEditStore()
  * @param {number} n > 2
  * @returns
  */
-export const divider = (n:number = 3) => {
+export const divider = (n: number = 3) => {
   return {
     type: 'divider',
     key: `d${n}`
@@ -26,6 +37,34 @@ export const divider = (n:number = 3) => {
 
 // * 默认单组件选项
 export const defaultOptions: MenuOptionsItemType[] = [
+  {
+    label: '锁定',
+    key: MenuEnum.LOCK,
+    icon: renderIcon(LockClosedOutlineIcon),
+    fnHandle: chartEditStore.setLock
+  },
+  {
+    label: '解锁',
+    key: MenuEnum.UNLOCK,
+    icon: renderIcon(LockOpenOutlineIcon),
+    fnHandle: chartEditStore.setUnLock
+  },
+  {
+    label: '隐藏',
+    key: MenuEnum.HIDE,
+    icon: renderIcon(EyeOffOutlineIcon),
+    fnHandle: chartEditStore.setHide
+  },
+  {
+    label: '显示',
+    key: MenuEnum.SHOW,
+    icon: renderIcon(EyeOutlineIcon),
+    fnHandle: chartEditStore.setShow
+  },
+  {
+    type: 'divider',
+    key: 'd0'
+  },
   {
     label: '复制',
     key: MenuEnum.COPY,
@@ -61,13 +100,13 @@ export const defaultOptions: MenuOptionsItemType[] = [
     fnHandle: chartEditStore.setBottom
   },
   {
-    label: '上移一层',
+    label: '上移',
     key: MenuEnum.UP,
     icon: renderIcon(ChevronUpIcon),
     fnHandle: chartEditStore.setUp
   },
   {
-    label: '下移一层',
+    label: '下移',
     key: MenuEnum.DOWN,
     icon: renderIcon(ChevronDownIcon),
     fnHandle: chartEditStore.setDown
@@ -160,7 +199,9 @@ const handleContextMenu = (
     target = target.parentNode
   }
 
-  // 展示列表
+  chartEditStore.setTargetSelectChart(targetInstance && targetInstance.id)
+
+  // 隐藏旧列表
   chartEditStore.setRightMenuShow(false)
 
   // * 多选默认选项

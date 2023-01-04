@@ -1,17 +1,27 @@
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
-import { ResultEnum, RequestHttpHeaderEnum } from "@/enums/httpEnum"
+import axios, { AxiosResponse, AxiosRequestConfig, Axios } from 'axios'
+import { ResultEnum, ModuleTypeEnum } from "@/enums/httpEnum"
 import { PageEnum, ErrorPageNameMap } from "@/enums/pageEnum"
 import { StorageEnum } from '@/enums/storageEnum'
 import { axiosPre } from '@/settings/httpSetting'
 import { SystemStoreEnum, SystemStoreUserInfoEnum } from '@/store/modules/systemStore/systemStore.d'
-import { redirectErrorPage, getLocalStorage, routerTurnByName, httpErrorHandle } from '@/utils'
+import { redirectErrorPage, getLocalStorage, routerTurnByName, isPreview } from '@/utils'
 import { fetchAllowList } from './axios.config'
 import includes from 'lodash/includes'
+
+export interface MyResponseType<T> {
+  code: ResultEnum
+  data: T
+  message: string
+}
+
+export interface MyRequestInstance extends Axios {
+  <T = any>(config: AxiosRequestConfig): Promise<MyResponseType<T>>
+}
 
 const axiosInstance = axios.create({
   baseURL: `${import.meta.env.PROD ? import.meta.env.VITE_PRO_PATH : ''}${axiosPre}`,
   timeout: ResultEnum.TIMEOUT,
-})
+}) as unknown as MyRequestInstance
 
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
@@ -23,10 +33,11 @@ axiosInstance.interceptors.request.use(
     if (!info) {
       routerTurnByName(PageEnum.BASE_LOGIN_NAME)
       return config
-    } 
+    }
+    const userInfo = info[SystemStoreEnum.USER_INFO]
     config.headers = {
       ...config.headers,
-      [RequestHttpHeaderEnum.TOKEN]: info[SystemStoreEnum.USER_INFO][SystemStoreUserInfoEnum.USER_TOKEN] || ''
+      [userInfo[SystemStoreUserInfoEnum.TOKEN_NAME] || 'token']: userInfo[SystemStoreUserInfoEnum.USER_TOKEN] || ''
     }
     return config
   },
@@ -38,6 +49,10 @@ axiosInstance.interceptors.request.use(
 // 响应拦截器
 axiosInstance.interceptors.response.use(
   (res: AxiosResponse) => {
+    // 预览页面错误不进行处理
+    if (isPreview()) {
+      return Promise.resolve(res.data)
+    }
     const { code } = res.data as { code: number }
 
     // 成功
@@ -63,7 +78,6 @@ axiosInstance.interceptors.response.use(
     return Promise.resolve(res.data)
   },
   (err: AxiosResponse) => {
-    httpErrorHandle()
     Promise.reject(err)
   }
 )

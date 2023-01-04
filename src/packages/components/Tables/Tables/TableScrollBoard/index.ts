@@ -1,5 +1,5 @@
 import image from '@/assets/images/chart/tables/table_scrollboard.png'
-import { ConfigType, PackagesCategoryEnum } from '@/packages/index.d'
+import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
 
 export const TableScrollBoardConfig: ConfigType = {
@@ -10,5 +10,6 @@ export const TableScrollBoardConfig: ConfigType = {
   category: ChatCategoryEnum.TABLE,
   categoryName: ChatCategoryEnumName.TABLE,
   package: PackagesCategoryEnum.TABLES,
+  chartFrame: ChartFrameEnum.COMMON,
   image
 }

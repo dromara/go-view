@@ -83,24 +83,3 @@
     opacity: 1;
   }
 }
-
-/* 小屏处理 0~1000*/
-.mobile-terminal {
-  display: none;
-}
-@media (max-width: 1000px) {
-  #app {
-    display: none;
-  }
-  .mobile-terminal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    text-align: center;
-    font-size: 24px;
-    font-weight: 200;
-    background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
-  }
-}

@@ -12,7 +12,7 @@ export enum ResultEnum {
   SERVER_FORBIDDEN = 403,
   NOT_FOUND = 404,
   TOKEN_OVERDUE = 886,
-  TIMEOUT = 10042,
+  TIMEOUT = 60000,
 }
 
 // 数据相关
@@ -20,7 +20,9 @@ export enum RequestDataTypeEnum {
   // 静态数据
   STATIC = 0,
   // 请求数据
-  AJAX = 1
+  AJAX = 1,
+  // 数据池
+  Pond = 2
 }
 
 // 请求主体类型

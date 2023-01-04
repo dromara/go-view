@@ -9,7 +9,7 @@
       :icon-size="16"
       :indent="18"
       @update:value="clickItemHandle"
-   ></n-menu>
+    ></n-menu>
     <div class="chart-content-list">
       <n-scrollbar>
         <charts-item-box :menuOptions="packages.selectOptions"></charts-item-box>
@@ -24,14 +24,12 @@ import { ConfigType } from '@/packages/index.d'
 import { useSettingStore } from '@/store/modules/settingStore/settingStore'
 import { loadAsyncComponent } from '@/utils'
 
-const ChartsItemBox = loadAsyncComponent(() =>
-  import('../ChartsItemBox/index.vue')
-)
+const ChartsItemBox = loadAsyncComponent(() => import('../ChartsItemBox/index.vue'))
 
 const props = defineProps({
   selectOptions: {
     type: Object,
-    default: () => []
+    default: () => {}
   }
 })
 
@@ -125,7 +123,6 @@ $menuWidth: 65px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px 0;
   }
   @include deep() {
     .n-menu-item {

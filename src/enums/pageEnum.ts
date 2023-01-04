@@ -12,6 +12,12 @@ export enum PreviewEnum {
   CHART_PREVIEW_NAME = 'ChartPreview',
 }
 
+export enum EditEnum {
+  //  图表JSON编辑
+  CHART_EDIT = '/chart/edit/:id(.*)*',
+  CHART_EDIT_NAME = 'ChartEdit',
+}
+
 export enum PageEnum {
   // 登录
   BASE_LOGIN = '/login',

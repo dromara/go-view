@@ -96,8 +96,8 @@ const btnHandle = async (key: string) => {
           remarks: null,
           // 图片地址
           indexImage: null,
-        }) as unknown as MyResponseType
-        if(res.code === ResultEnum.SUCCESS) {
+        })
+        if(res && res.code === ResultEnum.SUCCESS) {
           window['$message'].success(window['$t']('project.create_success'))
 
           const { id } = res.data

@@ -5,7 +5,7 @@
     <!-- 尺寸 -->
     <size-setting :isGroup="targetData.isGroup" :chartAttr="targetData.attr"></size-setting>
     <!-- 位置 -->
-    <position-setting :chartAttr="targetData.attr" :canvasConfig="chartEditStore.getEditCanvasConfig"/>
+    <position-setting :chartAttr="targetData.attr" :canvasConfig="chartEditStore.getEditCanvasConfig" />
     <!-- 滤镜 -->
     <styles-setting :isGroup="targetData.isGroup" :chartStyles="targetData.styles"></styles-setting>
     <!-- 自定义配置项 -->
@@ -17,7 +17,6 @@
 import { NameSetting, PositionSetting, SizeSetting, StylesSetting } from '@/components/Pages/ChartItemSetting'
 import { useTargetData } from '../hooks/useTargetData.hook'
 const { targetData, chartEditStore } = useTargetData()
-
 </script>
 
 <style lang="scss" scoped>

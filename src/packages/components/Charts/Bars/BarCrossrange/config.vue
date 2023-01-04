@@ -1,12 +1,8 @@
 <template>
+  <!-- Echarts 全局设置 --> 
+  <global-setting :optionData="optionData"></global-setting>
   <CollapseItem v-for="(item, index) in seriesList" :key="index" :name="`柱状图-${index+1}`" :expanded="true">
     <SettingItemBox name="图形">
-      <SettingItem name="颜色">
-        <n-color-picker size="small" :modes="['hex']" v-model:value="item.itemStyle.color"></n-color-picker>
-      </SettingItem>
-      <SettingItem>
-        <n-button size="small" @click="item.itemStyle.color = null">恢复默认</n-button>
-      </SettingItem>
       <SettingItem name="宽度">
           <n-input-number
           v-model:value="item.barWidth"
@@ -24,9 +20,40 @@
        ></n-input-number>
       </SettingItem>
     </SettingItemBox>
+        <setting-item-box name="标签">
+      <setting-item>
+        <n-space>
+          <n-switch v-model:value="item.label.show" size="small" />
+          <n-text>展示标签</n-text>
+        </n-space>
+      </setting-item>
+      <setting-item name="大小">
+        <n-input-number
+          v-model:value="item.label.fontSize"
+          size="small"
+          :min="1"
+        ></n-input-number>
+      </setting-item>
+      <setting-item name="颜色">
+        <n-color-picker
+          size="small"
+          :modes="['hex']"
+          v-model:value="item.label.color"
+        ></n-color-picker>
+      </setting-item>
+      <setting-item name="位置">
+        <n-select
+          v-model:value="item.label.position"
+          :options="[
+            { label: 'top', value: 'top' },
+            { label: 'left', value: 'left' },
+            { label: 'right', value: 'right' },
+            { label: 'bottom', value: 'bottom' },
+          ]"
+        />
+      </setting-item>
+    </setting-item-box>
   </CollapseItem>
-  <!-- Echarts 全局设置 --> 
-  <global-setting :optionData="optionData" :in-chart="true"></global-setting>
 </template>
 
 <script setup lang="ts">

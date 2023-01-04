@@ -48,8 +48,19 @@ import {
   HistoryActionTypeEnum
 } from '@/store/modules/chartHistoryStore/chartHistoryStore.d'
 
-const { DesktopOutlineIcon, PencilIcon, TrashIcon, CopyIcon, LayersIcon, DuplicateIcon, HelpOutlineIcon } =
-  icon.ionicons5
+const {
+  DesktopOutlineIcon,
+  PencilIcon,
+  TrashIcon,
+  CopyIcon,
+  LayersIcon,
+  DuplicateIcon,
+  HelpOutlineIcon,
+  LockClosedOutlineIcon,
+  LockOpenOutlineIcon,
+  EyeOffOutlineIcon,
+  EyeOutlineIcon
+} = icon.ionicons5
 const { StackedMoveIcon, Carbon3DCursorIcon, Carbon3DSoftwareIcon } = icon.carbon
 
 const chartHistoryStoreStore = useChartHistoryStore()
@@ -83,6 +94,14 @@ const iconHandle = (e: HistoryItemType) => {
       return Carbon3DCursorIcon
     case HistoryActionTypeEnum.UN_GROUP:
       return Carbon3DSoftwareIcon
+    case HistoryActionTypeEnum.LOCK:
+      return LockClosedOutlineIcon
+    case HistoryActionTypeEnum.UNLOCK:
+      return LockOpenOutlineIcon
+    case HistoryActionTypeEnum.HIDE:
+      return EyeOffOutlineIcon
+    case HistoryActionTypeEnum.SHOW:
+      return EyeOutlineIcon
     default:
       return PencilIcon
   }
@@ -109,9 +128,7 @@ const options = computed(() => {
     }
   })
 
-  return reverse(options.filter(item => {
-    return item.label
-  }))
+  return reverse(options.filter(item => item.label))
 })
 </script>
 

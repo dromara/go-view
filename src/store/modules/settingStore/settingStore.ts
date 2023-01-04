@@ -35,7 +35,10 @@ export const useSettingStore = defineStore({
     },
     getChartToolsStatus(): ToolsStatusEnum {
       return this.chartToolsStatus
-    }
+    },
+    getChartToolsStatusHide(): boolean {
+      return this.chartToolsStatusHide
+    },
   },
   actions: {
     setItem<T extends keyof SettingStoreType, K extends SettingStoreType[T]>(

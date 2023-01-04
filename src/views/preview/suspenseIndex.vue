@@ -49,7 +49,7 @@ const storageList: ChartEditStorageType[] = getSessionStorage(
   StorageEnum.GO_CHART_STORAGE_LIST
 )
 
-const localStorageInfo = await getSessionStorageInfo() as ChartEditStorageType
+const localStorageInfo = await getSessionStorageInfo() as unknown as ChartEditStorageType
 
 // @ts-ignore
 if(localStorageInfo.isRelease === false) {
@@ -59,7 +59,7 @@ if(localStorageInfo.isRelease === false) {
 const previewRefStyle = computed(() => {
   return {
     ...getEditCanvasConfigStyle(localStorageInfo.editCanvasConfig),
-    ...getFilterStyle(localStorageInfo.editCanvasConfig),
+    ...getFilterStyle(localStorageInfo.editCanvasConfig.filterShow ? localStorageInfo.editCanvasConfig : undefined),
   }
 })
 

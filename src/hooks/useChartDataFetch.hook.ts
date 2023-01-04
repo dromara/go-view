@@ -1,6 +1,7 @@
 import { ref, toRefs, toRaw } from 'vue'
 import type VChart from 'vue-echarts'
 import { customizeHttp } from '@/api/http'
+import { useChartDataPondFetch } from '@/hooks/'
 import { CreateComponentType, ChartFrameEnum } from '@/packages/index.d'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { RequestDataTypeEnum } from '@/enums/httpEnum'
@@ -23,9 +24,24 @@ export const useChartDataFetch = (
   const vChartRef = ref<typeof VChart | null>(null)
   let fetchInterval: any = 0
 
+  // 数据池
+  const { addGlobalDataInterface } = useChartDataPondFetch()
+
+  // 组件类型
+  const { chartFrame } = targetComponent.chartConfig
+
+  // eCharts 组件配合 vChart 库更新方式
+  const echartsUpdateHandle = (dataset: any) => {
+    if (chartFrame === ChartFrameEnum.ECHARTS) {
+      if (vChartRef.value) {
+        vChartRef.value.setOption({ dataset: dataset })
+      }
+    }
+  }
+
   const requestIntervalFn = () => {
     const chartEditStore = useChartEditStore()
-    
+
     // 全局数据
     const {
       requestOriginUrl,
@@ -41,9 +57,6 @@ export const useChartDataFetch = (
       requestInterval: targetInterval
     } = toRefs(targetComponent.request)
 
-    // 组件类型
-    const { chartFrame } = targetComponent.chartConfig
-
     // 非请求类型
     if (requestDataType.value !== RequestDataTypeEnum.AJAX) return
 
@@ -58,19 +71,14 @@ export const useChartDataFetch = (
         clearInterval(fetchInterval)
 
         const fetchFn = async () => {
-          const res = await customizeHttp(toRaw(targetComponent.request), toRaw(chartEditStore.requestGlobalConfig))
-          if (res && res.data) {
+          const res = await customizeHttp(toRaw(targetComponent.request), toRaw(chartEditStore.getRequestGlobalConfig))
+          if (res) {
             try {
               const filter = targetComponent.filter
-              // eCharts 组件配合 vChart 库更新方式
-              if (chartFrame === ChartFrameEnum.ECHARTS) {
-                if (vChartRef.value) {
-                  vChartRef.value.setOption({ dataset: newFunctionHandle(res.data, filter) })
-                }
-              }
+              echartsUpdateHandle(newFunctionHandle(res?.data, res, filter))
               // 更新回调函数
               if (updateCallback) {
-                updateCallback(newFunctionHandle(res.data, filter))
+                updateCallback(newFunctionHandle(res?.data, res, filter))
               }
             } catch (error) {
               console.error(error)
@@ -80,7 +88,6 @@ export const useChartDataFetch = (
 
         // 立即调用
         fetchFn()
-
         // 定时时间
         const time = targetInterval && targetInterval.value ? targetInterval.value : globalRequestInterval.value
         // 单位
@@ -88,9 +95,17 @@ export const useChartDataFetch = (
         // 开启轮询
         if (time) fetchInterval = setInterval(fetchFn, intervalUnitHandle(time, unit))
       }
-    } catch (error) {}
+      // eslint-disable-next-line no-empty
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  isPreview() && requestIntervalFn()
+  if (isPreview()) {
+    // 判断是否是数据池类型
+    targetComponent.request.requestDataType === RequestDataTypeEnum.Pond
+      ? addGlobalDataInterface(targetComponent, useChartEditStore, updateCallback || echartsUpdateHandle)
+      : requestIntervalFn()
+  }
   return { vChartRef }
 }

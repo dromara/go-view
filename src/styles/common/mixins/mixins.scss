@@ -17,7 +17,7 @@
 }
 
 @mixin deep() {
-  :deep {
+  :deep() {
     @content;
   }
 }

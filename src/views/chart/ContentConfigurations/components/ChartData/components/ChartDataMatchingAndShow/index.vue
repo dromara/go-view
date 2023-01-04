@@ -27,7 +27,7 @@
     </n-timeline-item>
     <n-timeline-item v-show="filterShow" color="#97846c" :title="TimelineTitleEnum.FILTER">
       <n-space :size="18" vertical>
-        <n-text depth="3">过滤器将处理接口返回值的「data」字段</n-text>
+        <n-text depth="3">过滤器默认处理接口返回值的「data」字段</n-text>
         <chart-data-monaco-editor></chart-data-monaco-editor>
       </n-space>
     </n-timeline-item>
@@ -41,7 +41,7 @@
             @before-upload="beforeUpload"
           >
             <n-space>
-              <n-button v-if="!ajax" class="sourceBtn-item">
+              <n-button v-if="!ajax" class="sourceBtn-item" :disabled="noData">
                 <template #icon>
                   <n-icon>
                     <document-add-icon />
@@ -52,7 +52,7 @@
             </n-space>
           </n-upload>
           <div>
-            <n-button class="sourceBtn-item" @click="download">
+            <n-button class="sourceBtn-item" :disabled="noData" @click="download">
               <template #icon>
                 <n-icon>
                   <document-download-icon />
@@ -88,7 +88,7 @@ import { ChartDataMonacoEditor } from '../ChartDataMonacoEditor'
 import { useFile } from '../../hooks/useFile.hooks'
 import { useTargetData } from '../../../hooks/useTargetData.hook'
 import isObject from 'lodash/isObject'
-import { toString } from '@/utils'
+import { toString, isArray } from '@/utils'
 
 const { targetData } = useTargetData()
 const props = defineProps({
@@ -111,12 +111,13 @@ const { DocumentAddIcon, DocumentDownloadIcon } = icon.carbon
 const source = ref()
 const dimensions = ref()
 const dimensionsAndSource = ref()
+const noData = ref(false)
 
 const { uploadFileListRef, customRequest, beforeUpload, download } = useFile(targetData)
 
 // 是否展示过滤器
 const filterShow = computed(() => {
-  return targetData.value.request.requestDataType === RequestDataTypeEnum.AJAX
+  return targetData.value.request.requestDataType !== RequestDataTypeEnum.STATIC
 })
 
 // 是支持 dataset 的图表类型
@@ -180,7 +181,11 @@ watch(
       dimensionsAndSource.value = null
       source.value = newData
     } else {
+      noData.value = true
       source.value = '此组件无数据源'
+    }
+    if (isArray(newData)) {
+      dimensionsAndSource.value = null
     }
   },
   {

@@ -1,8 +1,6 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  // 标题
-  VITE_GLOB_APP_TITLE: string;
   // 端口
   VITE_DEV_PORT: string;
   // 开发地址

@@ -24,6 +24,7 @@ import { CreateComponentType } from '@/packages/index.d'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { isPreview } from '@/utils'
 import { DatasetComponent, GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import isObject from 'lodash/isObject'
 
 const props = defineProps({
   themeSetting: {
@@ -51,17 +52,22 @@ const option = computed(() => {
 // dataset 无法变更条数的补丁
 watch(
   () => props.chartConfig.option.dataset,
-  (newData, oldData) => {
-    if (newData.dimensions.length !== oldData.dimensions.length) {
-      const seriesArr = []
-      for (let i = 0; i < newData.dimensions.length - 1; i++) {
-        seriesArr.push(seriesItem)
+  (newData: { dimensions: any }, oldData) => {
+    try {
+      if (!isObject(newData) || !('dimensions' in newData)) return
+      if (Array.isArray(newData?.dimensions)) {
+        const seriesArr = []
+        for (let i = 0; i < newData.dimensions.length - 1; i++) {
+          seriesArr.push(seriesItem)
+        }
+        replaceMergeArr.value = ['series']
+        props.chartConfig.option.series = seriesArr
+        nextTick(() => {
+          replaceMergeArr.value = []
+        })
       }
-      replaceMergeArr.value = ['series']
-      props.chartConfig.option.series = seriesArr
-      nextTick(() => {
-        replaceMergeArr.value = []
-      })
+    } catch (error) {
+      console.log(error)
     }
   },
   {

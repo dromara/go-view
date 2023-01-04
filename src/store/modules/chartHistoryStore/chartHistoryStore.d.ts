@@ -2,6 +2,7 @@ import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.
 import { EditCanvasType } from '@/store/modules/chartEditStore/chartEditStore.d'
 
 // 操作类型枚举
+
 export enum HistoryActionTypeEnum {
   // 新增
   ADD = 'add',
@@ -29,8 +30,14 @@ export enum HistoryActionTypeEnum {
   GROUP = 'group',
   // 解组
   UN_GROUP = 'unGroup',
-  // 选择历史记录
-  SELECT_HISTORY = 'selectHistory'
+  // 锁定
+  LOCK = 'lock',
+  // 解除锁定
+  UNLOCK = 'unLock',
+  // 隐藏
+  HIDE = 'hide',
+  // 显示
+  SHOW = 'show'
 }
 
 // 对象类型

@@ -1,6 +1,7 @@
 import { echartOptionProfixHandle, PublicConfigClass } from '@/packages/public'
 import { PieCircleConfig } from './index'
 import { CreateComponentType } from '@/packages/index.d'
+import cloneDeep from 'lodash/cloneDeep'
 
 export const includes = []
 
@@ -57,7 +58,7 @@ const option = {
 export default class Config extends PublicConfigClass implements CreateComponentType {
   public key: string = PieCircleConfig.key
 
-  public chartConfig = PieCircleConfig
+  public chartConfig = cloneDeep(PieCircleConfig)
 
   // 图表配置项
   public option = echartOptionProfixHandle(option, includes)

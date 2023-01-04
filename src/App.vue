@@ -1,9 +1,9 @@
 <template>
   <n-config-provider
-    :locale="zhCN"
     :theme="darkTheme"
     :hljs="hljsTheme"
-    :date-locale="dateZhCN"
+    :locale="locale"
+    :date-locale="dateLocale"
     :theme-overrides="overridesTheme"
   >
     <go-app-provider>
@@ -14,11 +14,10 @@
 </template>
 
 <script lang="ts" setup>
-import { zhCN, dateZhCN, NConfigProvider } from 'naive-ui'
+import { NConfigProvider } from 'naive-ui'
 import { GoAppProvider } from '@/components/GoAppProvider'
 import { I18n } from '@/components/I18n'
-
-import { useSystemInit, useDarkThemeHook, useThemeOverridesHook, useCode } from '@/hooks'
+import { useSystemInit, useDarkThemeHook, useThemeOverridesHook, useCode, useLang } from '@/hooks'
 
 // 暗黑主题
 const darkTheme = useDarkThemeHook()
@@ -31,4 +30,8 @@ const hljsTheme = useCode()
 
 // 系统全局数据初始化
 useSystemInit()
+
+// 全局语言
+const { locale, dateLocale } = useLang()
+
 </script>

@@ -1,3 +1,8 @@
+import heatmapJson from './heatMapData.json'
+import scatterJson from './scatter.json'
+import mapJson from './map.json'
+import tTreemapJson from './treemap.json'
+
 export default {
   // 单图表
   fetchMockSingleData: {
@@ -6,31 +11,27 @@ export default {
     msg: '请求成功',
     data: {
       dimensions: ['product', 'dataOne'],
-      source: [
+      'source|50': [
         {
           product: '@name',
-          'dataOne|0-900': 3,
-        },
-        {
-          product: '@name',
-          'dataOne|0-900': 3,
-        },
-        {
-          product: '@name',
-          'dataOne|0-900': 3,
-        },
-        {
-          product: '@name',
-          'dataOne|0-900': 3,
-        },
-        {
-          product: '@name',
-          'dataOne|0-900': 3,
-        },
-        {
-          product: '@name',
-          'dataOne|0-900': 3,
+          'dataOne|0-900': 3
         }
+      ]
+    }
+  },
+  // 胶囊图
+  fetchCapsule: {
+    code: 0,
+    status: 200,
+    msg: '请求成功',
+    data: {
+      dimensions: ['name', 'value'],
+      source: [
+        { name: '厦门', 'value|0-40': 20 },
+        { name: '南阳', 'value|20-60': 40 },
+        { name: '北京', 'value|40-80': 60 },
+        { name: '上海', 'value|60-100': 80 },
+        { name: '新疆', value: 100 }
       ]
     }
   },
@@ -41,32 +42,7 @@ export default {
     msg: '请求成功',
     data: {
       dimensions: ['product', 'dataOne', 'dataTwo'],
-      source: [
-        {
-          product: '@name',
-          'dataOne|100-900': 3,
-          'dataTwo|100-900': 3
-        },
-        {
-          product: '@name',
-          'dataOne|100-900': 3,
-          'dataTwo|100-900': 3
-        },
-        {
-          product: '@name',
-          'dataOne|100-900': 3,
-          'dataTwo|100-900': 3
-        },
-        {
-          product: '@name',
-          'dataOne|100-900': 3,
-          'dataTwo|100-900': 3
-        },
-        {
-          product: '@name',
-          'dataOne|100-900': 3,
-          'dataTwo|100-900': 3
-        },
+      'source|50': [
         {
           product: '@name',
           'dataOne|100-900': 3,
@@ -80,21 +56,7 @@ export default {
     code: 0,
     status: 200,
     msg: '请求成功',
-    data: [
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 },
-      { name: '@name', 'value|100-900': 5 }
-    ]
+    'data|50': [{ name: '@name', 'value|100-900': 5 }]
   },
   // 轮播表格
   fetchScrollBoard: {
@@ -181,5 +143,84 @@ export default {
         }
       ]
     }
+  },
+  // 热力图
+  fetchHeatmap: {
+    code: 0,
+    status: 200,
+    msg: '请求成功',
+    data: heatmapJson
+  },
+  // 散点图
+  fetchScatterBasic: {
+    code: 0,
+    status: 200,
+    msg: '请求成功',
+    data: scatterJson
+  },
+  // 中国地图
+  fetchMap: {
+    code: 0,
+    status: 200,
+    msg: '请求成功',
+    data: mapJson
+  },
+  // 词云
+  fetchWordCloud: {
+    code: 0,
+    status: 200,
+    msg: '请求成功',
+    data: [
+      {
+        name: '@name',
+        value: 8000,
+        textStyle: {
+          color: '#78fbb2'
+        },
+        emphasis: {
+          textStyle: {
+            color: 'red'
+          }
+        }
+      },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' },
+      { name: '@name', value: '@integer(10, 8000)' }
+    ]
+  },
+  // 树图
+  fetchTreemap: {
+    code: 0,
+    status: 200,
+    msg: '请求成功',
+    data: tTreemapJson
+  },
+  // 三维地球
+  threeEarth01Data: {
+    code: 0,
+    status: 200,
+    msg: '请求成功',
+    data: [
+      {
+        startArray: { name: '@name', N: '@integer(10, 100)', E: '@integer(10, 100)' },
+        'endArray|10': [{ name: '@name', N: '@integer(10, 100)', E: '@integer(10, 100)' }]
+      }
+    ]
   }
 }

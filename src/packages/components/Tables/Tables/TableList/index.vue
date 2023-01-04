@@ -10,19 +10,12 @@
         <div class="rank" :style="`color: ${color};font-size: ${indexFontSize}px`">No.{{ item.ranking }}</div>
         <div class="info-name" :style="`font-size: ${leftFontSize}px`" v-html="item.name" />
         <div class="ranking-value" :style="`color: ${textColor};font-size: ${rightFontSize}px`">
-          {{
-            status.mergedConfig.valueFormatter
-              ? status.mergedConfig.valueFormatter(item)
-              : item.value
-          }}
+          {{ status.mergedConfig.valueFormatter ? status.mergedConfig.valueFormatter(item) : item.value }}
           {{ unit }}
         </div>
       </div>
       <div class="ranking-column" :style="`border-color: ${borderColor}`">
-        <div
-          class="inside-column"
-          :style="`width: ${item.percent}%;background-color: ${color}`"
-        >
+        <div class="inside-column" :style="`width: ${item.percent}%;background-color: ${color}`">
           <div class="shine" />
         </div>
       </div>
@@ -39,8 +32,8 @@ import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore
 const props = defineProps({
   chartConfig: {
     type: Object as PropType<CreateComponentType>,
-    required: true,
-  },
+    required: true
+  }
 })
 const { w, h } = toRefs(props.chartConfig.attr)
 const { rowNum, unit, color, textColor, borderColor, indexFontSize, leftFontSize, rightFontSize } = toRefs(
@@ -50,13 +43,15 @@ const { rowNum, unit, color, textColor, borderColor, indexFontSize, leftFontSize
 const status = reactive({
   mergedConfig: props.chartConfig.option,
   rowsData: [],
-  rows: [{
-    scroll: 0,
-    ranking: 1,
-    name: '',
-    value: '',
-    percent: 0
-  }],
+  rows: [
+    {
+      scroll: 0,
+      ranking: 1,
+      name: '',
+      value: '',
+      percent: 0
+    }
+  ],
   heights: [0],
   animationIndex: 0,
   animationHandler: 0,
@@ -67,7 +62,7 @@ const status = reactive({
 const calcRowsData = () => {
   let { dataset, rowNum, sort } = status.mergedConfig
   // @ts-ignore
-  sort && dataset.sort(({ value: a }, { value: b }) => {
+  sort &&dataset.sort(({ value: a }, { value: b  } )  => {
       if (a > b) return -1
       if (a < b) return 1
       if (a === b) return 0
@@ -81,16 +76,16 @@ const calcRowsData = () => {
   // abs of max
   const maxAbs = Math.abs(max)
   const total = max + minAbs
-  dataset = dataset.map((row: any, i:number) => ({
+  dataset = dataset.map((row: any, i: number) => ({
     ...row,
     ranking: i + 1,
-    percent: ((row.value + minAbs) / total) * 100,
+    percent: ((row.value + minAbs) / total) * 100
   }))
   const rowLength = dataset.length
   if (rowLength > rowNum && rowLength < 2 * rowNum) {
     dataset = [...dataset, ...dataset]
   }
-  dataset = dataset.map((d:any, i:number) => ({ ...d, scroll: i }))
+  dataset = dataset.map((d: any, i: number) => ({ ...d, scroll: i }))
   status.rowsData = dataset
   status.rows = dataset
 }
@@ -99,6 +94,7 @@ const calcHeights = (onresize = false) => {
   const { rowNum, dataset } = status.mergedConfig
   const avgHeight = h.value / rowNum
   status.avgHeight = avgHeight
+
   if (!onresize) status.heights = new Array(dataset.length).fill(avgHeight)
 }
 
@@ -134,11 +130,20 @@ const stopAnimation = () => {
 }
 
 const onRestart = async () => {
-  if (!status.mergedConfig) return
-  stopAnimation()
-  calcRowsData()
-  calcHeights(true)
-  animation(true)
+  try {
+    if (!status.mergedConfig) return
+    let { dataset, rowNum, sort } = status.mergedConfig
+    stopAnimation()
+    calcRowsData()
+    let flag = true
+    if (dataset.length <= rowNum) {
+      flag=false
+    }
+    calcHeights(flag)
+    animation(flag)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 onRestart()

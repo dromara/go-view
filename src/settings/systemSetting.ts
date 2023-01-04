@@ -13,5 +13,7 @@ export const systemSetting = {
   // 图表拖拽时的吸附距离（px）
   [SettingStoreEnums.CHART_ALIGN_RANGE]: 10,
   // 图表工具栏状态（侧边工具状态）
-  [SettingStoreEnums.CHART_TOOLS_STATUS]: ToolsStatusEnum.ASIDE
+  [SettingStoreEnums.CHART_TOOLS_STATUS]: ToolsStatusEnum.ASIDE,
+  // 图表工具栏状态隐藏（刚开始不隐藏）
+  [SettingStoreEnums.CHART_TOOLS_STATUS_HIDE]: false,
 }

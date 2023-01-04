@@ -1,6 +1,6 @@
 <template>
   <!-- Echarts 全局设置 -->
-  <global-setting :optionData="optionData" :in-chart="true"> </global-setting>
+  <global-setting :optionData="optionData"> </global-setting>
   <!-- 漏斗图 -->
   <collapse-item v-for="(item, index) in seriesList" :key="index" :name="`漏斗图`" expanded>
     <setting-item-box name="排序" alone>

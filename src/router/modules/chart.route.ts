@@ -12,7 +12,8 @@ const chartRoutes: RouteRecordRaw = {
   component: importPath['ChartEnum.CHART_HOME_NAME'],
   meta: {
     title: '工作空间',
-    isRoot: true
+    isRoot: true,
+    noKeepAlive: true,
   }
 }
 

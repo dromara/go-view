@@ -11,7 +11,6 @@ export const animations = [
       { label: '放大晃动缩小', value: 'tada' },
       { label: '扇形摇摆', value: 'wobble' },
       { label: '左右上下晃动', value: 'jello' },
-      { label: 'Y轴旋转', value: 'flip' }
     ]
   },
   {

@@ -1,23 +1,23 @@
-import {
-  HistoryTargetTypeEnum,
-  HistoryActionTypeEnum
-} from './chartHistoryStore.d'
+import { HistoryTargetTypeEnum, HistoryActionTypeEnum } from './chartHistoryStore.d'
 
 export const historyActionTypeName = {
-  [HistoryActionTypeEnum.ADD]: '新增图表',
-  [HistoryActionTypeEnum.DELETE]: '删除图表',
-  [HistoryActionTypeEnum.UPDATE]: '修改属性',
-  [HistoryActionTypeEnum.MOVE]: '移动图表',
-  [HistoryActionTypeEnum.PASTE]: '粘贴图表',
-  [HistoryActionTypeEnum.COPY]: '复制图表',
-  [HistoryActionTypeEnum.CUT]: '剪切图表',
-  [HistoryActionTypeEnum.TOP]: '层级置顶',
-  [HistoryActionTypeEnum.BOTTOM]: '层级置底',
-  [HistoryActionTypeEnum.UP]: '层级上移',
-  [HistoryActionTypeEnum.DOWN]: '层级下移',
-  [HistoryActionTypeEnum.GROUP]: '创建分组',
-  [HistoryActionTypeEnum.UN_GROUP]: '解除分组',
-  [HistoryActionTypeEnum.SELECT_HISTORY]: '选择记录',
-  
+  [HistoryActionTypeEnum.ADD]: '新增',
+  [HistoryActionTypeEnum.DELETE]: '删除',
+  [HistoryActionTypeEnum.UPDATE]: '更新',
+  [HistoryActionTypeEnum.MOVE]: '移动',
+  [HistoryActionTypeEnum.PASTE]: '粘贴',
+  [HistoryActionTypeEnum.COPY]: '复制',
+  [HistoryActionTypeEnum.CUT]: '剪切',
+  [HistoryActionTypeEnum.TOP]: '置顶',
+  [HistoryActionTypeEnum.BOTTOM]: '置底',
+  [HistoryActionTypeEnum.UP]: '上移',
+  [HistoryActionTypeEnum.DOWN]: '下移',
+  [HistoryActionTypeEnum.GROUP]: '成组',
+  [HistoryActionTypeEnum.UN_GROUP]: '解组',
+  [HistoryActionTypeEnum.LOCK]: '锁定',
+  [HistoryActionTypeEnum.UNLOCK]: '解锁',
+  [HistoryActionTypeEnum.HIDE]: '隐藏',
+  [HistoryActionTypeEnum.SHOW]: '显示',
+
   [HistoryTargetTypeEnum.CANVAS]: '画布初始化'
 }

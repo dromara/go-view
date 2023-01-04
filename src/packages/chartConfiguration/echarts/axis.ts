@@ -1,40 +1,56 @@
 export const axisConfig = {
+  // X轴位置
   xposition: [
     {
-      label: 'top',
+      label: '顶部',
       value: 'top'
     },
     {
-      label: 'bottom',
+      label: '底部',
       value: 'bottom'
     }
   ],
+  // Y轴位置
   yposition: [
     {
-      label: 'left',
+      label: '左侧',
       value: 'left'
     },
     {
-      label: 'right',
+      label: '右侧',
       value: 'right'
     }
   ],
+  // 线条
   splitLint: {
     lineStyle: {
       type: [
         {
-          label: 'solid',
+          label: '实线',
           value: 'solid'
         },
         {
-          label: 'dashed',
+          label: '虚线',
           value: 'dashed'
         },
         {
-          label: 'dotted',
+          label: '点线',
           value: 'dotted'
         }
       ]
     }
+  },
+  // 视觉映射
+  visualMap: {
+    orient: [
+      {
+        label: '竖直',
+        value: 'vertical'
+      },
+      {
+        label: '水平',
+        value: 'horizontal'
+      }
+    ]
   }
 }

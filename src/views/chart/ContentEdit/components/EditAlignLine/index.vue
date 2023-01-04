@@ -17,6 +17,7 @@ import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore
 import { EditCanvasTypeEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { useSettingStore } from '@/store/modules/settingStore/settingStore'
 import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
+import { setComponentPosition } from '@/utils'
 import throttle from 'lodash/throttle'
 import cloneDeep from 'lodash/cloneDeep'
 // 全局颜色
@@ -96,146 +97,150 @@ const canvasPositionList = computed(() => {
 watch(
   () => chartEditStore.getMousePosition,
   throttle(() => {
-    if (!isComputedLine.value || selectId.value.length !== 1) return
-    // 获取目标组件数据
+    try {
+      if (!isComputedLine.value || selectId.value.length !== 1) return
+      // 获取目标组件数据
 
-    const selectW = selectAttr.value.w
-    const selectH = selectAttr.value.h
+      const selectW = selectAttr.value.w
+      const selectH = selectAttr.value.h
 
-    // 距离左侧
-    const selectLeftX = selectAttr.value.x
-    const selectHalfX = selectLeftX + selectW / 2
-    const selectRightX = selectLeftX + selectW
-    const seletX = [selectLeftX, selectHalfX, selectRightX]
+      // 距离左侧
+      const selectLeftX = selectAttr.value.x
+      const selectHalfX = selectLeftX + selectW / 2
+      const selectRightX = selectLeftX + selectW
+      const seletX = [selectLeftX, selectHalfX, selectRightX]
 
-    // 距离顶部
-    const selectTopY = selectAttr.value.y
-    const selectHalfY = selectTopY + selectH / 2
-    const selectBottomY = selectTopY + selectH
-    const selectY = [selectTopY, selectHalfY, selectBottomY]
+      // 距离顶部
+      const selectTopY = selectAttr.value.y
+      const selectHalfY = selectTopY + selectH / 2
+      const selectBottomY = selectTopY + selectH
+      const selectY = [selectTopY, selectHalfY, selectBottomY]
 
-    line.select.clear()
-    line.sorptioned.y = false
-    // 循环查询所有组件数据
-    const componentList = chartEditStore.getComponentList.map((e: CreateComponentType | CreateComponentGroupType) => {
-      return {
-        id: e.id,
-        attr: e.attr
-      }
-    })
-    componentList.push(canvasPositionList.value)
-    // 传入画布数据
-    line.lineArr.forEach(lineItem => {
-      componentList.forEach((component: typeof canvasPositionList.value) => {
-        // 排除自身
-        if (selectId.value[0] === component.id) return
-        const componentW = component.attr.w
-        const componentH = component.attr.h
-
-        // 距离左侧
-        const componentLeftX = component.attr.x
-        const componentHalfX = componentLeftX + componentW / 2
-        const componentRightX = componentLeftX + componentW
-        const componentX = [componentLeftX, componentHalfX, componentRightX]
-
-        // 距离顶部
-        const componentTopY = component.attr.y
-        const componentHalfY = componentTopY + componentH / 2
-        const componentBottomY = componentTopY + componentH
-        const componentY = [componentTopY, componentHalfY, componentBottomY]
-
-        // 横线对比的是 Y
-        if (lineItem.includes('rowt')) {
-          // 顶部
-          if (isSorption(selectTopY, componentTopY)) {
-            line.select.set(lineItem, { y: componentTopY })
-            selectTarget.value.setPosition(selectLeftX, componentTopY)
-          }
-          if (isSorption(selectTopY, componentHalfY)) {
-            line.select.set(lineItem, { y: componentHalfY })
-            selectTarget.value.setPosition(selectLeftX, componentHalfY)
-          }
-          if (isSorption(selectTopY, componentBottomY)) {
-            line.select.set(lineItem, { y: componentBottomY })
-            selectTarget.value.setPosition(selectLeftX, componentBottomY)
-          }
-        }
-        if (lineItem.includes('rowc')) {
-          // 顶部
-          if (isSorption(selectHalfY, componentTopY)) {
-            line.select.set(lineItem, { y: componentTopY })
-            selectTarget.value.setPosition(selectLeftX, componentTopY - selectH / 2)
-          }
-          if (isSorption(selectHalfY, componentHalfY)) {
-            line.select.set(lineItem, { y: componentHalfY })
-            selectTarget.value.setPosition(selectLeftX, componentHalfY - selectH / 2)
-          }
-          if (isSorption(selectHalfY, componentBottomY)) {
-            line.select.set(lineItem, { y: componentBottomY })
-            selectTarget.value.setPosition(selectLeftX, componentBottomY - selectH / 2)
-          }
-        }
-        if (lineItem.includes('rowb')) {
-          // 顶部
-          if (isSorption(selectBottomY, componentTopY)) {
-            line.select.set(lineItem, { y: componentTopY })
-            selectTarget.value.setPosition(selectLeftX, componentTopY - selectH)
-          }
-          if (isSorption(selectBottomY, componentHalfY)) {
-            line.select.set(lineItem, { y: componentHalfY })
-            selectTarget.value.setPosition(selectLeftX, componentHalfY - selectH)
-          }
-          if (isSorption(selectBottomY, componentBottomY)) {
-            line.select.set(lineItem, { y: componentBottomY })
-            selectTarget.value.setPosition(selectLeftX, componentBottomY - selectH)
-          }
-        }
-
-        // 纵线对比的是 X
-        if (lineItem.includes('coll')) {
-          if (isSorption(selectLeftX, componentLeftX)) {
-            line.select.set(lineItem, { x: componentLeftX })
-            selectTarget.value.setPosition(componentLeftX, selectTopY)
-          }
-          if (isSorption(selectLeftX, componentHalfX)) {
-            line.select.set(lineItem, { x: componentHalfX })
-            selectTarget.value.setPosition(componentHalfX, selectTopY)
-          }
-          if (isSorption(selectLeftX, componentRightX)) {
-            line.select.set(lineItem, { x: componentRightX })
-            selectTarget.value.setPosition(componentRightX, selectTopY)
-          }
-        }
-        if (lineItem.includes('colc')) {
-          if (isSorption(selectHalfX, componentLeftX)) {
-            line.select.set(lineItem, { x: componentLeftX })
-            selectTarget.value.setPosition(componentLeftX - selectW / 2, selectTopY)
-          }
-          if (isSorption(selectHalfX, componentHalfX)) {
-            line.select.set(lineItem, { x: componentHalfX })
-            selectTarget.value.setPosition(componentHalfX - selectW / 2, selectTopY)
-          }
-          if (isSorption(selectHalfX, componentRightX)) {
-            line.select.set(lineItem, { x: componentRightX })
-            selectTarget.value.setPosition(componentRightX - selectW / 2, selectTopY)
-          }
-        }
-        if (lineItem.includes('colr')) {
-          if (isSorption(selectRightX, componentLeftX)) {
-            line.select.set(lineItem, { x: componentLeftX })
-            selectTarget.value.setPosition(componentLeftX - selectW, selectTopY)
-          }
-          if (isSorption(selectRightX, componentHalfX)) {
-            line.select.set(lineItem, { x: componentHalfX })
-            selectTarget.value.setPosition(componentHalfX - selectW, selectTopY)
-          }
-          if (isSorption(selectRightX, componentRightX)) {
-            line.select.set(lineItem, { x: componentRightX })
-            selectTarget.value.setPosition(componentRightX - selectW, selectTopY)
-          }
+      line.select.clear()
+      line.sorptioned.y = false
+      // 循环查询所有组件数据
+      const componentList = chartEditStore.getComponentList.map((e: CreateComponentType | CreateComponentGroupType) => {
+        return {
+          id: e.id,
+          attr: e.attr
         }
       })
-    })
+      componentList.push(canvasPositionList.value)
+      // 传入画布数据
+      line.lineArr.forEach(lineItem => {
+        componentList.forEach((component: typeof canvasPositionList.value) => {
+          // 排除自身
+          if (selectId.value[0] === component.id) return
+          const componentW = component.attr.w
+          const componentH = component.attr.h
+
+          // 距离左侧
+          const componentLeftX = component.attr.x
+          const componentHalfX = componentLeftX + componentW / 2
+          const componentRightX = componentLeftX + componentW
+          const componentX = [componentLeftX, componentHalfX, componentRightX]
+
+          // 距离顶部
+          const componentTopY = component.attr.y
+          const componentHalfY = componentTopY + componentH / 2
+          const componentBottomY = componentTopY + componentH
+          const componentY = [componentTopY, componentHalfY, componentBottomY]
+
+          // 横线对比的是 Y
+          if (lineItem.includes('rowt')) {
+            // 顶部
+            if (isSorption(selectTopY, componentTopY)) {
+              line.select.set(lineItem, { y: componentTopY })
+              setComponentPosition(selectTarget.value, selectLeftX, componentTopY)
+            }
+            if (isSorption(selectTopY, componentHalfY)) {
+              line.select.set(lineItem, { y: componentHalfY })
+              setComponentPosition(selectTarget.value, selectLeftX, componentHalfY)
+            }
+            if (isSorption(selectTopY, componentBottomY)) {
+              line.select.set(lineItem, { y: componentBottomY })
+              setComponentPosition(selectTarget.value, selectLeftX, componentBottomY)
+            }
+          }
+          if (lineItem.includes('rowc')) {
+            // 顶部
+            if (isSorption(selectHalfY, componentTopY)) {
+              line.select.set(lineItem, { y: componentTopY })
+              setComponentPosition(selectTarget.value, selectLeftX, componentTopY - selectH / 2)
+            }
+            if (isSorption(selectHalfY, componentHalfY)) {
+              line.select.set(lineItem, { y: componentHalfY })
+              setComponentPosition(selectTarget.value, selectLeftX, componentHalfY - selectH / 2)
+            }
+            if (isSorption(selectHalfY, componentBottomY)) {
+              line.select.set(lineItem, { y: componentBottomY })
+              setComponentPosition(selectTarget.value, selectLeftX, componentBottomY - selectH / 2)
+            }
+          }
+          if (lineItem.includes('rowb')) {
+            // 顶部
+            if (isSorption(selectBottomY, componentTopY)) {
+              line.select.set(lineItem, { y: componentTopY })
+              setComponentPosition(selectTarget.value, selectLeftX, componentTopY - selectH)
+            }
+            if (isSorption(selectBottomY, componentHalfY)) {
+              line.select.set(lineItem, { y: componentHalfY })
+              setComponentPosition(selectTarget.value, selectLeftX, componentHalfY - selectH)
+            }
+            if (isSorption(selectBottomY, componentBottomY)) {
+              line.select.set(lineItem, { y: componentBottomY })
+              setComponentPosition(selectTarget.value, selectLeftX, componentBottomY - selectH)
+            }
+          }
+
+          // 纵线对比的是 X
+          if (lineItem.includes('coll')) {
+            if (isSorption(selectLeftX, componentLeftX)) {
+              line.select.set(lineItem, { x: componentLeftX })
+              setComponentPosition(selectTarget.value, componentLeftX, selectTopY)
+            }
+            if (isSorption(selectLeftX, componentHalfX)) {
+              line.select.set(lineItem, { x: componentHalfX })
+              setComponentPosition(selectTarget.value, componentHalfX, selectTopY)
+            }
+            if (isSorption(selectLeftX, componentRightX)) {
+              line.select.set(lineItem, { x: componentRightX })
+              setComponentPosition(selectTarget.value, componentRightX, selectTopY)
+            }
+          }
+          if (lineItem.includes('colc')) {
+            if (isSorption(selectHalfX, componentLeftX)) {
+              line.select.set(lineItem, { x: componentLeftX })
+              setComponentPosition(selectTarget.value, componentLeftX - selectW / 2, selectTopY)
+            }
+            if (isSorption(selectHalfX, componentHalfX)) {
+              line.select.set(lineItem, { x: componentHalfX })
+              setComponentPosition(selectTarget.value, componentHalfX - selectW / 2, selectTopY)
+            }
+            if (isSorption(selectHalfX, componentRightX)) {
+              line.select.set(lineItem, { x: componentRightX })
+              setComponentPosition(selectTarget.value, componentRightX - selectW / 2, selectTopY)
+            }
+          }
+          if (lineItem.includes('colr')) {
+            if (isSorption(selectRightX, componentLeftX)) {
+              line.select.set(lineItem, { x: componentLeftX })
+              setComponentPosition(selectTarget.value, componentLeftX - selectW, selectTopY)
+            }
+            if (isSorption(selectRightX, componentHalfX)) {
+              line.select.set(lineItem, { x: componentHalfX })
+              setComponentPosition(selectTarget.value, componentHalfX - selectW, selectTopY)
+            }
+            if (isSorption(selectRightX, componentRightX)) {
+              line.select.set(lineItem, { x: componentRightX })
+              setComponentPosition(selectTarget.value, componentRightX - selectW, selectTopY)
+            }
+          }
+        })
+      })
+    } catch (err) {
+      console.log(err)
+    }
   }, 200),
   {
     deep: true

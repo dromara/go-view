@@ -2,7 +2,7 @@ import { PickCreateComponentType } from '@/packages/index.d'
 import { EditCanvasConfigType } from '@/store/modules/chartEditStore/chartEditStore.d'
 
 type AttrType = PickCreateComponentType<'attr'>
-type StylesType = PickCreateComponentType<'styles'>
+type StatusType = PickCreateComponentType<'status'>
 
 // 设置位置
 export const getComponentAttrStyle = (attr: AttrType, index: number) => {
@@ -16,10 +16,17 @@ export const getComponentAttrStyle = (attr: AttrType, index: number) => {
 
 // 设置大小
 export const getSizeStyle = (attr: AttrType, scale?: number) => {
-  return ({
+  return {
     width: `${scale ? scale * attr.w : attr.w}px`,
     height: `${scale ? scale * attr.h : attr.h}px`
-  })
+  }
+}
+
+// 设置状态样式
+export const getStatusStyle = (attr: StatusType) => {
+  return {
+    display: attr.hide ? 'none' : 'block'
+  }
 }
 
 // 全局样式

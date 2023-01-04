@@ -8,24 +8,49 @@
     @mousedown="boxMousedownHandle($event)"
   >
     <template #icon>
-      <n-icon size="16" :depth="2">
-        <component :is="LayersIcon"></component>
-      </n-icon>
+      <n-icon size="16" :depth="2" :component="LayersIcon" />
     </template>
+
+    <template #top-right>
+      <n-button-group style="display: flex">
+        <n-button
+          v-for="(item, index) in layerModeList"
+          :key="index"
+          ghost
+          size="small"
+          :type="layerMode === item.value ? 'primary' : 'tertiary'"
+          @click="changeLayerType(item.value)"
+        >
+          <n-tooltip :show-arrow="false" trigger="hover">
+            <template #trigger>
+              <n-icon size="14" :component="item.icon" />
+            </template>
+            {{ item.label }}
+          </n-tooltip>
+        </n-button>
+      </n-button-group>
+    </template>
+
     <!-- 图层内容 -->
     <n-space v-if="reverseList.length === 0" justify="center">
       <n-text class="not-layer-text">暂无图层~</n-text>
     </n-space>
+
     <!-- https://github.com/SortableJS/vue.draggable.next -->
     <draggable item-key="id" v-model="layerList" ghostClass="ghost" @change="onMoveCallback">
       <template #item="{ element }">
         <div class="go-content-layer-box">
           <!-- 组合 -->
-          <layers-group-list-item v-if="element.isGroup" :componentGroupData="element"></layers-group-list-item>
+          <layers-group-list-item
+            v-if="element.isGroup"
+            :componentGroupData="element"
+            :layer-mode="layerMode"
+          ></layers-group-list-item>
           <!-- 单组件 -->
           <layers-list-item
             v-else
             :componentData="element"
+            :layer-mode="layerMode"
             @mousedown="mousedownHandle($event, element)"
             @mouseenter="mouseenterHandle(element)"
             @mouseleave="mouseleaveHandle(element)"
@@ -43,7 +68,7 @@ import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
 import { ContentBox } from '../ContentBox/index'
 import { useChartLayoutStore } from '@/store/modules/chartLayoutStore/chartLayoutStore'
-import { ChartLayoutStoreEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
+import { ChartLayoutStoreEnum, LayerModeEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { MenuOptionsItemType } from '@/views/chart/hooks/useContextMenu.hook.d'
@@ -55,12 +80,19 @@ import { LayersGroupListItem } from './components/LayersGroupListItem/index'
 
 import { icon } from '@/plugins'
 
-const { LayersIcon } = icon.ionicons5
+const { LayersIcon, GridIcon, ListIcon } = icon.ionicons5
+const { LaptopIcon } = icon.carbon
 const chartLayoutStore = useChartLayoutStore()
 const chartEditStore = useChartEditStore()
 const { handleContextMenu, onClickOutSide } = useContextMenu()
 
+const layerModeList = [
+  { label: '缩略图', icon: LaptopIcon, value: LayerModeEnum.THUMBNAIL },
+  { label: '文本列表', icon: ListIcon, value: LayerModeEnum.TEXT }
+]
+
 const layerList = ref<any>([])
+const layerMode = ref<LayerModeEnum>(chartLayoutStore.getLayerType)
 
 // 逆序展示
 const reverseList = computed(() => {
@@ -83,16 +115,21 @@ const optionsHandle = (
 ) => {
   // 多选处理
   if (chartEditStore.getTargetChart.selectId.length > 1) {
-    const list: MenuOptionsItemType[] = []
-    targetList.forEach(item => {
-      // 成组
-      if (item.key === MenuEnum.GROUP) {
-        list.push(item)
-      }
-    })
-    return list
+    return targetList.filter(i => i.key === MenuEnum.GROUP)
   }
-  return targetList
+  const statusMenuEnums: MenuEnum[] = []
+  // 处理锁定与隐藏
+  if (targetInstance.status.lock) {
+    statusMenuEnums.push(MenuEnum.LOCK)
+  } else {
+    statusMenuEnums.push(MenuEnum.UNLOCK)
+  }
+  if (targetInstance.status.hide) {
+    statusMenuEnums.push(MenuEnum.HIDE)
+  } else {
+    statusMenuEnums.push(MenuEnum.SHOW)
+  }
+  return targetList.filter(item => !statusMenuEnums.includes(item.key as MenuEnum))
 }
 
 // 缩小
@@ -130,11 +167,7 @@ const mousedownHandle = (e: MouseEvent, item: CreateComponentType) => {
   onClickOutSide()
   // 若此时按下了 CTRL, 表示多选
   const id = item.id
-  if (
-    e.buttons === MouseEventButton.LEFT &&
-    (window.$KeyboardActive?.has(WinKeyboard.CTRL_SOURCE_KEY) ||
-      window.$KeyboardActive?.has(MacKeyboard.CTRL_SOURCE_KEY))
-  ) {
+  if (e.buttons === MouseEventButton.LEFT && window.$KeyboardActive?.ctrl) {
     // 若已选中，则去除
     if (chartEditStore.targetChart.selectId.includes(id)) {
       const exList = chartEditStore.targetChart.selectId.filter(e => e !== id)
@@ -156,10 +189,16 @@ const mouseenterHandle = (item: CreateComponentType) => {
 const mouseleaveHandle = (item: CreateComponentType) => {
   chartEditStore.setTargetHoverChart(undefined)
 }
+
+// 修改图层展示方式
+const changeLayerType = (value: LayerModeEnum) => {
+  layerMode.value = value
+  chartLayoutStore.setItem(ChartLayoutStoreEnum.LAYER_TYPE, value)
+}
 </script>
 
 <style lang="scss" scoped>
-$wight: 170px;
+$wight: 200px;
 @include go(content-layers) {
   width: $wight;
   flex-shrink: 0;
@@ -176,6 +215,9 @@ $wight: 170px;
   }
   .ghost {
     opacity: 0;
+  }
+  .go-layer-mode-active {
+    color: #51d6a9;
   }
 }
 </style>

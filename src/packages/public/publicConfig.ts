@@ -1,5 +1,4 @@
 import { getUUID } from '@/utils'
-import { ChartFrameEnum, PublicConfigType, CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { RequestConfigType } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { groupTitle } from '@/settings/designSetting'
 import {
@@ -9,10 +8,19 @@ import {
   RequestContentTypeEnum,
   RequestBodyEnum
 } from '@/enums/httpEnum'
+import {
+  BaseEvent,
+  EventLife,
+  ChartFrameEnum,
+  PublicConfigType,
+  CreateComponentType,
+  CreateComponentGroupType
+} from '@/packages/index.d'
 import { chartInitConfig } from '@/settings/designSetting'
+import cloneDeep from 'lodash/cloneDeep'
 
 // 请求基础属性
-const requestConfig: RequestConfigType = {
+export const requestConfig: RequestConfigType = {
   requestDataType: RequestDataTypeEnum.STATIC,
   requestHttpType: RequestHttpEnum.GET,
   requestUrl: '',
@@ -43,6 +51,8 @@ export class PublicConfigClass implements PublicConfigType {
   public attr = { ...chartInitConfig, zIndex: -1 }
   // 基本样式
   public styles = {
+    // 使用滤镜
+    filterShow: false,
     // 色相
     hueRotate: 0,
     // 饱和度
@@ -63,18 +73,33 @@ export class PublicConfigClass implements PublicConfigType {
     skewX: 0,
     skewY: 0,
 
+    // 混合模式
+    blendMode: 'normal',
+
     // 动画
     animations: []
   }
+  // 状态
+  public status = {
+    lock: false,
+    hide: false
+  }
   // 请求
-  public request = { ...requestConfig }
+  public request = cloneDeep(requestConfig)
   // 数据过滤
   public filter = undefined
-
-  // 设置坐标
-  public setPosition(x: number, y: number): void {
-    this.attr.x = x
-    this.attr.y = y
+  // 事件
+  public events = {
+    baseEvent: {
+      [BaseEvent.ON_CLICK]: undefined,
+      [BaseEvent.ON_DBL_CLICK]: undefined,
+      [BaseEvent.ON_MOUSE_ENTER]: undefined,
+      [BaseEvent.ON_MOUSE_LEAVE]: undefined
+    },
+    advancedEvents: {
+      [EventLife.VNODE_MOUNTED]: undefined,
+      [EventLife.VNODE_BEFORE_MOUNT]: undefined
+    }
   }
 }
 

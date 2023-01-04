@@ -11,7 +11,7 @@
       </template>
 
       <n-list-item>
-        <n-space :size="20">
+        <n-space class="go-my-2" :size="20">
           <n-text class="item-left">版权声明：</n-text>
           <n-text>
             GoView 版权属于
@@ -21,8 +21,7 @@
       </n-list-item>
 
       <n-list-item>
-        <n-divider style="margin-top: 0" />
-        <n-space :size="20">
+        <n-space class="go-my-2" :size="20">
           <n-text class="item-left">协议备注：</n-text>
           <n-text>
             请遵守开源 MIT 协议，以上声明 <n-text type="error">不可删除</n-text>，否则视作侵权行为，后果自负！
@@ -31,8 +30,7 @@
       </n-list-item>
 
       <n-list-item>
-        <n-divider style="margin-top: 0" />
-        <n-space :size="20">
+        <n-space  class="go-mt-2" :size="20">
           <n-text class="item-left">商业授权：</n-text>
           <n-text>
             若不想保留版权声明，请通过仓库/交流群 联系项目作者，进行授权
@@ -44,13 +42,19 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, watch } from 'vue'
 import { icon } from '@/plugins'
 
-const { HelpOutlineIcon, CloseIcon } = icon.ionicons5
-const emit = defineEmits(['update:modelShow'])
-
-defineProps({
+const props = defineProps({
   modelShow: Boolean
+})
+
+const emit = defineEmits(['update:modelShow'])
+const { HelpOutlineIcon, CloseIcon } = icon.ionicons5
+const modelShow = ref(false)
+
+watch(() => props.modelShow, (newValue) => {
+  modelShow.value = newValue
 })
 
 const closeHandle = () => {

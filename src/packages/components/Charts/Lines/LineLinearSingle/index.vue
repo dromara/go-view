@@ -43,17 +43,21 @@ const option = reactive({
 watch(
   () => chartEditStore.getEditCanvasConfig.chartThemeColor,
   (newColor: keyof typeof chartColorsSearch) => {
-    if (!isPreview()) {
-      const themeColor = chartColorsSearch[newColor] || chartColorsSearch[defaultTheme]
-      props.chartConfig.option.series.forEach((value: any) => {
-        value.lineStyle.shadowColor = themeColor[2]
-        value.lineStyle.color.colorStops.forEach((v: { color: string }, i: number) => {
-          v.color = themeColor[i]
+    try {
+      if (!isPreview()) {
+        const themeColor = chartColorsSearch[newColor] || chartColorsSearch[defaultTheme]
+        props.chartConfig.option.series.forEach((value: any) => {
+          value.lineStyle.shadowColor = themeColor[2]
+          value.lineStyle.color.colorStops.forEach((v: { color: string }, i: number) => {
+            v.color = themeColor[i]
+          })
         })
-      })
+      }
+      option.value = mergeTheme(props.chartConfig.option, props.themeSetting, includes)
+      props.chartConfig.option = option.value
+    } catch (error) {
+      console.log(error)
     }
-    option.value = mergeTheme(props.chartConfig.option, props.themeSetting, includes)
-    props.chartConfig.option = option.value
   },
   {
     immediate: true

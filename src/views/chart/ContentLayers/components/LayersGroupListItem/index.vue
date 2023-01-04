@@ -2,7 +2,7 @@
   <div class="go-content-layers-group-list-item">
     <div
       class="root-item-content"
-      :class="{ hover: hover, select: select }"
+      :class="{ hover, select, 'list-mini': selectText }"
       @click="clickHandle($event)"
       @mousedown="groupMousedownHandle($event)"
       @mouseenter="mouseenterHandle(componentGroupData)"
@@ -18,11 +18,12 @@
             <folder-icon></folder-icon>
           </template>
         </n-icon>
-        <n-ellipsis>
+        <n-ellipsis style="margin-right: auto">
           <n-text class="go-ml-2 list-text" :depth="2">
             {{ componentGroupData.chartConfig.title }}
           </n-text>
         </n-ellipsis>
+        <layers-status :isGroup="false" :hover="hover" :status="status"></layers-status>
       </div>
       <div :class="{ 'select-modal': select }"></div>
     </div>
@@ -31,6 +32,8 @@
         v-for="element in componentGroupData.groupList"
         :key="element.id"
         :componentData="element"
+        :layer-mode="layerMode"
+        :isGroup="true"
         @mousedown="mousedownHandle($event, element, componentGroupData.id)"
         @mouseenter="mouseenterHandle(element)"
         @mouseleave="mouseleaveHandle(element)"
@@ -48,15 +51,20 @@ import { useDesignStore } from '@/store/modules/designStore/designStore'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { useContextMenu, divider } from '@/views/chart/hooks/useContextMenu.hook'
 import { MenuOptionsItemType } from '@/views/chart/hooks/useContextMenu.hook.d'
+import { LayerModeEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
 import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { LayersListItem } from '../LayersListItem'
-import throttle from 'lodash/throttle'
+import { LayersStatus } from '../LayersStatus/index'
 import { icon } from '@/plugins'
 
 const props = defineProps({
   componentGroupData: {
     type: Object as PropType<CreateComponentGroupType>,
     required: true
+  },
+  layerMode: {
+    type: String as PropType<LayerModeEnum>,
+    default: LayerModeEnum.THUMBNAIL
   }
 })
 
@@ -77,42 +85,10 @@ const themeColor = computed(() => {
   return designStore.getAppTheme
 })
 
-// 右键
-const optionsHandle = (
-  targetList: MenuOptionsItemType[],
-  allList: MenuOptionsItemType[],
-  targetInstance: CreateComponentType
-) => {
-  const filter = (menulist: MenuEnum[]) => {
-    const list: MenuOptionsItemType[] = []
-    allList.forEach(item => {
-      if (menulist.includes(item.key as MenuEnum)) {
-        list.push(item)
-      }
-    })
-    return list
-  }
-
-  // 多选处理
-  if (chartEditStore.getTargetChart.selectId.length > 1) {
-    return filter([MenuEnum.GROUP])
-  } else {
-    return [...filter([MenuEnum.UN_GROUP]), divider(), ...targetList]
-  }
-}
-
-// 点击
-const clickHandle = (e: MouseEvent) => {
-  // 按下左键 + CTRL
-  if (
-    window.$KeyboardActive?.has(WinKeyboard.CTRL_SOURCE_KEY) ||
-    window.$KeyboardActive?.has(MacKeyboard.CTRL_SOURCE_KEY)
-  )
-    return
-  // 判断左右键
-  expend.value = !expend.value
-  mousedownHandle(e, props.componentGroupData)
-}
+// 是否选中文本
+const selectText = computed(() => {
+  return props.layerMode === LayerModeEnum.TEXT
+})
 
 // 计算当前选中目标
 const select = computed(() => {
@@ -125,16 +101,59 @@ const hover = computed(() => {
   return props.componentGroupData.id === chartEditStore.getTargetChart.hoverId
 })
 
+// 组件状态 隐藏/锁定
+const status = computed(() => {
+  return props.componentGroupData.status
+})
+
+// 右键
+const optionsHandle = (
+  targetList: MenuOptionsItemType[],
+  allList: MenuOptionsItemType[],
+  targetInstance: CreateComponentType
+) => {
+  const filter = (menulist: MenuEnum[]) => {
+    return allList.filter(i => menulist.includes(i.key as MenuEnum))
+  }
+
+  // 多选处理
+  if (chartEditStore.getTargetChart.selectId.length > 1) {
+    return filter([MenuEnum.GROUP])
+  } else {
+    const statusMenuEnums: MenuEnum[] = []
+    if (targetInstance.status.lock) {
+      statusMenuEnums.push(MenuEnum.LOCK)
+    } else {
+      statusMenuEnums.push(MenuEnum.UNLOCK)
+    }
+    if (targetInstance.status.hide) {
+      statusMenuEnums.push(MenuEnum.HIDE)
+    } else {
+      statusMenuEnums.push(MenuEnum.SHOW)
+    }
+    return [
+      ...filter([MenuEnum.UN_GROUP]),
+      divider(),
+      ...targetList.filter(i => !statusMenuEnums.includes(i.key as MenuEnum))
+    ]
+  }
+}
+
+// 点击
+const clickHandle = (e: MouseEvent) => {
+  // 按下左键 + CTRL
+  if (window.$KeyboardActive?.ctrl) return
+  // 判断左右键
+  expend.value = !expend.value
+  mousedownHandle(e, props.componentGroupData)
+}
+
 // 组点击事件
 const groupMousedownHandle = (e: MouseEvent) => {
   onClickOutSide()
   // 若此时按下了 CTRL, 表示多选
   const id = props.componentGroupData.id
-  if (
-    e.buttons === MouseEventButton.LEFT &&
-    (window.$KeyboardActive?.has(WinKeyboard.CTRL_SOURCE_KEY) ||
-      window.$KeyboardActive?.has(MacKeyboard.CTRL_SOURCE_KEY))
-  ) {
+  if (e.buttons === MouseEventButton.LEFT && window.$KeyboardActive?.ctrl) {
     // 若已选中，则去除
     if (chartEditStore.targetChart.selectId.includes(id)) {
       const exList = chartEditStore.targetChart.selectId.filter(e => e !== id)
@@ -148,7 +167,11 @@ const groupMousedownHandle = (e: MouseEvent) => {
 }
 
 // 公共点击事件
-const mousedownHandle = (e: MouseEvent, componentInstance: CreateComponentType | CreateComponentGroupType, id?: string) => {
+const mousedownHandle = (
+  e: MouseEvent,
+  componentInstance: CreateComponentType | CreateComponentGroupType,
+  id?: string
+) => {
   e.preventDefault()
   e.stopPropagation()
 
@@ -169,6 +192,7 @@ const mouseleaveHandle = (componentInstance: CreateComponentType | CreateCompone
 
 <style lang="scss" scoped>
 $centerHeight: 52px;
+$centerMiniHeight: 28px;
 $textSize: 10px;
 
 @include go(content-layers-group-list-item) {
@@ -177,6 +201,20 @@ $textSize: 10px;
   margin: 10px 5%;
   margin-bottom: 5px;
   @extend .go-transition-quick;
+  @include deep() {
+    .go-content-layers-list-item {
+      margin-right: 0 !important;
+      width: 95% !important;
+    }
+  }
+
+  &:hover {
+    @include deep() {
+      .icon-item {
+        opacity: 1;
+      }
+    }
+  }
 
   .root-item-content {
     height: $centerHeight;
@@ -194,6 +232,17 @@ $textSize: 10px;
       background-color: rgba(0, 0, 0, 0);
       .list-img {
         border: 1px solid v-bind('themeColor') !important;
+      }
+    }
+
+    // mini样式
+    &.list-mini {
+      height: $centerMiniHeight;
+      .item-content {
+        height: calc(#{$centerMiniHeight} - 10px) !important;
+      }
+      .select-modal {
+        height: calc(#{$centerMiniHeight} + 2px) !important;
       }
     }
   }
@@ -219,6 +268,10 @@ $textSize: 10px;
   .list-text {
     padding-left: 6px;
     font-size: $textSize;
+  }
+
+  .list-status-icon {
+    margin-left: 3px;
   }
 }
 </style>

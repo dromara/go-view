@@ -14,7 +14,7 @@
       @collapse="collapsedHandle"
       @expand="expandHandle"
     >
-      <content-box class="go-content-layers go-boderbox" :show-top="false" :depth="2">
+      <content-box class="go-content-configurations go-boderbox" :show-top="false" :depth="2">
         <!-- 页面配置 -->
         <n-tabs v-if="!selectTarget" class="tabs-box" size="small" type="segment">
           <n-tab-pane
@@ -75,12 +75,13 @@ const { getDetails } = toRefs(useChartLayoutStore())
 const { setItem } = useChartLayoutStore()
 const chartEditStore = useChartEditStore()
 
-const { ConstructIcon, FlashIcon, DesktopOutlineIcon, LeafIcon } = icon.ionicons5
+const { ConstructIcon, FlashIcon, DesktopOutlineIcon, LeafIcon, RocketIcon } = icon.ionicons5
 
 const ContentEdit = loadAsyncComponent(() => import('../ContentEdit/index.vue'))
 const CanvasPage = loadAsyncComponent(() => import('./components/CanvasPage/index.vue'))
 const ChartSetting = loadAsyncComponent(() => import('./components/ChartSetting/index.vue'))
 const ChartData = loadAsyncComponent(() => import('./components/ChartData/index.vue'))
+const ChartEvent = loadAsyncComponent(() => import('./components/ChartEvent/index.vue'))
 const ChartAnimation = loadAsyncComponent(() => import('./components/ChartAnimation/index.vue'))
 
 const collapsed = ref<boolean>(getDetails.value)
@@ -102,6 +103,7 @@ const selectTarget = computed(() => {
   if (selectId.length !== 1) return undefined
   const target = chartEditStore.componentList[chartEditStore.fetchTargetIndex()]
   if (target?.isGroup) {
+    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
     tabsSelect.value = TabsEnum.CHART_SETTING
   }
   return target
@@ -147,12 +149,18 @@ const chartsTabList = [
     title: '数据',
     icon: FlashIcon,
     render: ChartData
+  },
+  {
+    key: TabsEnum.CHART_EVENT,
+    title: '事件',
+    icon: RocketIcon,
+    render: ChartEvent
   }
 ]
 </script>
 
 <style lang="scss" scoped>
-@include go(content-layers) {
+@include go(content-configurations) {
   overflow: hidden;
   .tabs-box {
     padding: 10px;

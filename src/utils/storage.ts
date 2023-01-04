@@ -1,4 +1,3 @@
-
 /**
  * * 存储本地会话数据
  * @param k 键名
@@ -29,7 +28,7 @@ export const getLocalStorage = (k: string) => {
 
 /**
  * * 清除本地会话数据
- * @param name 
+ * @param name
  */
 export const clearLocalStorage = (name: string) => {
   window.localStorage.removeItem(name)
@@ -64,7 +63,7 @@ export const getSessionStorage: (k: string) => any = (k: string) => {
 
 /**
  * * 清除本地会话数据
- * @param name 
+ * @param name
  */
 export const clearSessioStorage = (name: string) => {
   window.sessionStorage.removeItem(name)

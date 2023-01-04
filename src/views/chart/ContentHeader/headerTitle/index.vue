@@ -22,7 +22,7 @@
       v-model:value.trim="title"
       @keyup.enter="handleBlur"
       @blur="handleBlur"
-   ></n-input>
+    ></n-input>
   </n-space>
 </template>
 
@@ -50,25 +50,25 @@ watchEffect(() => {
 })
 
 const comTitle = computed(() => {
-  title.value = title.value && title.value.replace(/\s/g, "")
+  title.value = title.value && title.value.replace(/\s/g, '')
   return title.value.length ? title.value : fetchRouteParamsLocation()
 })
 
 const handleFocus = () => {
   focus.value = true
   nextTick(() => {
-    ; (<any>inputInstRef).value.focus()
+    inputInstRef.value && (inputInstRef.value as any).focus()
   })
 }
 
 const handleBlur = async () => {
   focus.value = false
   chartEditStore.setProjectInfo(ProjectInfoEnum.PROJECT_NAME, title.value || '')
-  const res = await updateProjectApi({
+  const res = (await updateProjectApi({
     id: fetchRouteParamsLocation(),
-    projectName: title.value,
-  }) as unknown as MyResponseType
-  if(res.code === ResultEnum.SUCCESS) {
+    projectName: title.value
+  }))
+  if (res && res.code === ResultEnum.SUCCESS) {
     dataSyncUpdate()
   } else {
     httpErrorHandle()

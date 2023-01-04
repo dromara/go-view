@@ -15,6 +15,8 @@ import type { ChartColorsNameType, GlobalThemeJsonType } from '@/settings/chartT
 
 // 项目数据枚举
 export enum ProjectInfoEnum {
+  // ID
+  PROJECT_ID = "projectId",
   // 名称
   PROJECT_NAME = 'projectName',
   // 描述
@@ -27,6 +29,7 @@ export enum ProjectInfoEnum {
 
 // 项目数据
 export type ProjectInfoType = {
+  [ProjectInfoEnum.PROJECT_ID]: string,
   [ProjectInfoEnum.PROJECT_NAME]: string,
   [ProjectInfoEnum.REMARKS]: string,
   [ProjectInfoEnum.THUMBNAIL]: string,
@@ -84,10 +87,14 @@ export enum EditCanvasConfigEnum {
 
 // 画布属性（需保存）
 export type EditCanvasConfigType = {
+  // ID
+  [EditCanvasConfigEnum.PROJECT_ID]: string,
   // 项目名称
   [EditCanvasConfigEnum.PROJECT_NAME]: string,
   // 项目描述
   [EditCanvasConfigEnum.REMARKS]: string,
+  // 滤镜-启用
+  [FilterEnum.FILTERS_SHOW]: boolean
   // 滤镜-色相
   [FilterEnum.HUE_ROTATE]: number
   // 滤镜-饱和度
@@ -104,6 +111,7 @@ export type EditCanvasConfigType = {
   [FilterEnum.ROTATE_Y]: number
   [FilterEnum.SKEW_X]: number
   [FilterEnum.SKEW_Y]: number
+  [FilterEnum.BLEND_MODE]: string
   // 大屏宽度
   [EditCanvasConfigEnum.WIDTH]: number
   // 大屏高度
@@ -122,6 +130,7 @@ export type EditCanvasConfigType = {
 }
 
 // 坐标轴信息
+// eslint-disable-next-line no-redeclare
 export enum EditCanvasTypeEnum {
   START_X = 'startX',
   START_Y = 'startY',
@@ -176,16 +185,27 @@ type RequestPublicConfigType = {
   requestParams: RequestParams
 }
 
+// 数据池项类型
+export type RequestDataPondItemType = {
+  dataPondId: string,
+  dataPondName: string,
+  dataPondRequestConfig: RequestConfigType
+}
+
 // 全局的图表请求配置
 export interface RequestGlobalConfigType extends RequestPublicConfigType {
   // 组件定制轮询时间
   requestInterval: number
   // 请求源地址
   requestOriginUrl?: string
+  // 公共数据池
+  requestDataPond: RequestDataPondItemType[]
 }
 
 // 单个图表请求配置
 export interface RequestConfigType extends RequestPublicConfigType {
+  // 所选全局数据池的对应 id
+  requestDataPondId?: string
   // 组件定制轮询时间
   requestInterval?: number
   // 获取数据的方式
