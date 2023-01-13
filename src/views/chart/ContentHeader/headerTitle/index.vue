@@ -29,9 +29,9 @@
 <script setup lang="ts">
 import { ref, nextTick, computed, watchEffect } from 'vue'
 import { ResultEnum } from '@/enums/httpEnum'
-import { fetchRouteParamsLocation, httpErrorHandle } from '@/utils'
+import { fetchRouteParamsLocation, httpErrorHandle, setTitle } from '@/utils'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-import { ProjectInfoEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
+import { ProjectInfoEnum, EditCanvasConfigEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { updateProjectApi } from '@/api/path'
 import { useSync } from '../../hooks/useSync.hook'
 import { icon } from '@/plugins'
@@ -50,8 +50,12 @@ watchEffect(() => {
 })
 
 const comTitle = computed(() => {
-  title.value = title.value && title.value.replace(/\s/g, '')
-  return title.value.length ? title.value : fetchRouteParamsLocation()
+  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+  title.value = title.value.replace(/\s/g, '')
+  const newTitle = title.value.length ? title.value : '新项目'
+  setTitle(`工作空间-${newTitle}`)
+  chartEditStore.setEditCanvasConfig(EditCanvasConfigEnum.PROJECT_NAME, newTitle)
+  return newTitle
 })
 
 const handleFocus = () => {

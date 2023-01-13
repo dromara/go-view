@@ -1,4 +1,3 @@
-import image from '@/assets/images/chart/informations/text_barrage.png'
 import { ConfigType, PackagesCategoryEnum } from '@/packages/index.d'
 import { ChatCategoryEnum,ChatCategoryEnumName } from '../../index.d'
 
@@ -10,5 +9,5 @@ export const TextBarrageConfig: ConfigType = {
   category: ChatCategoryEnum.TEXT,
   categoryName: ChatCategoryEnumName.TEXT,
   package: PackagesCategoryEnum.INFORMATIONS,
-  image
+  image: 'text_barrage.png'
 }

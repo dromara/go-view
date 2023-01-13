@@ -26,12 +26,8 @@ export default {
     msg: '请求成功',
     data: {
       dimensions: ['name', 'value'],
-      source: [
-        { name: '厦门', 'value|0-40': 20 },
-        { name: '南阳', 'value|20-60': 40 },
-        { name: '北京', 'value|40-80': 60 },
-        { name: '上海', 'value|60-100': 80 },
-        { name: '新疆', value: 100 }
+      "source|2-5": [
+        { 'name|+1': ["厦门","福州","北京","上海","新疆","郑州","湖南","内蒙古"], 'value|0-40': 20 },
       ]
     }
   },

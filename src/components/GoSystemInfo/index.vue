@@ -1,5 +1,5 @@
 <template>
-  <n-modal v-model:show="modelShow" @afterLeave="closeHandle">
+  <n-modal v-model:show="modelShowRef" @afterLeave="closeHandle">
     <n-list bordered class="go-system-info">
       <template #header>
         <n-space justify="space-between">
@@ -51,10 +51,10 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelShow'])
 const { HelpOutlineIcon, CloseIcon } = icon.ionicons5
-const modelShow = ref(false)
+const modelShowRef = ref(false)
 
 watch(() => props.modelShow, (newValue) => {
-  modelShow.value = newValue
+  modelShowRef.value = newValue
 })
 
 const closeHandle = () => {

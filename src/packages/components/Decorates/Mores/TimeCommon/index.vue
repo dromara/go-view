@@ -26,7 +26,7 @@ let yearMonthDay = ref('2021-2-3')
 let nowData = ref('08:00:00')
 let newData = ref('2021-2-3 08:00:00')
 let boxShadow = ref('none')
-
+let timer: any = null
 const { w, h } = toRefs(props.chartConfig.attr)
 
 let {
@@ -60,7 +60,7 @@ watch(
   }
 )
 onMounted(() => {
-  const timer = setInterval(() => {
+  timer = setInterval(() => {
     var datetime = new Date()
     var year = datetime.getFullYear()
     var month = datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1
@@ -81,7 +81,7 @@ onMounted(() => {
   }, 500)
 })
 onUnmounted(() => {
-  clearInterval()
+  clearInterval(timer)
 })
 useChartDataFetch(props.chartConfig, useChartEditStore)
 </script>

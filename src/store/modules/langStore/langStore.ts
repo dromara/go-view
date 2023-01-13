@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { lang } from '@/settings/designSetting'
 import { LangStateType } from './langStore.d'
 import { LangEnum } from '@/enums/styleEnum'
-import i18n from '@/i18n/index'
 import { setLocalStorage, getLocalStorage, reloadRoutePage } from '@/utils'
 import { StorageEnum } from '@/enums/storageEnum'
 import { useSettingStore } from '@/store/modules/settingStore/settingStore'
@@ -25,10 +24,8 @@ export const useLangStore = defineStore({
   actions: {
     changeLang(lang: LangEnum): void {
       const settingStore = useSettingStore()
-      
       if (this.lang === lang) return
       this.lang = lang
-      i18n.global.locale = lang
       setLocalStorage(GO_LANG_STORE, this.$state)
 
       if (settingStore.getChangeLangReload) {

@@ -87,6 +87,7 @@ import { renderIcon, renderLang,  requireErrorImg } from '@/utils'
 import { icon } from '@/plugins'
 import { MacOsControlBtn } from '@/components/Tips/MacOsControlBtn'
 import { Chartype } from '../../index.d'
+import { log } from 'console'
 const {
   EllipsisHorizontalCircleSharpIcon,
   CopyIcon,

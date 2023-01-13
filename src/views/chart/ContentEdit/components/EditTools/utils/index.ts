@@ -1,5 +1,5 @@
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-import { canvasCut, downloadTextFile } from '@/utils'
+import { canvasCut, downloadTextFile, JSONStringify } from '@/utils'
 const chartEditStore = useChartEditStore()
 
 // 导出
@@ -9,9 +9,7 @@ export const exportHandle = () => {
 
   // 导出数据
   downloadTextFile(
-    JSON.stringify(chartEditStore.getStorageInfo || {}, (k, v) => {
-      return v === undefined ? null : v
-    }),
+    JSONStringify(chartEditStore.getStorageInfo || []),
     undefined,
     'json'
   )

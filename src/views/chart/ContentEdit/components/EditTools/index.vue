@@ -173,17 +173,17 @@ const updateToSession = (id: string) => {
 // 配置列表
 const btnList: BtnListType[] = [
   {
-    key: 'export',
-    type: TypeEnum.BUTTON,
-    name: '导出',
-    icon: ShareIcon,
-    handle: exportHandle
-  },
-  {
     key: 'import',
     type: TypeEnum.IMPORTUPLOAD,
     name: '导入',
-    icon: DownloadIcon
+    icon: ShareIcon
+  },
+  {
+    key: 'export',
+    type: TypeEnum.BUTTON,
+    name: '导出',
+    icon: DownloadIcon,
+    handle: exportHandle
   },
   {
     key: 'edit',

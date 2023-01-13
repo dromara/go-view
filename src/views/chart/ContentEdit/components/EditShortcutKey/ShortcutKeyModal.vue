@@ -1,5 +1,5 @@
 <template>
-  <n-modal v-model:show="modelShow" :mask-closable="true" @afterLeave="closeHandle">
+  <n-modal v-model:show="modelShowRef" :mask-closable="true" @afterLeave="closeHandle">
     <n-table class="model-content" :bordered="false" :single-line="false">
       <thead>
         <tr>
@@ -31,15 +31,22 @@
 </template>
 
 <script setup lang="ts">
+import { watch, ref } from 'vue'
 import { icon } from '@/plugins'
 import { WinKeyboard, MacKeyboard } from '@/enums/editPageEnum'
 
 const { CloseIcon } = icon.ionicons5
+const modelShowRef = ref(false)
 
 const emit = defineEmits(['update:modelShow'])
 
-defineProps({
+const props = defineProps({
   modelShow: Boolean
+})
+
+
+watch(() => props.modelShow, (newValue) => {
+  modelShowRef.value = newValue
 })
 
 // 快捷键
@@ -126,6 +133,7 @@ const shortcutKeyOptions = [
     mac: `${MacKeyboard.CTRL.toUpperCase()} + ${WinKeyboard.SHIFT.toUpperCase()} + G `
   }
 ]
+
 const closeHandle = () => {
   emit('update:modelShow', false)
 }

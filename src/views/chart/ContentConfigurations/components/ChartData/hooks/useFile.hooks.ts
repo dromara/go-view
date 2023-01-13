@@ -1,7 +1,7 @@
 import { ref, toRef, nextTick } from 'vue'
 import { UploadCustomRequestOptions } from 'naive-ui'
 import { FileTypeEnum } from '@/enums/fileTypeEnum'
-import { readFile, downloadTextFile } from '@/utils'
+import { readFile, downloadTextFile, JSONStringify, JSONParse } from '@/utils'
 
 export const useFile = (targetData: any) => {
   const uploadFileListRef = ref()
@@ -23,7 +23,7 @@ export const useFile = (targetData: any) => {
     nextTick(() => {
       if (file.file) {
         readFile(file.file).then((fileData: any) => {
-          targetData.value.option.dataset = JSON.parse(fileData)
+          targetData.value.option.dataset = JSONParse(fileData)
         })
       } else {
         window['$message'].error('导入数据失败，请稍后重试或联系管理员！')
@@ -35,7 +35,7 @@ export const useFile = (targetData: any) => {
   const download = () => {
     try {
       window['$message'].success('下载中，请耐心等待...')
-      downloadTextFile(JSON.stringify(targetData.value.option.dataset), undefined, 'json')
+      downloadTextFile(JSONStringify(targetData.value.option.dataset), undefined, 'json')
     } catch (error) {
       window['$message'].error('下载失败，数据错误！')
     }

@@ -1,4 +1,3 @@
-import image from '@/assets/images/chart/informations/text_gradient.png'
 import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum,ChatCategoryEnumName } from '../../index.d'
 
@@ -11,5 +10,5 @@ export const TextGradientConfig: ConfigType = {
   categoryName: ChatCategoryEnumName.TEXT,
   package: PackagesCategoryEnum.INFORMATIONS,
   chartFrame: ChartFrameEnum.NAIVE_UI,
-  image
+  image: 'text_gradient.png'
 }

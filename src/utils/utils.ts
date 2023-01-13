@@ -268,3 +268,45 @@ export const setKeyboardDressShow = (keyCode?: number) => {
   }
 }
 
+/**
+ * * JSON序列化，支持函数和 undefined
+ * @param data
+ */
+export const JSONStringify = <T>(data: T) => {
+  return JSON.stringify(
+    data,
+    (key, val) => {
+      // 处理函数丢失问题
+      if (typeof val === 'function') {
+        return `${val}`
+      }
+      // 处理 undefined 丢失问题
+      if (typeof val === 'undefined') {
+        return 'undefined'
+      }
+      return val
+    },
+    2
+  )
+}
+
+/**
+ * * JSON反序列化，支持函数和 undefined
+ * @param data
+ */
+export const JSONParse = (data: string) => {
+  return JSON.parse(data, (k, v) => {
+    if (typeof v === 'string' && v.indexOf && (v.indexOf('function') > -1 || v.indexOf('=>') > -1)) {
+      return eval(`(function(){return ${v}})()`)
+    }
+    return v
+  })
+}
+
+/**
+ * * 修改顶部标题
+ * @param title
+ */
+export const setTitle = (title?: string) => {
+  title && (document.title = title)
+}

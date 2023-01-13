@@ -37,7 +37,7 @@
   <!-- model -->
   <project-items-modal-card
     v-if="modalData"
-    v-model:modalShow="modalShow"
+    :modalShow="modalShow"
     :cardData="modalData"
     @close="closeModal"
     @edit="editHandle"

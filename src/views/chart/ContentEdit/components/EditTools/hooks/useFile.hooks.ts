@@ -1,7 +1,7 @@
 import { ref, nextTick } from 'vue'
 import { UploadCustomRequestOptions } from 'naive-ui'
 import { FileTypeEnum } from '@/enums/fileTypeEnum'
-import { readFile, goDialog } from '@/utils'
+import { readFile, goDialog, JSONParse } from '@/utils'
 import { useSync } from '@/views/chart/hooks/useSync.hook'
 
 export const useFile = () => {
@@ -33,7 +33,7 @@ export const useFile = () => {
             // 新增
             onPositiveCallback: async () => {
               try {
-                fileData = JSON.parse(fileData)
+                fileData = JSONParse(fileData)
                 await updateComponent(fileData, false, true)
                 window['$message'].success('导入成功！')
               } catch (error) {
@@ -44,7 +44,7 @@ export const useFile = () => {
             // 覆盖
             onNegativeCallback: async () => {
               try {
-                fileData = JSON.parse(fileData)
+                fileData = JSONParse(fileData)
                 await updateComponent(fileData, true, true)
                 window['$message'].success('导入成功！')
               } catch (error) {

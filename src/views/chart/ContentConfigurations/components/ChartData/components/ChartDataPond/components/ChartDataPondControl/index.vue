@@ -1,5 +1,5 @@
 <template>
-  <n-modal class="go-chart-data-pond-control" v-model:show="modelShow" :mask-closable="false">
+  <n-modal class="go-chart-data-pond-control" v-model:show="modelShowRef" :mask-closable="false">
     <n-card :bordered="false" role="dialog" size="small" aria-modal="true" style="width: 900px; height: 650px">
       <template #header></template>
       <template #header-extra> </template>
@@ -37,7 +37,6 @@
 
   <!-- 请求配置model -->
   <pond-data-request
-    v-if="requestShow"
     v-model:modelShow="requestShow"
     :targetDataRequest="editData"
     :isEdit="isEdit"
@@ -59,7 +58,7 @@ import { icon } from '@/plugins'
 import { getUUID, goDialog } from '@/utils'
 import { cloneDeep } from 'lodash'
 
-defineProps({
+const props = defineProps({
   modelShow: Boolean
 })
 
@@ -68,6 +67,7 @@ const { PencilIcon } = icon.ionicons5
 const { chartEditStore, targetData } = useTargetData()
 const { requestDataPond } = toRefs(chartEditStore.getRequestGlobalConfig)
 const requestShow = ref(false)
+const modelShowRef = ref(false)
 const loading = ref(false)
 const isEdit = ref(false)
 const editData = ref<RequestDataPondItemType>()
@@ -80,6 +80,10 @@ const pondData = computed(() => {
     return selectId === item.dataPondId
   })
   return data[0]
+})
+
+watch(() => props.modelShow, (newValue) => {
+  modelShowRef.value = newValue
 })
 
 watch(

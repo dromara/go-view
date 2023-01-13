@@ -1,5 +1,5 @@
 <template>
-  <n-modal class="go-chart-data-request" v-model:show="modelShow" :mask-closable="false" :closeOnEsc="false">
+  <n-modal class="go-chart-data-request" v-model:show="modelShowRef" :mask-closable="false" :closeOnEsc="false">
     <n-card :bordered="false" role="dialog" size="small" aria-modal="true" style="width: 1000px; height: 800px">
       <template #header></template>
       <template #header-extra> </template>
@@ -29,7 +29,7 @@
 </template>
 
 <script script lang="ts" setup>
-import { toRefs, PropType } from 'vue'
+import { ref, toRefs, PropType, watch } from 'vue'
 import { RequestContentTypeEnum } from '@/enums/httpEnum'
 import { useTargetData } from '../../../hooks/useTargetData.hook'
 import { RequestGlobalConfig } from './components/RequestGlobalConfig'
@@ -50,10 +50,21 @@ const { dataSyncUpdate } = useSync()
 // 解构基础配置
 const { chartConfig } = toRefs(props.targetData as CreateComponentType)
 const { requestContentType } = toRefs((props.targetData as CreateComponentType).request)
+const modelShowRef = ref(false)
 const requestContentTypeObj = {
   [RequestContentTypeEnum.DEFAULT]: '普通请求',
   [RequestContentTypeEnum.SQL]: 'SQL 请求'
 }
+
+watch(
+  () => props.modelShow,
+  newValue => {
+    modelShowRef.value = newValue
+  },
+  {
+    immediate: true
+  }
+)
 
 const closeHandle = () => {
   emit('update:modelShow', false)

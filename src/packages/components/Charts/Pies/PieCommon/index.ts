@@ -1,4 +1,3 @@
-import image from '@/assets/images/chart/charts/pie.png'
 import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
 
@@ -11,5 +10,5 @@ export const PieCommonConfig: ConfigType = {
   categoryName: ChatCategoryEnumName.PIE,
   package: PackagesCategoryEnum.CHARTS,
   chartFrame: ChartFrameEnum.ECHARTS,
-  image
+  image: 'pie.png'
 }

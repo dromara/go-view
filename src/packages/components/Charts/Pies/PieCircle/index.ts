@@ -11,5 +11,5 @@ export const PieCircleConfig: ConfigType = {
   categoryName: ChatCategoryEnumName.PIE,
   package: PackagesCategoryEnum.CHARTS,
   chartFrame: ChartFrameEnum.ECHARTS,
-  image
+  image: 'pie-circle.png'
 }

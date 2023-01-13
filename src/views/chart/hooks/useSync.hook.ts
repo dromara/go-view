@@ -1,6 +1,6 @@
 import { onUnmounted } from 'vue';
 import html2canvas from 'html2canvas'
-import { getUUID, httpErrorHandle, fetchRouteParamsLocation, base64toFile } from '@/utils'
+import { getUUID, httpErrorHandle, fetchRouteParamsLocation, base64toFile, JSONStringify, JSONParse } from '@/utils'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { EditCanvasTypeEnum, ChartEditStoreEnum, ProjectInfoEnum, ChartEditStorage } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { useChartHistoryStore } from '@/store/modules/chartHistoryStore/chartHistoryStore'
@@ -245,7 +245,7 @@ export const useSync = () => {
         if (res.data) {
           updateStoreInfo(res.data)
           // 更新全局数据
-          await updateComponent(JSON.parse(res.data.content))
+          await updateComponent(JSONParse(res.data.content))
           return
         }else {
           chartEditStore.setProjectInfo(ProjectInfoEnum.PROJECT_ID, fetchRouteParamsLocation())
@@ -305,7 +305,7 @@ export const useSync = () => {
     // 保存数据
     let params = new FormData()
     params.append('projectId', projectId)
-    params.append('content', JSON.stringify(chartEditStore.getStorageInfo || {}))
+    params.append('content', JSONStringify(chartEditStore.getStorageInfo || {}))
     const res= await saveProjectApi(params)
 
     if (res && res.code === ResultEnum.SUCCESS) {

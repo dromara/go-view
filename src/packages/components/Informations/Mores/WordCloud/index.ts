@@ -1,4 +1,3 @@
-import image from '@/assets/images/chart/informations/words_cloud.png'
 import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
 
@@ -11,5 +10,5 @@ export const WordCloudConfig: ConfigType = {
   categoryName: ChatCategoryEnumName.MORE,
   package: PackagesCategoryEnum.INFORMATIONS,
   chartFrame: ChartFrameEnum.COMMON,
-  image
+  image: 'words_cloud.png'
 }

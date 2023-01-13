@@ -10,5 +10,5 @@ export const Decorates05Config: ConfigType = {
   category: ChatCategoryEnum.DECORATE,
   categoryName: ChatCategoryEnumName.DECORATE,
   package: PackagesCategoryEnum.DECORATES,
-  image
+  image: 'decorates05.png'
 }

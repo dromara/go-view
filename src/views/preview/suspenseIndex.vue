@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { PreviewRenderList } from './components/PreviewRenderList'
-import { getFilterStyle, routerTurnByName, getSessionStorage } from '@/utils'
+import { getFilterStyle, routerTurnByName, getSessionStorage, setTitle } from '@/utils'
 import { getEditCanvasConfigStyle, getSessionStorageInfo } from './utils'
 import { PageEnum } from '@/enums/pageEnum'
 import { StorageEnum } from '@/enums/storageEnum'
@@ -50,6 +50,7 @@ const storageList: ChartEditStorageType[] = getSessionStorage(
 )
 
 const localStorageInfo = await getSessionStorageInfo() as unknown as ChartEditStorageType
+setTitle(`预览-${localStorageInfo.editCanvasConfig.projectName}`)
 
 // @ts-ignore
 if(localStorageInfo.isRelease === false) {

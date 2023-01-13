@@ -1,5 +1,5 @@
 <template>
-  <n-modal class="go-chart-data-request" v-model:show="modelShow" :mask-closable="false" :closeOnEsc="false">
+  <n-modal class="go-chart-data-request" v-model:show="modelShowRef" :mask-closable="false" :closeOnEsc="false">
     <n-card :bordered="false" role="dialog" size="small" aria-modal="true" style="width: 1000px; height: 800px">
       <template #header></template>
       <template #header-extra> </template>
@@ -42,7 +42,7 @@
 </template>
 
 <script script lang="ts" setup>
-import { PropType, ref, watchEffect } from 'vue'
+import { PropType, ref, watch } from 'vue'
 import { RequestContentTypeEnum } from '@/enums/httpEnum'
 import { useTargetData } from '../../../hooks/useTargetData.hook'
 import { RequestGlobalConfig } from './components/RequestGlobalConfig'
@@ -60,6 +60,12 @@ const emit = defineEmits(['update:modelShow', 'editSaveHandle'])
 const { dataSyncUpdate } = useSync()
 const pondName = ref()
 const inputInstRef = ref()
+const modelShowRef = ref(false)
+
+watch(() => props.modelShow, (newValue) => {
+  modelShowRef.value = newValue
+})
+
 
 const closeHandle = () => {
   emit('update:modelShow', false)

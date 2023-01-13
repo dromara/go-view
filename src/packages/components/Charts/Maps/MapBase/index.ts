@@ -1,5 +1,4 @@
 import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
-import image from '@/assets/images/chart/charts/map.png'
 import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
 
 export const MapBaseConfig: ConfigType = {
@@ -11,5 +10,5 @@ export const MapBaseConfig: ConfigType = {
     categoryName: ChatCategoryEnumName.MAP,
     package: PackagesCategoryEnum.CHARTS,
     chartFrame: ChartFrameEnum.COMMON,
-    image
-  }
+    image: 'map.png'
+}

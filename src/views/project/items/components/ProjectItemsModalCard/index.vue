@@ -2,7 +2,7 @@
   <!-- mask-closable 暂时是失效的，不知道为啥 -->
   <n-modal
     class="go-modal-box"
-    v-model:show="modalShow"
+    v-model:show="showRef"
     @afterLeave="closeHandle"
   >
     <n-card hoverable size="small">
@@ -73,20 +73,41 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, PropType } from 'vue'
+import { ref, reactive, PropType, watch } from 'vue'
 import { renderIcon, renderLang } from '@/utils'
 import { icon } from '@/plugins'
 import { MacOsControlBtn } from '@/components/Tips/MacOsControlBtn'
 import { Chartype } from '../../index.d'
 
 const { HammerIcon } = icon.ionicons5
-
+const showRef = ref(false)
 const emit = defineEmits(['close', 'edit'])
 
 const props = defineProps({
-  modalShow: Boolean,
-  cardData: Object as PropType<Chartype>
+  modalShow: {
+    required: true,
+    type: Boolean
+  },
+  cardData: {
+    required: true,
+    type: Object
+  }
 })
+
+watch(
+  () => props.modalShow,
+  newValue => {
+    showRef.value = newValue
+  },
+  {
+    immediate: true
+  }
+)
+
+// 处理url获取
+const requireUrl = (name: string) => {
+  return new URL(`../../../../../assets/images/${name}`, import.meta.url).href
+}
 
 const fnBtnList = reactive([
   {

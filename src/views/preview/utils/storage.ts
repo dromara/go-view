@@ -1,4 +1,4 @@
-import { getSessionStorage, fetchRouteParamsLocation, httpErrorHandle } from '@/utils'
+import { getSessionStorage, fetchRouteParamsLocation, httpErrorHandle, JSONParse } from '@/utils'
 import { ResultEnum } from '@/enums/httpEnum'
 import { StorageEnum } from '@/enums/storageEnum'
 import { ChartEditStorage } from '@/store/modules/chartEditStore/chartEditStore.d'
@@ -23,7 +23,7 @@ export const getSessionStorageInfo = async () => {
         // 跳转未发布页
         return { isRelease: false }
       }
-      return { ...JSON.parse(content), id }
+      return { ...JSONParse(content), id }
     } else {
       httpErrorHandle()
     }

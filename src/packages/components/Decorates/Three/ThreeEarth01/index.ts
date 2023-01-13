@@ -1,4 +1,3 @@
-import image from '@/assets/images/chart/decorates/threeEarth01.png'
 import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
 
@@ -11,5 +10,5 @@ export const ThreeEarth01Config: ConfigType = {
   categoryName: ChatCategoryEnumName.THREE,
   package: PackagesCategoryEnum.DECORATES,
   chartFrame: ChartFrameEnum.STATIC,
-  image
+  image: 'threeEarth01.png'
 }

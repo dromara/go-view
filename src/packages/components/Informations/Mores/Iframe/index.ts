@@ -1,4 +1,3 @@
-import image from '@/assets/images/chart/informations/iframe.png'
 import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum,ChatCategoryEnumName } from '../../index.d'
 
@@ -11,5 +10,5 @@ export const IframeConfig: ConfigType = {
   categoryName: ChatCategoryEnumName.MORE,
   package: PackagesCategoryEnum.INFORMATIONS,
   chartFrame: ChartFrameEnum.COMMON,
-  image
+  image: 'iframe.png'
 }

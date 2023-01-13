@@ -112,16 +112,12 @@ watch(
 )
 
 const calcData = (data: any, type?: string) => {
-  mergeConfig(props.chartConfig.option)
+  let cloneConfig = cloneDeep(props.chartConfig.option || {})
+  state.mergedConfig = cloneConfig
   if (type == 'preview') {
-    calcCapsuleLengthAndLabelData(data)
-  } else {
-    calcCapsuleLengthAndLabelData(state.mergedConfig.dataset)
+    cloneConfig.dataset = data
   }
-}
-
-const mergeConfig = (data: any) => {
-  state.mergedConfig = cloneDeep(data || {})
+  calcCapsuleLengthAndLabelData(state.mergedConfig.dataset)
 }
 
 // 数据解析

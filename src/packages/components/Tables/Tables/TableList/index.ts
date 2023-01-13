@@ -1,4 +1,3 @@
-import image from '@/assets/images/chart/tables/tables_list.png'
 import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
 
@@ -11,5 +10,5 @@ export const TableListConfig: ConfigType = {
   categoryName: ChatCategoryEnumName.TABLE,
   package: PackagesCategoryEnum.TABLES,
   chartFrame: ChartFrameEnum.COMMON,
-  image
+  image: 'tables_list.png'
 }

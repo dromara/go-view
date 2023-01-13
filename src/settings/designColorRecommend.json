@@ -7,6 +7,13 @@
     "pinyin": "bikonlv"
   },
   {
+    "CMYK": [73, 17, 20, 1],
+    "RGB": [102, 169, 201],
+    "hex": "#66a9c9",
+    "name": "涧石蓝",
+    "pinyin": "jianshilan"
+  },
+  {
     "CMYK": [4, 13, 67, 0],
     "RGB": [248, 223, 114],
     "hex": "#f8df72",
@@ -19,12 +26,5 @@
     "hex": "#3c7eff",
     "name": "深海蓝",
     "pinyin": "shenhailan"
-  },
-  {
-    "CMYK": [59, 12, 19, 0],
-    "RGB": [138, 188, 209],
-    "hex": "#8abcd1",
-    "name": "秋波蓝",
-    "pinyin": "qiubolan"
   }
 ]

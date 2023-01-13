@@ -22,7 +22,7 @@
           </n-text>
         </div>
         <div class="list-center go-flex-center go-transition">
-          <img class="list-img" v-lazy="item.image" alt="图表图片" />
+          <charts-item-image class="list-img" :chartConfig="item"></charts-item-image>
         </div>
         <div class="list-bottom">
           <n-text class="list-bottom-text" depth="3">
@@ -37,16 +37,18 @@
 <script setup lang="ts">
 import { PropType, watch, ref, Ref, computed, nextTick } from 'vue'
 import { MacOsControlBtn } from '@/components/Tips/MacOsControlBtn/index'
+import { ChartsItemImage } from '../ChartsItemImage'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { EditCanvasTypeEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { ChartModeEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
 import { useChartLayoutStore } from '@/store/modules/chartLayoutStore/chartLayoutStore'
-import { componentInstall, loadingStart, loadingFinish, loadingError } from '@/utils'
+import { componentInstall, loadingStart, loadingFinish, loadingError, JSONStringify } from '@/utils'
 import { DragKeyEnum } from '@/enums/editPageEnum'
 import { createComponent } from '@/packages'
 import { ConfigType, CreateComponentType } from '@/packages/index.d'
 import { fetchConfigComponent, fetchChartComponent } from '@/packages/index'
 import omit from 'lodash/omit'
+
 const chartEditStore = useChartEditStore()
 
 defineProps({
@@ -70,7 +72,7 @@ const dragStartHandle = (e: DragEvent, item: ConfigType) => {
   componentInstall(item.chartKey, fetchChartComponent(item))
   componentInstall(item.conKey, fetchConfigComponent(item))
   // 将配置项绑定到拖拽属性上
-  e!.dataTransfer!.setData(DragKeyEnum.DRAG_KEY, JSON.stringify(omit(item, ['image'])))
+  e!.dataTransfer!.setData(DragKeyEnum.DRAG_KEY, JSONStringify(omit(item, ['image'])))
   // 修改状态
   chartEditStore.setEditCanvas(EditCanvasTypeEnum.IS_CREATE, true)
 }

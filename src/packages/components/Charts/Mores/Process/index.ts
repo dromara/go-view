@@ -1,5 +1,3 @@
-// 展示图片
-import image from '@/assets/images/chart/charts/process.png'
 // 公共类型声明
 import { ConfigType, PackagesCategoryEnum } from '@/packages/index.d'
 // 当前[信息模块]分类声明
@@ -21,5 +19,5 @@ export const ProcessConfig: ConfigType = {
   // 包分类
   package: PackagesCategoryEnum.CHARTS,
   // 图片
-  image: image
+  image: 'process.png'
 }

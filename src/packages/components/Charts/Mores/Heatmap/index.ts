@@ -1,4 +1,3 @@
-import image from '@/assets/images/chart/charts/heatmap.png'
 import { ConfigType, PackagesCategoryEnum, ChartFrameEnum } from '@/packages/index.d'
 import { ChatCategoryEnum, ChatCategoryEnumName } from '../../index.d'
 
@@ -11,5 +10,5 @@ export const HeatmapConfig: ConfigType = {
   categoryName: ChatCategoryEnumName.MORE,
   package: PackagesCategoryEnum.CHARTS,
   chartFrame: ChartFrameEnum.COMMON,
-  image
+  image: 'heatmap.png'
 }

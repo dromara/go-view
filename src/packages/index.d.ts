@@ -22,7 +22,7 @@ export type ConfigType = {
   categoryName: string
   package: string
   chartFrame?: ChartFrameEnum
-  image: string | (() => Promise<typeof import('*.png')>)
+  image: string
 }
 
 // 数据请求

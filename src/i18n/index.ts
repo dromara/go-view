@@ -23,6 +23,8 @@ export const langList = [
 ]
 
 const i18n = createI18n({
+  legacy: false,
+  globalInjection:true,
   locale: langStorage?.lang || lang,
   fallbackLocale: langStorage?.lang || lang,
   messages: {

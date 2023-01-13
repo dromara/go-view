@@ -6,7 +6,7 @@ import { CreateComponentType, CreateComponentGroupType, PickCreateComponentType 
 import { useContextMenu } from '@/views/chart/hooks/useContextMenu.hook'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { EditCanvasTypeEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
-import { loadingStart, loadingFinish, loadingError, setComponentPosition } from '@/utils'
+import { loadingStart, loadingFinish, loadingError, setComponentPosition, JSONParse } from '@/utils'
 import { throttle, cloneDeep } from 'lodash'
 
 const chartEditStore = useChartEditStore()
@@ -28,7 +28,7 @@ export const dragHandle = async (e: DragEvent) => {
 
     // 修改状态
     chartEditStore.setEditCanvas(EditCanvasTypeEnum.IS_CREATE, false)
-    const dropData: Exclude<ConfigType, ['image']> = JSON.parse(drayDataString)
+    const dropData: Exclude<ConfigType, ['image']> = JSONParse(drayDataString)
 
     // 创建新图表组件
     let newComponent: CreateComponentType = await createComponent(dropData)

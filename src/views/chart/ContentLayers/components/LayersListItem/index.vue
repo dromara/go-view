@@ -5,7 +5,7 @@
         class="list-img"
         object-fit="contain"
         preview-disabled
-        :src="image"
+        :src="imageInfo"
         :fallback-src="requireErrorImg()"
       ></n-image>
       <n-ellipsis style="margin-right: auto">
@@ -20,16 +20,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType } from 'vue'
+import { computed, PropType, ref, watch } from 'vue'
 import { requireErrorImg } from '@/utils'
 import { useDesignStore } from '@/store/modules/designStore/designStore'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { LayerModeEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
+import { fetchImages } from '@/packages'
+import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { LayersStatus } from '../LayersStatus/index'
 
 const props = defineProps({
   componentData: {
-    type: Object,
+    type: Object as PropType<CreateComponentType | CreateComponentGroupType>,
     required: true
   },
   isGroup: {
@@ -45,9 +47,13 @@ const props = defineProps({
 // 全局颜色
 const designStore = useDesignStore()
 const chartEditStore = useChartEditStore()
+const imageInfo = ref('')
 
-// eslint-disable-next-line vue/no-setup-props-destructure
-const { image } = props.componentData.chartConfig
+// 获取图片
+const fetchImageUrl = async () => {
+  imageInfo.value = await fetchImages(props.componentData.chartConfig)
+}
+fetchImageUrl()
 
 // 颜色
 const themeColor = computed(() => {

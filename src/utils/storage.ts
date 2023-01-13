@@ -1,3 +1,5 @@
+import { JSONStringify, JSONParse } from './utils'
+
 /**
  * * 存储本地会话数据
  * @param k 键名
@@ -6,7 +8,7 @@
  */
 export const setLocalStorage = <T>(k: string, v: T) => {
   try {
-    window.localStorage.setItem(k, JSON.stringify(v))
+    window.localStorage.setItem(k, JSONStringify(v))
   } catch (error) {
     return false
   }
@@ -20,7 +22,7 @@ export const setLocalStorage = <T>(k: string, v: T) => {
 export const getLocalStorage = (k: string) => {
   const item = window.localStorage.getItem(k)
   try {
-    return item ? JSON.parse(item) : item
+    return item ? JSONParse(item) : item
   } catch (err) {
     return item
   }
