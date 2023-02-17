@@ -2,13 +2,14 @@
   <div
     class="chart-item"
     v-for="(item, index) in localStorageInfo.componentList"
-    :class="[animationsClass(item.styles.animations), !item.isGroup && 'hidden']"
+    :class="animationsClass(item.styles.animations)"
     :key="item.id"
     :style="{
       ...getComponentAttrStyle(item.attr, index),
       ...getFilterStyle(item.styles),
       ...getTransformStyle(item.styles),
       ...getStatusStyle(item.status),
+      ...getPreviewConfigStyle(item.preview),
       ...getBlendModeStyle(item.styles) as any
     }"
   >
@@ -43,7 +44,7 @@ import { PreviewRenderGroup } from '../PreviewRenderGroup/index'
 import { CreateComponentGroupType } from '@/packages/index.d'
 import { chartColors } from '@/settings/chartThemes/index'
 import { animationsClass, getFilterStyle, getTransformStyle, getBlendModeStyle } from '@/utils'
-import { getSizeStyle, getComponentAttrStyle, getStatusStyle } from '../../utils'
+import { getSizeStyle, getComponentAttrStyle, getStatusStyle, getPreviewConfigStyle } from '../../utils'
 import { useLifeHandler } from '@/hooks'
 
 // 初始化数据池
@@ -78,8 +79,5 @@ onMounted(() => {
 <style lang="scss" scoped>
 .chart-item {
   position: absolute;
-  &.hidden {
-    overflow: hidden;
-  }
 }
 </style>

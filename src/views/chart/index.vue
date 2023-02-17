@@ -14,8 +14,10 @@
         </template>
       </layout-header-pro>
       <n-layout-content content-style="overflow:hidden; display: flex">
-        <content-charts></content-charts>
-        <content-layers></content-layers>
+        <div style="overflow:hidden; display: flex">
+          <content-charts></content-charts>
+          <content-layers></content-layers>
+        </div>
         <content-configurations></content-configurations>
       </n-layout-content>
     </n-layout>

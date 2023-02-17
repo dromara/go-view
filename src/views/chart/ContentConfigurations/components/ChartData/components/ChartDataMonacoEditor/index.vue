@@ -150,7 +150,7 @@ const filterRes = computed(() => {
   } catch (error) {
     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
     errorFlag.value = true
-    return '过滤函数错误'
+    return `过滤函数错误，日志：${error}`
   }
 })
 

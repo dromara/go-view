@@ -3,6 +3,7 @@ import { EditCanvasConfigType } from '@/store/modules/chartEditStore/chartEditSt
 
 type AttrType = PickCreateComponentType<'attr'>
 type StatusType = PickCreateComponentType<'status'>
+type PreviewConfig = PickCreateComponentType<'preview'>
 
 // 设置位置
 export const getComponentAttrStyle = (attr: AttrType, index: number) => {
@@ -27,6 +28,17 @@ export const getStatusStyle = (attr: StatusType) => {
   return {
     display: attr.hide ? 'none' : 'block'
   }
+}
+
+// 设置预览配置样式
+export const getPreviewConfigStyle = (previewConfig: PreviewConfig) => {
+  const previewStyle: Partial<CSSStyleDeclaration> = {}
+  if (previewConfig) {
+    if (previewConfig.overFlowHidden) {
+      previewStyle.overflow = 'hidden'
+    }
+  }
+  return previewStyle
 }
 
 // 全局样式

@@ -164,7 +164,8 @@ import { useTargetData } from '../../../hooks/useTargetData.hook'
 import { templateList } from './importTemplate'
 import { npmPkgs } from '@/hooks'
 import { icon } from '@/plugins'
-import { CreateComponentType, EventLife } from '@/packages/index.d'
+import { CreateComponentType } from '@/packages/index.d'
+import { EventLife } from '@/enums/eventEnum'
 
 const { targetData, chartEditStore } = useTargetData()
 const { DocumentTextIcon, ChevronDownIcon, PencilIcon } = icon.ionicons5

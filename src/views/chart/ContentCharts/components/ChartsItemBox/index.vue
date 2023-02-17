@@ -22,7 +22,7 @@
           </n-text>
         </div>
         <div class="list-center go-flex-center go-transition">
-          <charts-item-image class="list-img" :chartConfig="item"></charts-item-image>
+          <chart-glob-image class="list-img" :chartConfig="item"></chart-glob-image>
         </div>
         <div class="list-bottom">
           <n-text class="list-bottom-text" depth="3">
@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import { PropType, watch, ref, Ref, computed, nextTick } from 'vue'
 import { MacOsControlBtn } from '@/components/Tips/MacOsControlBtn/index'
-import { ChartsItemImage } from '../ChartsItemImage'
+import { ChartGlobImage } from '@/components/Pages/ChartGlobImage'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { EditCanvasTypeEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { ChartModeEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
@@ -47,6 +47,7 @@ import { DragKeyEnum } from '@/enums/editPageEnum'
 import { createComponent } from '@/packages'
 import { ConfigType, CreateComponentType } from '@/packages/index.d'
 import { fetchConfigComponent, fetchChartComponent } from '@/packages/index'
+
 import omit from 'lodash/omit'
 
 const chartEditStore = useChartEditStore()

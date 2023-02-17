@@ -6,6 +6,7 @@ import { CreateComponentType, ChartFrameEnum } from '@/packages/index.d'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { RequestDataTypeEnum } from '@/enums/httpEnum'
 import { isPreview, newFunctionHandle, intervalUnitHandle } from '@/utils'
+import { setOption } from '@/packages/public/chart'
 
 // 获取类型
 type ChartEditStoreType = typeof useChartEditStore
@@ -34,7 +35,7 @@ export const useChartDataFetch = (
   const echartsUpdateHandle = (dataset: any) => {
     if (chartFrame === ChartFrameEnum.ECHARTS) {
       if (vChartRef.value) {
-        vChartRef.value.setOption({ dataset: dataset })
+        setOption(vChartRef.value, { dataset: dataset })
       }
     }
   }

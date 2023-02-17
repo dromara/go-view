@@ -16,7 +16,7 @@ import 'echarts-wordcloud'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import config, { includes } from './config'
-import { mergeTheme } from '@/packages/public/chart'
+import { mergeTheme, setOption } from '@/packages/public/chart'
 import { useChartDataFetch } from '@/hooks'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { isPreview } from '@/utils'
@@ -49,7 +49,7 @@ const option = computed(() => {
 const dataSetHandle = (dataset: typeof dataJson) => {
   try {
     dataset && (props.chartConfig.option.series[0].data = dataset)
-    vChartRef.value && isPreview() && vChartRef.value.setOption(props.chartConfig.option)
+    vChartRef.value && isPreview() && setOption(vChartRef.value, props.chartConfig.option)
   } catch (error) {
     console.log(error)
   }

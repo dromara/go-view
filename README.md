@@ -160,8 +160,8 @@ make dist
 
 ## 交流
 
-QQ 群：1030129384
+QQ 群：663629294
 
-![QQ群](readme/go-view-qq.png)
+<img width="260px" src="readme/go-view-qq.png" alt="QQ群" style="border-radius: 20px" />
 
 ![渲染海报](readme/logo-poster.png)

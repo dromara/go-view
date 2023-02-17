@@ -1,8 +1,10 @@
 export enum StorageEnum {
   // 全局设置
-  GO_SETTING_STORE = 'GO_SETTING',
+  GO_SYSTEM_SETTING_STORE = 'GO_SYSTEM_SETTING',
+  // token 等信息
+  GO_ACCESS_TOKEN_STORE = 'GO_ACCESS_TOKEN',
   // 登录信息
-  GO_SYSTEM_STORE = 'GO_SYSTEM',
+  GO_LOGIN_INFO_STORE = 'GO_LOGIN_INFO',
   // 语言
   GO_LANG_STORE = 'GO_LANG',
   // 当前选择的主题

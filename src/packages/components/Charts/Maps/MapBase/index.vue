@@ -11,7 +11,7 @@ import { use, registerMap } from 'echarts/core'
 import { EffectScatterChart, MapChart } from 'echarts/charts'
 import { CanvasRenderer } from 'echarts/renderers'
 import { useChartDataFetch } from '@/hooks'
-import { mergeTheme } from '@/packages/public/chart'
+import { mergeTheme, setOption } from '@/packages/public/chart'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { isPreview } from '@/utils'
 import mapJsonWithoutHainanIsLands from './mapWithoutHainanIsLands.json'
@@ -76,7 +76,7 @@ registerMapInitAsync()
 // 手动触发渲染
 const vEchartsSetOption = () => {
   option.value = props.chartConfig.option
-  vChartRef.value?.setOption(props.chartConfig.option)
+  setOption(vChartRef.value, props.chartConfig.option)
 }
 
 // 更新数据处理

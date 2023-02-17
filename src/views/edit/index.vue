@@ -26,7 +26,7 @@
             lineNumbers: 'on',
             minimap: { enabled: true }
           }"
-        />
+      />
       </n-layout-content>
     </n-layout>
   </div>
@@ -38,20 +38,16 @@ import { MonacoEditor } from '@/components/Pages/MonacoEditor'
 import { SavePageEnum } from '@/enums/editPageEnum'
 import { getSessionStorageInfo } from '../preview/utils'
 import type { ChartEditStorageType } from '../preview/index.d'
-import { setSessionStorage, fetchRouteParamsLocation, JSONStringify, JSONParse, setTitle } from '@/utils'
+import { setSessionStorage, JSONStringify, JSONParse, setTitle } from '@/utils'
 import { StorageEnum } from '@/enums/storageEnum'
 import { icon } from '@/plugins'
-import { useSync } from '@/views/chart/hooks/useSync.hook'
-import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-import { ProjectInfoEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
-const chartEditStore = useChartEditStore()
-const { dataSyncUpdate } = useSync()
+
 const { ChevronBackOutlineIcon, DownloadIcon } = icon.ionicons5
 const showOpenFilePicker: Function = (window as any).showOpenFilePicker
 const content = ref('')
 // 从sessionStorage 获取数据
 async function getDataBySession() {
-  const localStorageInfo: ChartEditStorageType = (await getSessionStorageInfo()) as unknown as ChartEditStorageType
+  const localStorageInfo: ChartEditStorageType = await getSessionStorageInfo() as unknown as ChartEditStorageType
   setTitle(`编辑-${localStorageInfo.editCanvasConfig.projectName}`)
   content.value = JSONStringify(localStorageInfo)
 }
@@ -98,11 +94,6 @@ async function updateSync() {
     const detail = JSONParse(content.value)
     delete detail.id
     // 保持id不变
-    // 带后端版本额外处理请求
-    if (dataSyncUpdate) {
-      chartEditStore.setProjectInfo(ProjectInfoEnum.PROJECT_ID, fetchRouteParamsLocation())
-      await dataSyncUpdate(false) // JSON界面保存不上传缩略图
-    }
     window.opener.dispatchEvent(new CustomEvent(SavePageEnum.JSON, { detail }))
   } catch (e) {
     window['$message'].error('内容格式有误')

@@ -40,6 +40,15 @@
       <SettingItem name="列宽度">
         <n-input v-model:value="columnWidth" :min="1" size="small" placeholder="列宽度(英文','分割)"></n-input>
       </SettingItem>
+      <SettingItem name="轮播方式">
+        <n-select
+          v-model:value="optionData.carousel"
+          :options="[
+            { label: '单条轮播', value: 'single' },
+            { label: '整页轮播', value: 'page' },
+          ]"
+        />
+      </SettingItem>
     </SettingItemBox>
 
     <SettingItemBox name="样式">

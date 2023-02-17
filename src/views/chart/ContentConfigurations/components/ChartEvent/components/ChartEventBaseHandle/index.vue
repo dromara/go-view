@@ -127,7 +127,7 @@
 import { ref, computed, watch, toRefs, toRaw } from 'vue'
 import { MonacoEditor } from '@/components/Pages/MonacoEditor'
 import { useTargetData } from '../../../hooks/useTargetData.hook'
-import { CreateComponentType, BaseEvent } from '@/packages/index.d'
+import { BaseEvent } from '@/enums/eventEnum'
 import { icon } from '@/plugins'
 
 const { targetData, chartEditStore } = useTargetData()

@@ -48,7 +48,6 @@ import { useTargetData } from '../../../hooks/useTargetData.hook'
 import { RequestGlobalConfig } from './components/RequestGlobalConfig'
 import { RequestTargetConfig } from './components/RequestTargetConfig'
 import { RequestDataPondItemType } from '@/store/modules/chartEditStore/chartEditStore.d'
-import { useSync } from '@/views/chart/hooks/useSync.hook'
 import { goDialog } from '@/utils'
 
 const props = defineProps({
@@ -57,7 +56,6 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelShow', 'editSaveHandle'])
 
-const { dataSyncUpdate } = useSync()
 const pondName = ref()
 const inputInstRef = ref()
 const modelShowRef = ref(false)
@@ -84,7 +82,6 @@ const closeAndSendHandle = () => {
     onPositiveCallback: () => {
       emit('update:modelShow', false)
       emit('editSaveHandle', props.targetDataRequest)
-      dataSyncUpdate()
     }
   })
 }

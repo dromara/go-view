@@ -5,8 +5,6 @@
       <edit-history></edit-history>
       <!-- CTRL按键触发展示 -->
       <n-text id="keyboard-dress-show" depth="3"></n-text>
-      <n-divider vertical />
-      <edit-data-sync></edit-data-sync>
     </n-space>
 
     <n-space class="bottom-ri">
@@ -57,8 +55,7 @@
 import { reactive, ref, toRefs, watchEffect } from 'vue'
 import { icon } from '@/plugins'
 import { EditHistory } from '../EditHistory/index'
-import { EditShortcutKey } from '../EditShortcutKey/index'
-import { EditDataSync } from '../EditDataSync/index'
+import EditShortcutKey from '../EditShortcutKey/index.vue'
 import { useDesignStore } from '@/store/modules/designStore/designStore'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { EditCanvasTypeEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
@@ -147,10 +144,6 @@ $max-width: 670px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
-  width: 100%;
-  min-width: $min-width;
-  height: 40px;
   .bottom-ri {
     position: relative;
     top: 15px;

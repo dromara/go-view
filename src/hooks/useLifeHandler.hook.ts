@@ -1,4 +1,5 @@
-import { CreateComponentType, CreateComponentGroupType, EventLife, BaseEvent } from '@/packages/index.d'
+import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
+import { EventLife } from '@/enums/eventEnum'
 import * as echarts from 'echarts'
 
 // 所有图表组件集合对象

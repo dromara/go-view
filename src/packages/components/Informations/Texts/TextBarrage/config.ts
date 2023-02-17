@@ -15,7 +15,6 @@ export const FontWeightObject = {
 }
 
 export const option = {
-  
   dataset: '让数字化看得见',
   fontSize: 32,
   fontColor: '#ffffff',
@@ -39,4 +38,5 @@ export default class Config extends PublicConfigClass implements CreateComponent
   public attr = { ...chartInitConfig, w: 500, h: 70, zIndex: -1 }
   public chartConfig = cloneDeep(TextBarrageConfig)
   public option = cloneDeep(option)
+  public preview = { overFlowHidden: true } 
 }

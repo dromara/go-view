@@ -1,18 +1,13 @@
-// 模块 Path 前缀分类
-export enum ModuleTypeEnum {
-  SYSTEM = 'sys',
-  PROJECT = 'project',
-}
-
-// 请求结果集
+/**
+ * @description: 请求结果集
+ */
 export enum ResultEnum {
   DATA_SUCCESS = 0,
   SUCCESS = 200,
   SERVER_ERROR = 500,
   SERVER_FORBIDDEN = 403,
   NOT_FOUND = 404,
-  TOKEN_OVERDUE = 886,
-  TIMEOUT = 60000,
+  TIMEOUT = 60000
 }
 
 // 数据相关
@@ -33,13 +28,9 @@ export enum RequestContentTypeEnum {
   SQL = 1
 }
 
-// 头部
-export enum RequestHttpHeaderEnum {
-  TOKEN = 'Token',
-  COOKIE = 'Cookie'
-}
-
-// 请求方法
+/**
+ * @description: 请求方法
+ */
 export enum RequestHttpEnum {
   GET = 'get',
   POST = 'post',
@@ -120,7 +111,9 @@ export type RequestParams = {
   }
 }
 
-// 常用的contentTyp类型
+/**
+ * @description:  常用的contentTyp类型
+ */
 export enum ContentTypeEnum {
   // json
   JSON = 'application/json;charset=UTF-8',

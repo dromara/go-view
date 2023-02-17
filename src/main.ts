@@ -3,7 +3,7 @@ import App from './App.vue'
 import router, { setupRouter } from '@/router'
 import i18n from '@/i18n/index'
 import { setupStore } from '@/store'
-import { setupNaive, setupDirectives, setupCustomComponents } from '@/plugins'
+import { setupNaive, setupDirectives, setupCustomComponents, initFunction } from '@/plugins'
 import { GoAppProvider } from '@/components/GoAppProvider/index'
 import { setHtmlTheme } from '@/utils'
 
@@ -53,4 +53,6 @@ async function appInit() {
   window['$vue'] = app
 }
 
-void appInit()
+await appInit()
+
+await initFunction()

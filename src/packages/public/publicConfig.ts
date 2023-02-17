@@ -1,6 +1,7 @@
 import { getUUID } from '@/utils'
 import { RequestConfigType } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { groupTitle } from '@/settings/designSetting'
+import { BaseEvent, EventLife } from '@/enums/eventEnum'
 import {
   RequestHttpEnum,
   RequestDataTypeEnum,
@@ -9,8 +10,6 @@ import {
   RequestBodyEnum
 } from '@/enums/httpEnum'
 import {
-  BaseEvent,
-  EventLife,
   ChartFrameEnum,
   PublicConfigType,
   CreateComponentType,
@@ -78,6 +77,10 @@ export class PublicConfigClass implements PublicConfigType {
 
     // 动画
     animations: []
+  }
+  // 预览
+  public preview = {
+    overFlowHidden: false
   }
   // 状态
   public status = {

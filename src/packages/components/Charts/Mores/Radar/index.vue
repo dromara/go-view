@@ -10,7 +10,7 @@ import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { RadarChart } from 'echarts/charts'
 import { includes } from './config'
-import { mergeTheme } from '@/packages/public/chart'
+import { mergeTheme, setOption } from '@/packages/public/chart'
 import { useChartDataFetch } from '@/hooks'
 import { CreateComponentType } from '@/packages/index.d'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
@@ -50,7 +50,7 @@ const dataSetHandle = (dataset: typeof dataJson) => {
     props.chartConfig.option.radar.indicator = dataset.radarIndicator
   }
   if (vChartRef.value && isPreview()) {
-    vChartRef.value.setOption(props.chartConfig.option)
+    setOption(vChartRef.value, props.chartConfig.option)
   }
 }
 

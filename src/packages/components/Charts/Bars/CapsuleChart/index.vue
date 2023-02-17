@@ -122,23 +122,28 @@ const calcData = (data: any, type?: string) => {
 
 // 数据解析
 const calcCapsuleLengthAndLabelData = (dataset: any) => {
-  const { source } = dataset
-  if (!source.length) return
+  try {
+    const { source } = dataset
+    if (!source || !source.length) return
 
-  state.capsuleItemHeight = numberSizeHandle(state.mergedConfig.itemHeight)
-  const capsuleValue = source.map((item: DataProps) => item[state.mergedConfig.dataset.dimensions[1]])
+    state.capsuleItemHeight = numberSizeHandle(state.mergedConfig.itemHeight)
+    const capsuleValue = source.map((item: DataProps) => item[state.mergedConfig.dataset.dimensions[1]])
 
-  const maxValue = Math.max(...capsuleValue)
+    const maxValue = Math.max(...capsuleValue)
 
-  state.capsuleValue = capsuleValue
+    state.capsuleValue = capsuleValue
 
-  state.capsuleLength = capsuleValue.map((v: any) => (maxValue ? v / maxValue : 0))
+    state.capsuleLength = capsuleValue.map((v: any) => (maxValue ? v / maxValue : 0))
 
-  const oneFifth = maxValue / 5
+    const oneFifth = maxValue / 5
 
-  const labelData = Array.from(new Set(new Array(6).fill(0).map((v, i) => Math.ceil(i * oneFifth))))
+    const labelData = Array.from(new Set(new Array(6).fill(0).map((v, i) => Math.ceil(i * oneFifth))))
 
-  state.labelData = labelData
+    state.labelData = labelData
+
+  } catch (error) {
+    console.warn(error);
+  }
 }
 
 const numberSizeHandle = (val: string | number) => {

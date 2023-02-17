@@ -133,6 +133,9 @@ const options = computed(() => {
 </script>
 
 <style lang="scss" scoped>
+.mr-10 {
+  margin-right: 10px;
+}
 .edit-history-popover {
   .btn-text {
     font-size: 12px;

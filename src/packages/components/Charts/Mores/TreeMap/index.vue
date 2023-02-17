@@ -10,7 +10,7 @@ import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { TreemapChart } from 'echarts/charts'
 import { includes } from './config'
-import { mergeTheme } from '@/packages/public/chart'
+import { mergeTheme, setOption } from '@/packages/public/chart'
 import { useChartDataFetch } from '@/hooks'
 import { CreateComponentType } from '@/packages/index.d'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
@@ -42,7 +42,7 @@ const option = computed(() => {
 const dataSetHandle = (dataset: typeof dataJson) => {
   if (dataset) {
     props.chartConfig.option.series[0].data = dataset
-    vChartRef.value?.setOption(props.chartConfig.option)
+    setOption(vChartRef.value, props.chartConfig.option)
   }
 }
 

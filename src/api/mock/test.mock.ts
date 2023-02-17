@@ -10,8 +10,8 @@ export default {
     status: 200,
     msg: '请求成功',
     data: {
-      dimensions: ['product', 'dataOne'],
-      'source|50': [
+    dimensions: ['product', 'dataOne'],
+      'source|20': [
         {
           product: '@name',
           'dataOne|0-900': 3
@@ -37,12 +37,13 @@ export default {
     status: 200,
     msg: '请求成功',
     data: {
-      dimensions: ['product', 'dataOne', 'dataTwo'],
-      'source|50': [
+      dimensions: ['product', 'dataOne', 'dataTwo', 'dataThree'],
+      'source|20': [
         {
           product: '@name',
           'dataOne|100-900': 3,
-          'dataTwo|100-900': 3
+          'dataTwo|100-900': 3,
+          'dataThree|100-900': 3
         }
       ]
     }

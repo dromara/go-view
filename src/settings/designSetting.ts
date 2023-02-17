@@ -61,9 +61,6 @@ export const editToJsonInterval = 5000
 // 数据请求间隔
 export const requestInterval = 30
 
-// 工作台自动保存间隔（s）
-export const saveInterval = 30
-
 // 数据请求间隔单位
 export const requestIntervalUnit = RequestHttpIntervalEnum.SECOND
 

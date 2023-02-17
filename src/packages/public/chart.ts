@@ -2,6 +2,7 @@ import merge from 'lodash/merge'
 import pick from 'lodash/pick'
 import { EchartsDataType } from '../index.d'
 import { globalThemeJson } from '@/settings/chartThemes/index'
+import type VChart from 'vue-echarts'
 
 /**
  * * 合并 color 和全局配置项
@@ -32,4 +33,16 @@ export const echartOptionProfixHandle = (option: any, includes: string[]) => {
 export const setData = (option: any, data: EchartsDataType) => {
   option.dataset = data
   return option
+}
+
+/**
+ * * 配置公共 setOption 方法
+ * @param instance
+ * @param data
+ */
+export const setOption = <T extends typeof VChart | undefined, D>(instance: T, data: D) => {
+  if (!instance) return
+  const option = instance.getOption()
+  option.dataset = null
+  instance.setOption(data)
 }

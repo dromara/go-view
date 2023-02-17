@@ -118,38 +118,45 @@
 import { reactive, ref, onMounted } from 'vue'
 import shuffle from 'lodash/shuffle'
 import { carouselInterval } from '@/settings/designSetting'
-import { useSystemStore } from '@/store/modules/systemStore/systemStore'
-import { SystemStoreUserInfoEnum, SystemStoreEnum } from '@/store/modules/systemStore/systemStore.d'
+import { useDesignStore } from '@/store/modules/designStore/designStore'
 import { GoThemeSelect } from '@/components/GoThemeSelect'
 import { GoLangSelect } from '@/components/GoLangSelect'
 import { LayoutHeader } from '@/layout/components/LayoutHeader'
 import { LayoutFooter } from '@/layout/components/LayoutFooter'
 import { PageEnum } from '@/enums/pageEnum'
-import { StorageEnum } from '@/enums/storageEnum'
 import { icon } from '@/plugins'
-import { routerTurnByName } from '@/utils'
-import { loginApi } from '@/api/path'
+import { StorageEnum } from '@/enums/storageEnum'
+import { routerTurnByName, cryptoEncode, setLocalStorage } from '@/utils'
+const { GO_LOGIN_INFO_STORE } = StorageEnum
+
+const { PersonOutlineIcon, LockClosedOutlineIcon } = icon.ionicons5
 
 interface FormState {
   username: string
   password: string
 }
 
-const { GO_SYSTEM_STORE } = StorageEnum
-const { PersonOutlineIcon, LockClosedOutlineIcon } = icon.ionicons5
-
 const formRef = ref()
 const loading = ref(false)
 const autoLogin = ref(true)
 const show = ref(false)
 const showBg = ref(false)
-const systemStore = useSystemStore()
+const designStore = useDesignStore()
 
 const t = window['$t']
 
+onMounted(() => {
+  setTimeout(() => {
+    show.value = true
+  }, 300)
+  setTimeout(() => {
+    showBg.value = true
+  }, 100)
+})
+
 const formInline = reactive({
   username: 'admin',
-  password: 'admin',
+  password: '123456',
 })
 
 const rules = {
@@ -189,58 +196,38 @@ const getImageUrl = (name: string, folder: string) => {
   return new URL(`../../assets/images/${folder}/${name}.png`, import.meta.url).href
 }
 
-// 打乱图片顺序
+// 打乱
 const shuffleHandle = () => {
   shuffleTimiing.value = setInterval(() => {
     bgList.value = shuffle(bgList.value)
   }, carouselInterval)
 }
 
-// 登录
-const handleSubmit = async (e: Event) => {
+// 点击事件
+const handleSubmit = (e: Event) => {
   e.preventDefault()
   formRef.value.validate(async (errors: any) => {
     if (!errors) {
       const { username, password } = formInline
       loading.value = true
-      // 提交请求
-      const res = await loginApi({
-        username,
-        password
-      })
-      if(res && res.data) {
-        const { tokenValue, tokenName } = res.data.token
-        const { nickname, username, id } = res.data.userinfo
-
-        // 存储到 pinia 
-        systemStore.setItem(SystemStoreEnum.USER_INFO, {
-          [SystemStoreUserInfoEnum.USER_TOKEN]: tokenValue,
-          [SystemStoreUserInfoEnum.TOKEN_NAME]: tokenName,
-          [SystemStoreUserInfoEnum.USER_ID]: id,
-          [SystemStoreUserInfoEnum.USER_NAME]: username,
-          [SystemStoreUserInfoEnum.NICK_NAME]: nickname,
-          t
-        })
-        
-        window['$message'].success(t('login.login_success'))
-        routerTurnByName(PageEnum.BASE_HOME_NAME, true)
-      }
-      loading.value = false
+      setLocalStorage(
+        GO_LOGIN_INFO_STORE,
+        cryptoEncode(
+          JSON.stringify({
+            username,
+            password,
+          })
+        )
+      )
+      window['$message'].success(`${t('login.login_success')}!`)
+      routerTurnByName(PageEnum.BASE_HOME_NAME, true)
     } else {
-      window['$message'].error(t('login.login_message'))
+      window['$message'].error(`${t('login.login_message')}!`)
     }
   })
 }
 
 onMounted(() => {
-  setTimeout(() => {
-    show.value = true
-  }, 300)
-
-  setTimeout(() => {
-    showBg.value = true
-  }, 100)
-
   shuffleHandle()
 })
 </script>

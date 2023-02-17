@@ -63,7 +63,8 @@ export const fetchConfigComponent = (dropData: ConfigType) => {
  * * 获取图片内容
  * @param {ConfigType} targetData 配置项
  */
-export const fetchImages = async (targetData: ConfigType) => {
+export const fetchImages = async (targetData?: ConfigType) => {
+  if (!targetData) return ''
   // 新数据动态处理
   const { image, package: targetDataPackage } = targetData
   // 兼容旧数据

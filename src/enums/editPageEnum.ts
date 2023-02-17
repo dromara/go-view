@@ -46,6 +46,7 @@ export enum MenuEnum {
   UN_GROUP = 'unGroup',
   // 后退
   BACK = 'back',
+  // 前进
   FORWORD = 'forward',
   // 保存
   SAVE = 'save',
@@ -80,16 +81,4 @@ export enum MacKeyboard {
   SHIFT_SOURCE_KEY = '⇧',
   ALT_SOURCE_KEY = '⌥',
   SPACE = 'Space'
-}
-
-// 同步状态枚举
-export enum SyncEnum {
-  // 等待
-  PENDING,
-  // 开始
-  START,
-  // 成功
-  SUCCESS,
-  // 失败
-  FAILURE
 }

@@ -7,7 +7,7 @@
           <mac-os-control-btn
             class="top-btn"
             :hidden="['remove']"
-            @close="deleteHandle"
+            @close="deleteHanlde"
             @resize="resizeHandle"
          ></mac-os-control-btn>
         </div>
@@ -17,7 +17,9 @@
             object-fit="contain"
             height="180"
             preview-disabled
-            :src="`${cardData.image}?time=${new Date().getTime()}`"
+            :src="
+              requireUrl('project/moke-20211219181327.png')
+            "
             :alt="cardData.title"
             :fallback-src="requireErrorImg()"
          ></n-image>
@@ -25,8 +27,8 @@
       </div>
       <template #action>
         <div class="go-flex-items-center list-footer" justify="space-between">
-          <n-text class="go-ellipsis-1">
-            {{ cardData.title || cardData.id || '未命名' }}
+          <n-text class="go-ellipsis-1" :title="cardData.title">
+            {{ cardData.title || '' }}
           </n-text>
           <!-- 工具 -->
           <div class="go-flex-items-center list-footer-ri">
@@ -73,8 +75,8 @@
                 </n-tooltip>
               </template>
             </n-space>
-          <!-- end -->
           </div>
+          <!-- end -->
         </div>
       </template>
     </n-card>
@@ -99,11 +101,16 @@ const {
   SendIcon
 } = icon.ionicons5
 
-const emit = defineEmits(['preview', 'delete', 'resize', 'edit', 'release'])
+const emit = defineEmits(['delete', 'resize', 'edit'])
 
 const props = defineProps({
   cardData: Object as PropType<Chartype>
 })
+
+// 处理url获取
+const requireUrl = (name: string) => {
+  return new URL(`../../../../../assets/images/${name}`, import.meta.url).href
+}
 
 const fnBtnList = reactive([
   {
@@ -127,14 +134,12 @@ const selectOptions = ref([
   {
     label: renderLang('global.r_copy'),
     key: 'copy',
-    icon: renderIcon(CopyIcon),
-    disabled: true
+    icon: renderIcon(CopyIcon)
   },
   {
     label: renderLang('global.r_rename'),
     key: 'rename',
-    icon: renderIcon(PencilIcon),
-    disabled: true
+    icon: renderIcon(PencilIcon)
   },
   {
     type: 'divider',
@@ -144,14 +149,13 @@ const selectOptions = ref([
     label: props.cardData?.release
       ? renderLang('global.r_unpublish')
       : renderLang('global.r_publish'),
-    key: 'release',
+    key: 'send',
     icon: renderIcon(SendIcon)
   },
   {
     label: renderLang('global.r_download'),
     key: 'download',
-    icon: renderIcon(DownloadIcon),
-    disabled: true
+    icon: renderIcon(DownloadIcon)
   },
   {
     type: 'divider',
@@ -166,14 +170,8 @@ const selectOptions = ref([
 
 const handleSelect = (key: string) => {
   switch (key) {
-    case 'preview':
-      previewHandle()
-      break
     case 'delete':
-      deleteHandle()
-      break
-    case 'release':
-      releaseHandle()
+      deleteHanlde()
       break
     case 'edit':
       editHandle()
@@ -181,24 +179,14 @@ const handleSelect = (key: string) => {
   }
 }
 
-// 预览处理
-const previewHandle = () => {
-  emit('preview', props.cardData)
-}
-
 // 删除处理
-const deleteHandle = () => {
+const deleteHanlde = () => {
   emit('delete', props.cardData)
 }
 
 // 编辑处理
 const editHandle = () => {
   emit('edit', props.cardData)
-}
-
-// 编辑处理
-const releaseHandle = () => {
-  emit('release', props.cardData)
 }
 
 // 放大处理

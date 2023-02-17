@@ -10,6 +10,6 @@ import { ProjectItemsList } from './components/ProjectItemsList'
 
 <style lang="scss" scoped>
 @include go(project-items) {
-  padding: 20px 20px;
+  padding: 30px 20px;
 }
 </style>

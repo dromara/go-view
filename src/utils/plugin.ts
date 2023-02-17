@@ -35,7 +35,7 @@ export const loadingError = () => {
  * })
  * ```
  */
- export const goDialog = (
+export const goDialog = (
   params: {
     // 基本
     type?: DialogEnum

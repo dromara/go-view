@@ -14,7 +14,7 @@ export const option = {
 export default class Config extends PublicConfigClass implements CreateComponentType
 {
   public key = IframeConfig.key
-  public attr = { ...chartInitConfig, w: 800, h: 800, zIndex: -1 }
+  public attr = { ...chartInitConfig, w: 1200, h: 800, zIndex: -1 }
   public chartConfig = cloneDeep(IframeConfig)
   public option = cloneDeep(option)
 }
