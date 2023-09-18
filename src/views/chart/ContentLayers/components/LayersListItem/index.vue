@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, ref, watch } from 'vue'
+import { computed, PropType, ref } from 'vue'
 import { requireErrorImg } from '@/utils'
 import { useDesignStore } from '@/store/modules/designStore/designStore'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'

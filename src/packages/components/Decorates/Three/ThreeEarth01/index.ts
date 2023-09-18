@@ -9,6 +9,6 @@ export const ThreeEarth01Config: ConfigType = {
   category: ChatCategoryEnum.THREE,
   categoryName: ChatCategoryEnumName.THREE,
   package: PackagesCategoryEnum.DECORATES,
-  chartFrame: ChartFrameEnum.STATIC,
+  chartFrame: ChartFrameEnum.COMMON,
   image: 'threeEarth01.png'
 }

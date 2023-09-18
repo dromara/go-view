@@ -65,6 +65,7 @@ import { RequestHeader } from '../RequestHeader'
 import { isDev } from '@/utils'
 import { icon } from '@/plugins'
 import {
+  graphUrl,
   chartDataUrl,
   chartSingleDataUrl,
   rankListUrl,
@@ -80,7 +81,8 @@ import {
   capsuleUrl,
   wordCloudUrl,
   treemapUrl,
-  threeEarth01Url
+  threeEarth01Url,
+  sankeyUrl
 } from '@/api/mock'
 
 const props = defineProps({
@@ -142,6 +144,12 @@ const apiList = [
   },
   {
     value: `【三维地球】${threeEarth01Url}`
+  },
+  {
+    value: `【桑基图】${sankeyUrl}`
+  },
+  {
+    value: `【关系图】${graphUrl}`
   }
 ]
 </script>

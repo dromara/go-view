@@ -34,6 +34,7 @@ import { RequestContentTypeEnum } from '@/enums/httpEnum'
 import { useTargetData } from '../../../hooks/useTargetData.hook'
 import { RequestGlobalConfig } from './components/RequestGlobalConfig'
 import { RequestTargetConfig } from './components/RequestTargetConfig'
+import { useSync } from '@/views/chart/hooks/useSync.hook'
 import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 
 const props = defineProps({
@@ -42,6 +43,9 @@ const props = defineProps({
   saveBtnText: String || null
 })
 const emit = defineEmits(['update:modelShow', 'sendHandle'])
+
+const { targetData } = useTargetData()
+const { dataSyncUpdate } = useSync()
 
 // 解构基础配置
 const { chartConfig } = toRefs(props.targetData as CreateComponentType)
@@ -69,6 +73,7 @@ const closeHandle = () => {
 const closeAndSendHandle = () => {
   emit('update:modelShow', false)
   emit('sendHandle')
+  dataSyncUpdate()
 }
 </script>
 

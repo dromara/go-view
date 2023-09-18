@@ -27,7 +27,7 @@
       </div>
     </div>
     <!-- 修复右下角白点用的 -->
-    <div v-if="designStore.getDarkTheme" class="fix-edit-screens-block"></div>
+    <!-- <div v-if="designStore.getDarkTheme" class="fix-edit-screens-block"></div> -->
   </div>
 </template>
 <script setup lang="ts">
@@ -159,9 +159,11 @@ const dragCanvas = (e: any) => {
 const canvasBox = () => {
   const layoutDom = document.getElementById('go-chart-edit-layout')
   if (layoutDom) {
+    // 此处减去滚动条的宽度和高度 
+    const scrollW = 20
     return {
-      height: layoutDom.clientHeight - 25,
-      width: layoutDom.clientWidth
+      height: layoutDom.clientHeight - scrollW,
+      width: layoutDom.clientWidth - scrollW
     }
   }
   return {
@@ -288,7 +290,6 @@ window.onKeySpacePressHold = (isHold: boolean) => {
 
 <style lang="scss" scoped>
 @include go('sketch-rule') {
-  position: relative;
   overflow: hidden;
   width: 100%;
   height: 100%;
@@ -319,6 +320,10 @@ window.onKeySpacePressHold = (isHold: boolean) => {
       border-radius: 5px;
       background-color: rgba(144, 146, 152, 0.3);
     }
+    // 修复右下角白点用的
+    &::-webkit-scrollbar-corner {
+      background-color: transparent;
+    }
   }
 
   .fix-edit-screens-block {
@@ -339,7 +344,7 @@ window.onKeySpacePressHold = (isHold: boolean) => {
 
   .canvas {
     position: absolute;
-    top: 50%;
+    top:50%;
     left: 50%;
     transform-origin: 50% 0;
     transform: translateY(-50%);

@@ -7,6 +7,22 @@
         </n-input-number>
       </SettingItem>
     </SettingItemBox>
+    <!-- 中心标题 -->
+    <SettingItemBox v-if="config.title" name="标题">
+      <SettingItem name="颜色">
+        <n-color-picker size="small" :modes="['hex']" v-model:value="config.title.textStyle.color"></n-color-picker>
+      </SettingItem>
+      <SettingItem name="字体大小">
+        <n-input-number
+          v-model:value="config.title.textStyle.fontSize"
+          :min="0"
+          :step="1"
+          size="small"
+          placeholder="字体大小"
+        >
+        </n-input-number>
+      </SettingItem>
+    </SettingItemBox>
     <!-- Echarts 全局设置 -->
     <SettingItemBox name="进度条">
       <SettingItem name="颜色">
@@ -31,24 +47,8 @@
         ></n-color-picker>
       </SettingItem>
     </SettingItemBox>
-    <!-- 中心标题 -->
-    <SettingItemBox v-if="config.title" name="标题">
-      <SettingItem name="颜色">
-        <n-color-picker size="small" :modes="['hex']" v-model:value="config.title.textStyle.color"></n-color-picker>
-      </SettingItem>
-      <SettingItem name="字体大小">
-        <n-input-number
-          v-model:value="config.title.textStyle.fontSize"
-          :min="0"
-          :step="1"
-          size="small"
-          placeholder="字体大小"
-        >
-        </n-input-number>
-      </SettingItem>
-    </SettingItemBox>
     <!-- 其他样式 -->
-    <SettingItemBox name="轨道样式">
+    <SettingItemBox name="轨道">
       <SettingItem name="颜色">
         <n-color-picker size="small" :modes="['hex']" v-model:value="item.data[1].itemStyle.color"></n-color-picker>
       </SettingItem>
@@ -68,6 +68,18 @@
           :modes="['hex']"
           v-model:value="item.data[1].itemStyle.shadowColor"
         ></n-color-picker>
+      </SettingItem>
+      <SettingItem name="轨道宽度">
+        <n-select
+          v-model:value="item.radius[0]"
+          size="small"
+          :options="[
+            { label: '窄', value: '75%' },
+            { label: '中', value: '60%' },
+            { label: '宽', value: '45%' },
+            { label: '更宽', value: '30%' }
+          ]"
+        />
       </SettingItem>
     </SettingItemBox>
   </CollapseItem>

@@ -48,10 +48,10 @@ export const useLifeHandler = (chartConfig: CreateComponentType | CreateComponen
   try {
     return new Function(`
       return (
-        async function(mouseEvent){
+        async function(components,mouseEvent){
           ${fnStr}
         }
-      )`)()
+      )`)().bind(undefined,components)
   } catch (error) {
     console.error(error)
   }

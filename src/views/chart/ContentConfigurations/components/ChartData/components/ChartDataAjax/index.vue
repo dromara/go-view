@@ -130,13 +130,19 @@ const sendHandle = async () => {
     const res = await customizeHttp(toRaw(targetData.value.request), toRaw(chartEditStore.getRequestGlobalConfig))
     loading.value = false
     if (res) {
-      if (!res?.data && !targetData.value.filter) window['$message'].warning('您的数据不符合默认格式，请配置过滤器！')
-      targetData.value.option.dataset = newFunctionHandle(res?.data, res, targetData.value.filter)
+      const { data } = res
+      if (!data && !targetData.value.filter) {
+        window['$message'].warning('您的数据不符合默认格式，请配置过滤器！')
+        showMatching.value = true
+        return
+      }
+      targetData.value.option.dataset = newFunctionHandle(data, res, targetData.value.filter)
       showMatching.value = true
       return
     }
-    window['$message'].warning('数据异常，请检查参数！')
+    window['$message'].warning('没有拿到返回值，请检查接口！')
   } catch (error) {
+    console.error(error);
     loading.value = false
     window['$message'].warning('数据异常，请检查参数！')
   }

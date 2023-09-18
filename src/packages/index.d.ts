@@ -1,4 +1,4 @@
-import { BaseEvent, EventLife } from '@/enums/eventEnum'
+import { BaseEvent, EventLife, InteractEvents, InteractEventOn, InteractActionsType } from '@/enums/eventEnum'
 import type { GlobalThemeJsonType } from '@/settings/chartThemes/index'
 import type { RequestConfigType } from '@/store/modules/chartEditStore/chartEditStore.d'
 
@@ -15,15 +15,34 @@ export enum ChartFrameEnum {
 
 // 组件配置
 export type ConfigType = {
+  // 组件 key
   key: string
+  // 画布组件 key
   chartKey: string
+  // 右侧设置面板组件 key
   conKey: string
+  // 标题
   title: string
+  // 分类
   category: string
+  // 分类名称
   categoryName: string
+  // 所属包
   package: string
+  // 归类
   chartFrame?: ChartFrameEnum
+  // 预览图
   image: string
+  // 从指定路径创建创建该组件
+  redirectComponent?: string
+  // 组件预设的 dataset 值(图片/图标)
+  dataset?: any
+  // 禁用 拖拽或双击生成组件
+  disabled?: boolean
+  // 图标
+  icon?: string
+  // 事件
+  configEvents?: { [T: string]: Function }
 }
 
 // 数据请求
@@ -120,20 +139,27 @@ export interface PublicConfigType {
   }
   filter?: string
   status: StatusType
+  interactActions?: InteractActionsType[]
   events: {
     baseEvent: {
       [K in BaseEvent]?: string
-    },
+    }
     advancedEvents: {
       [K in EventLife]?: string
     }
+    interactEvents: {
+      [InteractEvents.INTERACT_ON]: InteractEventOn | undefined
+      [InteractEvents.INTERACT_COMPONENT_ID]: string | undefined
+      [InteractEvents.INTERACT_FN]: { [name: string]: string }
+    }[]
   }
 }
 
 export interface CreateComponentType extends PublicConfigType, requestConfig {
   key: string
   chartConfig: ConfigType
-  option: GlobalThemeJsonType,
+  option: GlobalThemeJsonType
+  groupList?: Array<CreateComponentType>
 }
 
 // 组件成组实例类
@@ -149,6 +175,8 @@ export enum PackagesCategoryEnum {
   CHARTS = 'Charts',
   TABLES = 'Tables',
   INFORMATIONS = 'Informations',
+  PHOTOS = 'Photos',
+  ICONS = 'Icons',
   DECORATES = 'Decorates'
 }
 
@@ -157,6 +185,8 @@ export enum PackagesCategoryName {
   CHARTS = '图表',
   TABLES = '列表',
   INFORMATIONS = '信息',
+  PHOTOS = '图片',
+  ICONS = '图标',
   DECORATES = '小组件'
 }
 
@@ -171,5 +201,7 @@ export type PackagesType = {
   [PackagesCategoryEnum.CHARTS]: ConfigType[]
   [PackagesCategoryEnum.INFORMATIONS]: ConfigType[]
   [PackagesCategoryEnum.TABLES]: ConfigType[]
+  [PackagesCategoryEnum.PHOTOS]: ConfigType[]
+  [PackagesCategoryEnum.ICONS]: ConfigType[]
   [PackagesCategoryEnum.DECORATES]: ConfigType[]
 }

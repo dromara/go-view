@@ -16,12 +16,16 @@
       <setting-item name="高度">
         <n-input-number v-model:value="optionData.flipperHeight" size="small" :min="1"></n-input-number>
       </setting-item>
-      <setting-item name="间隔">
-        <n-input-number v-model:value="optionData.flipperGap" size="small" :min="0"></n-input-number>
+      <setting-item name="边框">
+        <n-input-number v-model:value="optionData.flipperBorderWidth" size="small" :min="0" :max="10"></n-input-number>
       </setting-item>
       <setting-item name="圆角">
         <n-input-number v-model:value="optionData.flipperRadius" size="small" :min="0"></n-input-number>
       </setting-item>
+      <setting-item name="翻牌间隔">
+        <n-input-number v-model:value="optionData.flipperGap" size="small" :min="0"></n-input-number>
+      </setting-item>
+      <setting-item />
       <setting-item name="背景色">
         <n-color-picker
           size="small"

@@ -1,8 +1,8 @@
 <template>
   <div class="go-text-box">
     <div class="content">
-      <span style="cursor: pointer" v-if="link" @click="click">{{ option.dataset }}</span>
-      <span v-else>{{ option.dataset }}</span>
+      <span style="cursor: pointer; white-space: pre-wrap" v-if="link" @click="click">{{ option.dataset }}</span>
+      <span style="white-space: pre-wrap" v-else>{{ option.dataset }}</span>
     </div>
   </div>
 </template>
@@ -82,7 +82,7 @@ const click = () => {
     border-width: v-bind('borderWidth + "px"');
     border-radius: v-bind('borderRadius + "px"');
     border-color: v-bind('borderColor');
-    
+
     background-color: v-bind('backgroundColor');
   }
 }

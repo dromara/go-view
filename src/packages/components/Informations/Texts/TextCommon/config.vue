@@ -2,7 +2,7 @@
   <collapse-item name="信息" :expanded="true">
     <setting-item-box name="文字" :alone="true">
       <setting-item>
-        <n-input v-model:value="optionData.dataset" size="small"></n-input>
+        <n-input v-model:value="optionData.dataset" type="textarea" size="small"></n-input>
       </setting-item>
     </setting-item-box>
     <setting-item-box name="链接" :alone="true">
@@ -30,11 +30,7 @@
         <n-input-number v-model:value="optionData.fontSize" size="small" placeholder="字体大小"></n-input-number>
       </setting-item>
       <setting-item name="字体粗细">
-        <n-select
-          v-model:value="optionData.fontWeight"
-          size="small"
-          :options="fontWeightOptions"
-        />
+        <n-select v-model:value="optionData.fontWeight" size="small" :options="fontWeightOptions" />
       </setting-item>
       <setting-item name="X轴内边距">
         <n-input-number v-model:value="optionData.paddingX" size="small" placeholder="输入内边距"></n-input-number>
@@ -87,9 +83,7 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue'
-import { option, WritingModeEnum, WritingModeObject,
-  FontWeightEnum,
-  FontWeightObject, } from './config'
+import { option, WritingModeEnum, WritingModeObject, FontWeightEnum, FontWeightObject } from './config'
 import { CollapseItem, SettingItemBox, SettingItem } from '@/components/Pages/ChartItemSetting'
 const props = defineProps({
   optionData: {
@@ -117,13 +111,13 @@ const verticalOptions = [
 const fontWeightOptions = [
   {
     label: FontWeightEnum.NORMAL,
-    value: FontWeightObject[FontWeightEnum.NORMAL],
+    value: FontWeightObject[FontWeightEnum.NORMAL]
   },
   {
     label: FontWeightEnum.BOLD,
-    value: FontWeightObject[FontWeightEnum.BOLD],
-  },
-];
+    value: FontWeightObject[FontWeightEnum.BOLD]
+  }
+]
 const handleLinkClick = () => {
   window.open(props.optionData.linkHead + props.optionData.link)
 }

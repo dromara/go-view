@@ -5,6 +5,7 @@
       组件 id：
       <n-text>{{ targetData.id }}</n-text>
     </n-text>
+    <chart-event-interaction></chart-event-interaction>
     <chart-event-base-handle></chart-event-base-handle>
     <chart-event-advanced-handle></chart-event-advanced-handle>
   </n-collapse>
@@ -12,6 +13,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { ChartEventInteraction } from './components/ChartEventInteraction'
 import { ChartEventAdvancedHandle } from './components/ChartEventAdvancedHandle'
 import { ChartEventBaseHandle } from './components/ChartEventBaseHandle'
 import { useTargetData } from '../hooks/useTargetData.hook'

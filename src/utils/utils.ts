@@ -10,7 +10,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { WinKeyboard } from '@/enums/editPageEnum'
 import { RequestHttpIntervalEnum, RequestParamsObjType } from '@/enums/httpEnum'
 import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
-import { excludeParseEventKeyList } from '@/enums/eventEnum'
+import { excludeParseEventKeyList, excludeParseEventValueList } from '@/enums/eventEnum'
 
 /**
  * * 判断是否是开发环境
@@ -112,29 +112,6 @@ export const setDomAttribute = <K extends keyof CSSStyleDeclaration, V extends C
  */
 export const isMac = () => {
   return /macintosh|mac os x/i.test(navigator.userAgent)
-}
-
-/**
- * * file转url
- */
-export const fileToUrl = (file: File): string => {
-  const Url = URL || window.URL || window.webkitURL
-  const ImageUrl = Url.createObjectURL(file)
-  return ImageUrl
-}
-
-/**
- * * file转base64
- */
-export const fileTobase64 = (file: File, callback: Function) => {
-  let reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onload = function (e: ProgressEvent<FileReader>) {
-    if (e.target) {
-      let base64 = e.target.result
-      callback(base64)
-    }
-  }
 }
 
 /**
@@ -314,20 +291,32 @@ export const JSONStringify = <T>(data: T) => {
   )
 }
 
+export const evalFn = (fn: string) => {
+  var Fun = Function // 一个变量指向Function，防止前端编译工具报错
+  return new Fun('return ' + fn)()
+}
+
 /**
  * * JSON反序列化，支持函数和 undefined
  * @param data
  */
 export const JSONParse = (data: string) => {
   return JSON.parse(data, (k, v) => {
+    // 过滤函数字符串
     if (excludeParseEventKeyList.includes(k)) return v
+    // 过滤函数值表达式
+    if (typeof v === 'string') {
+      const someValue = excludeParseEventValueList.some(excludeValue => v.indexOf(excludeValue) > -1)
+      if (someValue) return v
+    }
+    // 还原函数值
     if (typeof v === 'string' && v.indexOf && (v.indexOf('function') > -1 || v.indexOf('=>') > -1)) {
-      return eval(`(function(){return ${v}})()`)
-    } else if (typeof v === 'string' && v.indexOf && (v.indexOf('return ') > -1)) {
+      return evalFn(`(function(){return ${v}})()`)
+    } else if (typeof v === 'string' && v.indexOf && v.indexOf('return ') > -1) {
       const baseLeftIndex = v.indexOf('(')
       if (baseLeftIndex > -1) {
         const newFn = `function ${v.substring(baseLeftIndex)}`
-        return eval(`(function(){return ${newFn}})()`)
+        return evalFn(`(function(){return ${newFn}})()`)
       }
     }
     return v
@@ -340,4 +329,24 @@ export const JSONParse = (data: string) => {
  */
 export const setTitle = (title?: string) => {
   title && (document.title = title)
+}
+
+/**
+ * 处理网页关闭事件
+ */
+export const addWindowUnload = () => {
+  // 关闭网页出现离开提示
+  window.onbeforeunload = function (e) {
+    e = e || window.event
+    // 兼容IE8和Firefox 4之前的版本
+    if (e) {
+      e.returnValue = '您确定要离开当前页面吗？请确认是否保存数据！'
+    }
+    // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+    return '您确定要离开当前页面吗？请确认是否保存数据！'
+  }
+  // 返回销毁事件函数
+  return () => {
+    window.onbeforeunload = null
+  }
 }

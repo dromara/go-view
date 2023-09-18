@@ -1,10 +1,25 @@
 import { Router } from 'vue-router';
-import { PageEnum } from '@/enums/pageEnum'
+import { PageEnum, PreviewEnum } from '@/enums/pageEnum'
 import { loginCheck } from '@/utils'
+
+// 路由白名单
+const routerAllowList = [
+  // 登录
+  PageEnum.BASE_LOGIN_NAME,
+  // 预览
+  PreviewEnum.CHART_PREVIEW_NAME
+]
 
 export function createRouterGuards(router: Router) {
   // 前置
   router.beforeEach(async (to, from, next) => {
+    // http://localhost:3000/#/chart/preview/792622755697790976?t=123
+    // 把外部动态参数放入window.route.params，后续API动态接口可以用window.route?.params?.t来拼接参数
+    // @ts-ignore
+    if (!window.route) window.route = {params: {}}
+    // @ts-ignore
+    Object.assign(window.route.params, to.query)
+
     const Loading = window['$loading'];
     Loading && Loading.start();
     const isErrorPage = router.getRoutes().findIndex((item) => item.name === to.name);
@@ -12,10 +27,8 @@ export function createRouterGuards(router: Router) {
       next({ name: PageEnum.ERROR_PAGE_NAME_404 })
     }
 
-    if (!loginCheck()) {
-      if (to.name === PageEnum.BASE_LOGIN_NAME) {
-        next()
-      }
+    // @ts-ignore
+    if (!routerAllowList.includes(to.name) && !loginCheck()) {
       next({ name: PageEnum.BASE_LOGIN_NAME })
     }
     next()

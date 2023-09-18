@@ -1,4 +1,5 @@
 <template>
+  <global-setting :optionData="optionData"></global-setting>
   <collapse-item name="词云" expanded>
     <setting-item-box name="形状">
       <setting-item>
@@ -45,7 +46,7 @@
 import { PropType, computed } from 'vue'
 import { option, ShapeEnumList } from './config'
 // eslint-disable-next-line no-unused-vars
-import { CollapseItem, SettingItemBox, SettingItem } from '@/components/Pages/ChartItemSetting'
+import { GlobalSetting, CollapseItem, SettingItemBox, SettingItem } from '@/components/Pages/ChartItemSetting'
 
 const props = defineProps({
   optionData: {

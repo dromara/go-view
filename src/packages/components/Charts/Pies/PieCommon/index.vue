@@ -1,10 +1,20 @@
 <template>
-  <v-chart ref="vChartRef" :theme="themeColor" :option="option" :manual-update="isPreview()" autoresize></v-chart>
+  <v-chart
+    ref="vChartRef"
+    autoresize
+    :init-options="initOptions"
+    :theme="themeColor"
+    :option="option"
+    :manual-update="isPreview()"
+    @mouseover="handleHighlight"
+    @mouseout="handleDownplay"
+  ></v-chart>
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, reactive, watch } from 'vue'
+import { computed, PropType, onMounted, watch } from 'vue'
 import VChart from 'vue-echarts'
+import { useCanvasInitOptions } from '@/hooks/useCanvasInitOptions.hook'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { PieChart } from 'echarts/charts'
@@ -14,6 +24,7 @@ import { useChartDataFetch } from '@/hooks'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { isPreview } from '@/utils'
 import { DatasetComponent, GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import dataJson from './data.json'
 
 const props = defineProps({
   themeSetting: {
@@ -29,12 +40,64 @@ const props = defineProps({
     required: true
   }
 })
+const initOptions = useCanvasInitOptions(props.chartConfig.option, props.themeSetting)
+let seriesDataNum = -1
+let seriesDataMaxLength = 0
+let intervalInstance: any = null
 
 use([DatasetComponent, CanvasRenderer, PieChart, GridComponent, TooltipComponent, LegendComponent])
 
 const option = computed(() => {
   return mergeTheme(props.chartConfig.option, props.themeSetting, includes)
 })
+
+// 会重新选择需要选中和展示的数据
+const handleSeriesData = () => {
+  if (seriesDataNum > -1) {
+    vChartRef.value?.dispatchAction({
+      type: 'downplay',
+      dataIndex: seriesDataNum
+    })
+  }
+  seriesDataNum = seriesDataNum >= seriesDataMaxLength - 1 ? 0 : seriesDataNum + 1
+  vChartRef.value?.dispatchAction({
+    type: 'highlight',
+    dataIndex: seriesDataNum
+  })
+}
+
+// 新增轮播
+const addPieInterval = (newData?: typeof dataJson, skipPre = false) => {
+  if (!skipPre && !Array.isArray(newData?.source)) return
+  if (!skipPre) seriesDataMaxLength = newData?.source.length || 0
+  clearInterval(intervalInstance)
+  intervalInstance = setInterval(() => {
+    handleSeriesData()
+  }, 1000)
+}
+
+// 取消轮播
+const clearPieInterval = () => {
+  vChartRef.value?.dispatchAction({
+    type: 'downplay',
+    dataIndex: seriesDataNum
+  })
+  clearInterval(intervalInstance)
+  intervalInstance = null
+}
+
+// 处理鼠标聚焦高亮内容
+const handleHighlight = () => {
+  clearPieInterval()
+}
+
+// 处理鼠标取消悬浮
+const handleDownplay = () => {
+  if (props.chartConfig.option.isCarousel && !intervalInstance) {
+    // 恢复轮播
+    addPieInterval(undefined, true)
+  }
+}
 
 watch(
   () => props.chartConfig.option.type,
@@ -57,5 +120,27 @@ watch(
   { deep: false, immediate: true }
 )
 
-const { vChartRef } = useChartDataFetch(props.chartConfig, useChartEditStore)
+watch(
+  () => props.chartConfig.option.isCarousel,
+  newData => {
+    if (newData) {
+      addPieInterval(undefined, true)
+      props.chartConfig.option.legend.show = false
+    } else {
+      props.chartConfig.option.legend.show = true
+      clearPieInterval()
+    }
+  }
+)
+
+const { vChartRef } = useChartDataFetch(props.chartConfig, useChartEditStore, (newData: typeof dataJson) => {
+  addPieInterval(newData)
+})
+
+onMounted(() => {
+  seriesDataMaxLength = dataJson.source.length
+  if (props.chartConfig.option.isCarousel) {
+    addPieInterval(undefined, true)
+  }
+})
 </script>

@@ -5,8 +5,9 @@ import { EditCanvasTypeEnum } from '@/store/modules/chartEditStore/chartEditStor
 const chartEditStore = useChartEditStore()
 
 // 布局处理
-export const useLayout = () => {
-  onMounted(() => {
+export const useLayout = (fn: () => Promise<void>) => {
+  let removeScale: Function = () => { }
+  onMounted(async () => {
     // 设置 Dom 值(ref 不生效先用 document)
     chartEditStore.setEditCanvas(
       EditCanvasTypeEnum.EDIT_LAYOUT_DOM,
@@ -17,13 +18,16 @@ export const useLayout = () => {
       document.getElementById('go-chart-edit-content')
     )
 
+    // 获取数据
+    await fn()
     // 监听初始化
-    const removeScale = chartEditStore.listenerScale()
+    removeScale = chartEditStore.listenerScale()
 
-    onUnmounted(() => {
-      chartEditStore.setEditCanvas(EditCanvasTypeEnum.EDIT_LAYOUT_DOM, null)
-      chartEditStore.setEditCanvas(EditCanvasTypeEnum.EDIT_CONTENT_DOM, null)
-      removeScale()
-    })
+  })
+
+  onUnmounted(() => {
+    chartEditStore.setEditCanvas(EditCanvasTypeEnum.EDIT_LAYOUT_DOM, null)
+    chartEditStore.setEditCanvas(EditCanvasTypeEnum.EDIT_CONTENT_DOM, null)
+    removeScale()
   })
 }

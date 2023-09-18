@@ -11,7 +11,10 @@ export const option = {
   dataset: dataJson,
   mapRegion: {
     adcode: 'china',
-    showHainanIsLands: true
+    showHainanIsLands: true,
+    enter: false,
+    backSize: 20,
+    backColor: '#ffffff'
   },
   tooltip: {
     show: true,
@@ -84,7 +87,10 @@ export const option = {
         shadowColor: '#E1FFFF',
         shadowBlur: 10
       },
-      data: []
+      data: [],
+      encode: {
+        value: 2
+      }
     },
     {
       name: '区域',
@@ -100,19 +106,19 @@ export const option = {
         borderColor: 'rgba(147, 235, 248, 0.8)',
         textStyle: {
           color: '#FFFFFF',
-          fontSize: 12,
+          fontSize: 12
         }
       },
       label: {
         show: false,
         color: '#FFFFFF',
-        fontSize: 12,
+        fontSize: 12
       },
       emphasis: {
         disabled: false,
         label: {
           color: '#FFFFFF',
-          fontSize: 12,
+          fontSize: 12
         },
         itemStyle: {
           areaColor: '#389BB7',
@@ -145,6 +151,26 @@ export const option = {
         shadowOffsetY: 2,
         shadowBlur: 10
       }
+    },
+    {
+      type: 'lines',
+      zlevel: 2,
+      effect: {
+        show: true,
+        period: 4, //箭头指向速度，值越小速度越快
+        trailLength: 0.4, //特效尾迹长度[0,1]值越大，尾迹越长重
+        symbol: 'arrow', //箭头图标
+        symbolSize: 7 //图标大小
+      },
+      lineStyle: {
+        normal: {
+          color: '#4fb6d2',
+          width: 1, //线条宽度
+          opacity: 0.1, //尾迹线条透明度
+          curveness: 0.3 //尾迹线条曲直度
+        }
+      },
+      data: []
     }
   ]
 }

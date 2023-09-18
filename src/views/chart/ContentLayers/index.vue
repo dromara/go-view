@@ -199,9 +199,8 @@ const changeLayerType = (value: LayerModeEnum) => {
 
 <style lang="scss" scoped>
 $wight: 200px;
-@include go(content-layers) {
+@include go('content-layers') {
   width: $wight;
-  flex-shrink: 0;
   overflow: hidden;
   @extend .go-transition;
   .not-layer-text {

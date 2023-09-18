@@ -2,18 +2,38 @@ import { ChartList } from '@/packages/components/Charts/index'
 import { DecorateList } from '@/packages/components/Decorates/index'
 import { InformationList } from '@/packages/components/Informations/index'
 import { TableList } from '@/packages/components/Tables/index'
+import { PhotoList } from '@/packages/components/Photos/index'
+import { IconList } from '@/packages/components/Icons/index'
 import { PackagesCategoryEnum, PackagesType, ConfigType, FetchComFlagType } from '@/packages/index.d'
 
-const configModules = import.meta.globEager('./components/**/config.vue')
-const indexModules = import.meta.globEager('./components/**/index.vue')
-const imagesModules = import.meta.globEager('../assets/images/chart/**')
+const configModules: Record<string, { default: string }> = import.meta.glob('./components/**/config.vue', {
+  eager: true
+})
+const indexModules: Record<string, { default: string }> = import.meta.glob('./components/**/index.vue', {
+  eager: true
+})
+const imagesModules: Record<string, { default: string }> = import.meta.glob('../assets/images/chart/**', {
+  eager: true
+})
 
 // * 所有图表
 export let packagesList: PackagesType = {
   [PackagesCategoryEnum.CHARTS]: ChartList,
   [PackagesCategoryEnum.INFORMATIONS]: InformationList,
   [PackagesCategoryEnum.TABLES]: TableList,
-  [PackagesCategoryEnum.DECORATES]: DecorateList
+  [PackagesCategoryEnum.DECORATES]: DecorateList,
+  [PackagesCategoryEnum.PHOTOS]: PhotoList,
+  [PackagesCategoryEnum.ICONS]: IconList
+}
+
+// 组件缓存, 可以大幅度提升组件加载速度
+const componentCacheMap = new Map<string, any>()
+const loadConfig = (packageName: string, categoryName: string, keyName: string) => {
+  const key = packageName + categoryName + keyName
+  if (!componentCacheMap.has(key)) {
+    componentCacheMap.set(key, import(`./components/${packageName}/${categoryName}/${keyName}/config.ts`))
+  }
+  return componentCacheMap.get(key)
 }
 
 /**
@@ -21,8 +41,14 @@ export let packagesList: PackagesType = {
  * @param targetData
  */
 export const createComponent = async (targetData: ConfigType) => {
-  const { category, key } = targetData
-  const chart = await import(`./components/${targetData.package}/${category}/${key}/config.ts`)
+  const { redirectComponent, category, key } = targetData
+  // redirectComponent 是给图片组件库和图标组件库使用的
+  if (redirectComponent) {
+    const [packageName, categoryName, keyName] = redirectComponent.split('/')
+    const redirectChart = await loadConfig(packageName, categoryName, keyName)
+    return new redirectChart.default()
+  }
+  const chart = await loadConfig(targetData.package, category, key)
   return new chart.default()
 }
 
@@ -65,8 +91,10 @@ export const fetchConfigComponent = (dropData: ConfigType) => {
  */
 export const fetchImages = async (targetData?: ConfigType) => {
   if (!targetData) return ''
+  // 正则判断图片是否为 url，是则直接返回该 url
+  if (/^(http|https):\/\/([\w.]+\/?)\S*/.test(targetData.image)) return targetData.image
   // 新数据动态处理
-  const { image, package: targetDataPackage } = targetData
+  const { image } = targetData
   // 兼容旧数据
   if (image.includes('@') || image.includes('base64')) return image
 

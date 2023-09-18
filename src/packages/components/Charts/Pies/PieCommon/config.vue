@@ -7,6 +7,17 @@
         <n-select v-model:value="optionData.type" size="small" :options="fontWeightOptions" />
       </SettingItem>
     </SettingItemBox>
+    <SettingItemBox name="动画" :alone="true">
+      <SettingItem>
+        <n-space>
+          <n-switch v-model:value="optionData.isCarousel" size="small"></n-switch>
+          <n-text>开启<n-text :depth="3">（将自动隐藏图例）</n-text></n-text>
+        </n-space>
+      </SettingItem>
+      <SettingItem>
+        <n-text :depth="3">无鼠标点击图例场景时，可强行打开图例</n-text>
+      </SettingItem>
+    </SettingItemBox>
     <SettingItemBox name="标签">
       <SettingItem>
         <n-space>

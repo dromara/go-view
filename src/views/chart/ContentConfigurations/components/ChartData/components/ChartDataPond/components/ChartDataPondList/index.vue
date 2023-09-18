@@ -1,6 +1,6 @@
 <template>
   <div class="go-chart-data-pond-list">
-    <n-timeline style="width: 20px">
+    <n-timeline class="pond-item-timeline" style="width: 20px">
       <n-timeline-item type="info"> </n-timeline-item>
       <n-timeline-item type="success"></n-timeline-item>
     </n-timeline>
@@ -115,11 +115,9 @@ $textSize: 10px;
   padding-bottom: 5px;
   margin-right: 5px;
   display: flex;
-  @include deep() {
-    .n-timeline > .n-timeline-item {
-      &:first-child {
-        height: $height;
-      }
+  .pond-item-timeline > .n-timeline-item {
+    &:first-child {
+      height: $height;
     }
   }
   .pond-item-box {

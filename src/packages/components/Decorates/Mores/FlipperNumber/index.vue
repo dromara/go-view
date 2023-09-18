@@ -9,6 +9,7 @@
       :radius="flipperRadius"
       :flip-type="flipperType"
       :duration="flipperSpeed"
+      :border-width="flipperBorderWidth"
       v-for="(item, index) in flipperData"
       :key="index"
       class="go-d-block"
@@ -42,7 +43,8 @@ const {
   flipperRadius,
   flipperGap,
   flipperType,
-  flipperSpeed
+  flipperSpeed,
+  flipperBorderWidth
 } = toRefs(props.chartConfig.option as OptionType)
 
 const flipperData = ref<string[] | number[]>([])
@@ -61,7 +63,7 @@ watch(
   () => props.chartConfig.option,
   newVal => {
     try {
-      updateDatasetHandler((newVal as OptionType).dataset)
+      updateDatasetHandler((newVal as any as OptionType).dataset)
     } catch (error) {
       console.log(error)
     }

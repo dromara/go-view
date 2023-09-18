@@ -1,4 +1,66 @@
 /**
+ * * base64转file
+ * @param dataurl 
+ * @param fileName 
+ * @returns 
+ */
+export const base64toFile = (dataurl: string, fileName: string) => {
+  let dataArr = dataurl.split(","),
+  mime = (dataArr as any[])[0].match(/:(.*?);/)[1],
+  bstr = atob(dataArr[1]),
+  n = bstr.length,
+  u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], fileName, { type: mime });
+}
+
+/**
+ * * file转url
+ */
+ export const fileToUrl = (file: File): string => {
+  const Url = URL || window.URL || window.webkitURL
+  const ImageUrl = Url.createObjectURL(file)
+  return ImageUrl
+}
+
+/**
+ * * url转file
+ */
+ export const urlToFile = (fileUrl: string, fileName = `${new Date().getTime()}`): File => {
+  const dataArr = fileUrl.split(',')
+  const mime = (dataArr as any[])[0].match(/:(.*);/)[1]
+  const originStr = atob(dataArr[1])
+  return new File([originStr], `${fileName}`, { type: mime })
+}
+
+/**
+ * * file转base64
+ * @param file 文件数据
+ * @param callback 回调函数 
+ */
+export const fileTobase64 = (file: File, callback: Function) => {
+  let reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = function (e: ProgressEvent<FileReader>) {
+    if (e.target) {
+      let base64 = e.target.result
+      callback(base64)
+    }
+  }
+}
+
+/**
+ * * canvas转file
+ * @param canvas 
+ */
+export const canvastoFile = (canvas: HTMLCanvasElement, name?: string) => {
+  const dataurl = canvas.toDataURL('image/png')
+  return urlToFile(dataurl, name)
+}
+
+/**
  * *获取上传的文件数据
  * @param { File } file 文件对象
  */

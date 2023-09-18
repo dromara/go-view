@@ -15,7 +15,7 @@ export interface IResources {
 const fileSuffix = ['earth', 'gradient', 'redCircle', 'label', 'aperture', 'glow', 'light_column', 'aircraft']
 const textures: ITextures[] = []
 
-const modules = import.meta.globEager("../../images/earth/*");
+const modules: Record<string, { default: string }> = import.meta.glob("../../images/earth/*", { eager: true })
 
 for(let item in modules) {
   const n = item.split('/').pop()

@@ -1,10 +1,11 @@
 <template>
-  <v-chart ref="vChartRef" :theme="themeColor" :option="option.value" :manual-update="isPreview()" autoresize></v-chart>
+  <v-chart ref="vChartRef" :init-options="initOptions" :theme="themeColor" :option="option.value" :manual-update="isPreview()" autoresize></v-chart>
 </template>
 
 <script setup lang="ts">
 import { reactive, watch, PropType } from 'vue'
 import VChart from 'vue-echarts'
+import { useCanvasInitOptions } from '@/hooks/useCanvasInitOptions.hook'
 import { use, graphic } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { LineChart } from 'echarts/charts'
@@ -14,7 +15,7 @@ import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore
 import { chartColorsSearch, defaultTheme } from '@/settings/chartThemes/index'
 import { DatasetComponent, GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
 import { useChartDataFetch } from '@/hooks'
-import { isPreview } from '@/utils'
+import { isPreview, colorGradientCustomMerge} from '@/utils'
 
 const props = defineProps({
   themeSetting: {
@@ -31,6 +32,8 @@ const props = defineProps({
   }
 })
 
+const initOptions = useCanvasInitOptions(props.chartConfig.option, props.themeSetting)
+
 use([DatasetComponent, CanvasRenderer, LineChart, GridComponent, TooltipComponent, LegendComponent])
 const chartEditStore = useChartEditStore()
 
@@ -44,7 +47,9 @@ watch(
   (newColor: keyof typeof chartColorsSearch) => {
     try {
       if (!isPreview()) {
-        const themeColor = chartColorsSearch[newColor] || chartColorsSearch[defaultTheme]
+        const themeColor =
+          colorGradientCustomMerge(chartEditStore.getEditCanvasConfig.chartCustomThemeColorInfo)[newColor] ||
+          colorGradientCustomMerge(chartEditStore.getEditCanvasConfig.chartCustomThemeColorInfo)[defaultTheme]
         props.chartConfig.option.series.forEach((value: any, index: number) => {
           value.areaStyle.color = new graphic.LinearGradient(0, 0, 0, 1, [
             {

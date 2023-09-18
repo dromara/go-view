@@ -4,9 +4,9 @@
       <img src="~@/assets/images/exception/500.svg" alt="" />
     </div>
     <div class="text-center">
-      <h1 class="text-base text-gray-500">抱歉，服务器出错了</h1>
+      <h1 class="text-base text-gray-500">抱歉，服务器出错了，建议您重新登录呢</h1>
     </div>
-    <n-button type="primary" secondary @click="goHome">回到首页</n-button>
+    <n-button type="primary" secondary @click="goLogin">重新登录</n-button>
   </div>
 </template>
 
@@ -14,8 +14,8 @@
 import { PageEnum } from '@/enums/pageEnum'
 import { routerTurnByName } from '@/utils'
 
-function goHome() {
-  routerTurnByName(PageEnum.BASE_HOME_NAME)
+function goLogin() {
+  routerTurnByName(PageEnum.BASE_LOGIN_NAME)
 }
 </script>
 

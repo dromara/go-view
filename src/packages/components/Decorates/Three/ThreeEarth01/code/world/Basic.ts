@@ -31,7 +31,8 @@ export class Basic {
     this.renderer = new THREE.WebGLRenderer({
       // canvas: this.dom,
       alpha: true, // 透明
-      antialias: true // 抗锯齿
+      antialias: true, // 抗锯齿
+      preserveDrawingBuffer: true
     })
     this.renderer.setPixelRatio(window.devicePixelRatio) // 设置屏幕像素比
     this.renderer.setSize(window.innerWidth, window.innerHeight) // 设置渲染器宽高

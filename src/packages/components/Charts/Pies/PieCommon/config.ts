@@ -18,7 +18,14 @@ export const PieTypeObject = {
   [PieTypeEnum.ROSE]: 'rose'
 }
 
+// 其它配置
+const otherConfig = {
+  // 轮播动画
+  isCarousel: false,
+}
+
 const option = {
+  ...otherConfig,
   type: 'ring',
   tooltip: {
     show: true,

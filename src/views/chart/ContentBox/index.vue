@@ -10,7 +10,7 @@
           <slot name="icon"></slot>
         </div>
       </n-space>
-      <n-space align="center" style="gap: 4px">
+      <n-space class="go-flex-no-wrap" align="center" style="gap: 4px">
         <slot name="top-right"></slot>
         <n-icon v-show="backIcon" size="20" class="go-cursor-pointer go-d-block" @click="backHandle">
           <chevron-back-outline-icon></chevron-back-outline-icon>

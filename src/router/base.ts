@@ -1,13 +1,13 @@
 import { RouteRecordRaw } from 'vue-router'
 import type { AppRouteRecordRaw } from '@/router/types';
-import { ErrorPage404, ErrorPage403, ErrorPage500, Layout } from '@/router/constant';
+import { ErrorPage404, ErrorPage403, ErrorPage500, Layout, RedirectHome, RedirectUnPublish } from '@/router/constant';
 import { PageEnum } from '@/enums/pageEnum'
 import { GoReload } from '@/components/GoReload'
 
 
 export const LoginRoute: RouteRecordRaw = {
-  path: '/login',
-  name: 'Login',
+  path: PageEnum.BASE_LOGIN,
+  name: PageEnum.BASE_LOGIN_NAME,
   component: () => import('@/views/login/index.vue'),
   meta: {
     title: '登录',
@@ -60,22 +60,21 @@ export const ReloadRoute: AppRouteRecordRaw = {
   },
 }
 
-export const RedirectRoute: AppRouteRecordRaw = {
-  path: PageEnum.REDIRECT,
-  name: PageEnum.REDIRECT_NAME,
-  component: Layout,
-  meta: {
-    title: PageEnum.REDIRECT_NAME,
-  },
-  children: [
-    {
-      path: '/redirect/:path(.*)',
-      name: PageEnum.REDIRECT_NAME,
-      component: () => import('@/views/redirect/index.vue'),
-      meta: {
-        title: PageEnum.REDIRECT_NAME,
-        hideBreadcrumb: true,
-      },
+export const RedirectRoute: RouteRecordRaw[] = [
+  {
+    path: PageEnum.REDIRECT,
+    name: PageEnum.REDIRECT_NAME,
+    component: RedirectHome,
+    meta: {
+      title: PageEnum.REDIRECT_NAME,
     },
-  ],
-};
+  },
+  {
+    path: PageEnum.REDIRECT_UN_PUBLISH,
+    name: PageEnum.REDIRECT_UN_PUBLISH_NAME,
+    component: RedirectUnPublish,
+    meta: {
+      title: PageEnum.REDIRECT_UN_PUBLISH_NAME,
+    },
+  },
+]

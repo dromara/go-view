@@ -11,8 +11,8 @@
       @update:value="clickItemHandle"
     ></n-menu>
     <div class="chart-content-list">
-      <n-scrollbar>
-        <charts-item-box :menuOptions="packages.selectOptions"></charts-item-box>
+      <n-scrollbar trigger="none">
+        <charts-item-box :menuOptions="packages.selectOptions" @deletePhoto="deleteHandle"></charts-item-box>
       </n-scrollbar>
     </div>
   </div>
@@ -23,8 +23,11 @@ import { ref, watch, computed, reactive } from 'vue'
 import { ConfigType } from '@/packages/index.d'
 import { useSettingStore } from '@/store/modules/settingStore/settingStore'
 import { loadAsyncComponent } from '@/utils'
+import { usePackagesStore } from '@/store/modules/packagesStore/packagesStore'
+import { PackagesCategoryEnum } from '@/packages/index.d'
 
 const ChartsItemBox = loadAsyncComponent(() => import('../ChartsItemBox/index.vue'))
+const packagesStore = usePackagesStore()
 
 const props = defineProps({
   selectOptions: {
@@ -61,7 +64,7 @@ let packages = reactive<{
   saveSelectOptions: {}
 })
 
-const selectValue = ref<string>()
+const selectValue = ref<string>('all')
 
 // 设置初始列表
 const setSelectOptions = (categorys: any) => {
@@ -79,7 +82,6 @@ watch(
     if (!newData) return
     newData.list.forEach((e: ConfigType) => {
       const value: ConfigType[] = (packages.categorys as any)[e.category]
-      // @ts-ignore
       packages.categorys[e.category] = value && value.length ? [...value, e] : [e]
       packages.categoryNames[e.category] = e.categoryName
       packages.categorys['all'].push(e)
@@ -100,6 +102,22 @@ watch(
   }
 )
 
+watch(
+  () => packagesStore.newPhoto,
+  newPhoto => {
+    if (!newPhoto) return
+    const newPhotoCategory = newPhoto.category
+    packages.categorys[newPhotoCategory].splice(1, 0, newPhoto)
+    packages.categorys['all'].splice(1, 0, newPhoto)
+  }
+)
+
+// 删除图片
+const deleteHandle = (item: ConfigType, index: number) => {
+  packages.categorys[item.category].splice(index, 1)
+  packages.categorys['all'].splice(index, 1)
+}
+
 // 处理点击事件
 const clickItemHandle = (key: string) => {
   packages.selectOptions = packages.categorys[key]
@@ -119,6 +137,7 @@ $menuWidth: 65px;
     @include fetch-bg-color('background-color2-shallow');
   }
   .chart-content-list {
+    width: 200px;
     flex: 1;
     display: flex;
     flex-direction: column;

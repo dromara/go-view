@@ -9,6 +9,12 @@
   }
 }
 
+@mixin dark {
+  [data-theme='dark'] {
+    @content;
+  }
+}
+
 @mixin goId($block) {
   $B: $namespace + '-' + $block;
   ##{$B} {

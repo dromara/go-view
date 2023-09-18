@@ -22,7 +22,7 @@
       </n-form-item>
     </n-form>
 
-    <n-card class="upload-box">
+    <div class="upload-box">
       <n-upload
         v-model:file-list="uploadFileListRef"
         :show-file-list="false"
@@ -39,7 +39,7 @@
           </div>
         </n-upload-dragger>
       </n-upload>
-    </n-card>
+    </div>
     <n-space vertical :size="12">
       <n-space>
         <n-text>背景颜色</n-text>
@@ -128,19 +128,24 @@
 <script setup lang="ts">
 import { ref, nextTick, watch } from 'vue'
 import { backgroundImageSize } from '@/settings/designSetting'
+import { swatchesColors } from '@/settings/chartThemes/index'
 import { FileTypeEnum } from '@/enums/fileTypeEnum'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { EditCanvasConfigEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
+import { useSystemStore } from '@/store/modules/systemStore/systemStore'
 import { StylesSetting } from '@/components/Pages/ChartItemSetting'
 import { UploadCustomRequestOptions } from 'naive-ui'
-import { fileToUrl, loadAsyncComponent } from '@/utils'
+import { loadAsyncComponent, fetchRouteParamsLocation } from '@/utils'
 import { PreviewScaleEnum } from '@/enums/styleEnum'
+import { ResultEnum } from '@/enums/httpEnum'
 import { icon } from '@/plugins'
+import { uploadFile } from '@/api/path'
 
 const { ColorPaletteIcon } = icon.ionicons5
 const { ScaleIcon, FitToScreenIcon, FitToHeightIcon, FitToWidthIcon } = icon.carbon
 
 const chartEditStore = useChartEditStore()
+const systemStore = useSystemStore()
 const canvasConfig = chartEditStore.getEditCanvasConfig
 const editCanvas = chartEditStore.getEditCanvas
 
@@ -161,9 +166,6 @@ const selectColorOptions = [
     value: 1
   }
 ]
-
-// 默认展示颜色列表
-const swatchesColors = ['#232324', '#2a2a2b', '#313132', '#373739', '#757575', '#e0e0e0', '#eeeeee', '#fafafa']
 
 const globalTabList = [
   {
@@ -268,11 +270,32 @@ const clearColor = () => {
 // 自定义上传操作
 const customRequest = (options: UploadCustomRequestOptions) => {
   const { file } = options
-  nextTick(() => {
+  nextTick(async () => {
     if (file.file) {
-      const ImageUrl = fileToUrl(file.file)
-      chartEditStore.setEditCanvasConfig(EditCanvasConfigEnum.BACKGROUND_IMAGE, ImageUrl)
-      chartEditStore.setEditCanvasConfig(EditCanvasConfigEnum.SELECT_COLOR, false)
+      // 修改名称
+      const newNameFile = new File([file.file], `${fetchRouteParamsLocation()}_index_background.png`, {
+        type: file.file.type
+      })
+      let uploadParams = new FormData()
+      uploadParams.append('object', newNameFile)
+      const uploadRes = await uploadFile(uploadParams)
+
+      if (uploadRes && uploadRes.code === ResultEnum.SUCCESS) {
+        if (uploadRes.data.fileurl) {
+          chartEditStore.setEditCanvasConfig(
+            EditCanvasConfigEnum.BACKGROUND_IMAGE,
+            `${uploadRes.data.fileurl}?time=${new Date().getTime()}`
+          )
+        } else {
+          chartEditStore.setEditCanvasConfig(
+            EditCanvasConfigEnum.BACKGROUND_IMAGE,
+            `${systemStore.getFetchInfo.OSSUrl || ''}${uploadRes.data.fileName}?time=${new Date().getTime()}`
+          )
+        }
+        chartEditStore.setEditCanvasConfig(EditCanvasConfigEnum.SELECT_COLOR, false)
+        return
+      }
+      window['$message'].error('添加图片失败，请稍后重试！')
     } else {
       window['$message'].error('添加图片失败，请稍后重试！')
     }
@@ -294,13 +317,10 @@ $uploadHeight: 193px;
     cursor: pointer;
     margin-bottom: 20px;
     @include deep() {
-      .n-card__content {
-        padding: 0;
-        overflow: hidden;
-      }
       .n-upload-dragger {
         padding: 5px;
         width: $uploadWidth;
+        background-color: rgba(0, 0, 0, 0);
       }
     }
     .upload-show {
@@ -331,8 +351,8 @@ $uploadHeight: 193px;
     padding-right: 2.25em;
   }
   .select-preview-icon {
-    padding-right: .68em;
-    padding-left: .68em;
+    padding-right: 0.68em;
+    padding-left: 0.68em;
   }
   .tabs-box {
     margin-top: 20px;

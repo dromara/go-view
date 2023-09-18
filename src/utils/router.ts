@@ -1,11 +1,12 @@
 import { useRoute } from 'vue-router'
-import { ResultEnum } from '@/enums/httpEnum'
-import { ErrorPageNameMap, PageEnum } from '@/enums/pageEnum'
+import { ResultEnum, RequestHttpHeaderEnum } from '@/enums/httpEnum'
+import { ErrorPageNameMap, PageEnum, PreviewEnum } from '@/enums/pageEnum'
 import { docPath, giteeSourceCodePath } from '@/settings/pathConst'
-import { cryptoDecode } from './crypto'
+import { SystemStoreEnum, SystemStoreUserInfoEnum } from '@/store/modules/systemStore/systemStore.d'
 import { StorageEnum } from '@/enums/storageEnum'
-import { clearLocalStorage, getLocalStorage } from './storage'
+import { clearLocalStorage, getLocalStorage, clearCookie } from './storage'
 import router from '@/router'
+import { logoutApi } from '@/api/path'
 
 /**
  * * 根据名字跳转路由
@@ -101,11 +102,20 @@ export const reloadRoutePage = () => {
 }
 
 /**
- * * 退出
+ * * 退出登录
  */
-export const logout = () => {
-  clearLocalStorage(StorageEnum.GO_LOGIN_INFO_STORE)
-  routerTurnByName(PageEnum.BASE_LOGIN_NAME)
+export const logout = async () => {
+  try {
+    const res = await logoutApi()
+    if(res && res.code === ResultEnum.SUCCESS) {
+      window['$message'].success(window['$t']('global.logout_success'))
+      clearCookie(RequestHttpHeaderEnum.COOKIE)
+      clearLocalStorage(StorageEnum.GO_SYSTEM_STORE)
+      routerTurnByName(PageEnum.BASE_LOGIN_NAME)
+    }
+  } catch (error) {
+    window['$message'].success(window['$t']('global.logout_failure'))
+  }
 }
 
 /**
@@ -157,9 +167,10 @@ export const fetchRouteParams = () => {
  * * 通过硬解析获取当前路由下的参数
  * @returns object
  */
- export const fetchRouteParamsLocation = () => {
+export const fetchRouteParamsLocation = () => {
   try {
-    return document.location.hash.split('/').pop() || ''
+    // 防止添加query参数的时候，解析ID异常
+    return document.location.hash.split('?')[0].split('/').pop() || ''
   } catch (error) {
     window['$message'].warning('查询路由信息失败，请联系管理员！')
     return ''
@@ -175,19 +186,29 @@ export const goHome = () => {
 }
 
 /**
- * * 判断是否登录（现阶段是有 login 数据即可）
+ * * 判断是否登录
  * @return boolean
  */
 export const loginCheck = () => {
   try {
-    const info = getLocalStorage(StorageEnum.GO_LOGIN_INFO_STORE)
+    const info = getLocalStorage(StorageEnum.GO_SYSTEM_STORE)
     if (!info) return false
-    const decodeInfo = cryptoDecode(info)
-    if (decodeInfo) {
+    if (info[SystemStoreEnum.USER_INFO][SystemStoreUserInfoEnum.USER_TOKEN]) {
       return true
     }
     return false
   } catch (error) {
     return false
   }
-} 
+}
+
+/**
+ * * 预览地址
+ * @returns 
+ */
+ export const previewPath = (id?: string | number) => {
+  const { origin, pathname } = document.location
+  const path = fetchPathByName(PreviewEnum.CHART_PREVIEW_NAME, 'href')
+  const previewPath = `${origin}${pathname}${path}/${id || fetchRouteParamsLocation()}`
+  return previewPath
+}

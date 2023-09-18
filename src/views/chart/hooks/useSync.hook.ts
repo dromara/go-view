@@ -1,11 +1,23 @@
-import { getUUID } from '@/utils'
+import { onUnmounted } from 'vue';
+import html2canvas from 'html2canvas'
+import { getUUID, httpErrorHandle, fetchRouteParamsLocation, base64toFile, JSONStringify, JSONParse } from '@/utils'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-import { ChartEditStoreEnum, ChartEditStorage } from '@/store/modules/chartEditStore/chartEditStore.d'
+import { EditCanvasTypeEnum, ChartEditStoreEnum, ProjectInfoEnum, ChartEditStorage } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { useChartHistoryStore } from '@/store/modules/chartHistoryStore/chartHistoryStore'
+import { StylesSetting } from '@/components/Pages/ChartItemSetting'
+import { useSystemStore } from '@/store/modules/systemStore/systemStore'
 import { useChartLayoutStore } from '@/store/modules/chartLayoutStore/chartLayoutStore'
 import { ChartLayoutStoreEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
 import { fetchChartComponent, fetchConfigComponent, createComponent } from '@/packages/index'
-import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
+import { saveInterval } from '@/settings/designSetting'
+import throttle from 'lodash/throttle'
+// 接口状态
+import { ResultEnum } from '@/enums/httpEnum'
+// 接口
+import { saveProjectApi, fetchProjectApi, uploadFile, updateProjectApi } from '@/api/path'
+// 画布枚举
+import { SyncEnum } from '@/enums/editPageEnum'
+import { CreateComponentType, CreateComponentGroupType, ConfigType } from '@/packages/index.d'
 import { BaseEvent, EventLife } from '@/enums/eventEnum'
 import { PublicGroupConfigClass } from '@/packages/public/publicConfig'
 import merge from 'lodash/merge'
@@ -48,7 +60,8 @@ const componentVersionUpdatePolyfill = (newObject: any, sources: any) => {
           advancedEvents: {
             [EventLife.VNODE_MOUNTED]: undefined,
             [EventLife.VNODE_BEFORE_MOUNT]: undefined
-          }
+          },
+          interactEvents: []
         }
       }
       return newObject
@@ -88,6 +101,7 @@ const componentMerge = (newObject: any, sources: any, notComponent = false) => {
 export const useSync = () => {
   const chartEditStore = useChartEditStore()
   const chartHistoryStore = useChartHistoryStore()
+  const systemStore = useSystemStore()
   const chartLayoutStore = useChartLayoutStore()
   /**
    * * 组件动态注册
@@ -131,6 +145,11 @@ export const useSync = () => {
     ) => {
       // 补充 class 上的方法
       let newComponent: CreateComponentType = await createComponent(_componentInstance.chartConfig)
+      if (_componentInstance.chartConfig.redirectComponent) {
+        _componentInstance.chartConfig.dataset && (newComponent.option.dataset = _componentInstance.chartConfig.dataset)
+        newComponent.chartConfig.title = _componentInstance.chartConfig.title
+        newComponent.chartConfig.chartFrame = _componentInstance.chartConfig.chartFrame
+      }
       if (callBack) {
         if (changeId) {
           callBack(componentMerge(newComponent, { ..._componentInstance, id: getUUID() }))
@@ -155,7 +174,7 @@ export const useSync = () => {
       // 组件
       if (key === ChartEditStoreEnum.COMPONENT_LIST) {
         let loadIndex = 0
-        const listLength = projectData[key].length;
+        const listLength = projectData[key].length
         for (const comItem of projectData[key]) {
           // 设置加载数量
           let percentage = parseInt((parseFloat(`${++loadIndex / listLength}`) * 100).toString())
@@ -184,10 +203,13 @@ export const useSync = () => {
           } else {
             await create(comItem as CreateComponentType)
           }
+          if (percentage === 100) {
+            // 清除历史记录
+            chartHistoryStore.clearBackStack()
+            chartHistoryStore.clearForwardStack()
+          }
         }
-      } else {
-        // 非组件(顺便排除脏数据)
-        if (key !== 'editCanvasConfig' && key !== 'requestGlobalConfig') return
+      } else if (key === ChartEditStoreEnum.EDIT_CANVAS_CONFIG || key === ChartEditStoreEnum.REQUEST_GLOBAL_CONFIG) {
         componentMerge(chartEditStore[key], projectData[key], true)
       }
     }
@@ -196,7 +218,142 @@ export const useSync = () => {
     chartLayoutStore.setItemUnHandle(ChartLayoutStoreEnum.PERCENTAGE, 0)
   }
 
+  /**
+   * * 赋值全局数据
+   * @param projectData 项目数据
+   * @returns
+   */
+  const updateStoreInfo = (projectData: {
+    id: string,
+    projectName: string,
+    indexImage: string,
+    remarks: string,
+    state: number
+  }) => {
+    const { id, projectName, remarks, indexImage, state } = projectData
+    // ID
+    chartEditStore.setProjectInfo(ProjectInfoEnum.PROJECT_ID, id)
+    // 名称
+    chartEditStore.setProjectInfo(ProjectInfoEnum.PROJECT_NAME, projectName)
+    // 描述
+    chartEditStore.setProjectInfo(ProjectInfoEnum.REMARKS, remarks)
+    // 缩略图
+    chartEditStore.setProjectInfo(ProjectInfoEnum.THUMBNAIL, indexImage)
+    // 发布
+    chartEditStore.setProjectInfo(ProjectInfoEnum.RELEASE, state === 1)
+  }
+
+  // * 数据获取
+  const dataSyncFetch = async () => {
+    // FIX:重新执行dataSyncFetch需清空chartEditStore.componentList,否则会导致图层重复
+    // 切换语言等操作会导致重新执行 dataSyncFetch,此时pinia中并未清空chartEditStore.componentList，导致图层重复
+    chartEditStore.componentList = []
+    chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.START)
+    try {
+      const res = await fetchProjectApi({ projectId: fetchRouteParamsLocation() })
+      if (res && res.code === ResultEnum.SUCCESS) {
+        if (res.data) {
+          updateStoreInfo(res.data)
+          // 更新全局数据
+          await updateComponent(JSONParse(res.data.content))
+          return
+        }else {
+          chartEditStore.setProjectInfo(ProjectInfoEnum.PROJECT_ID, fetchRouteParamsLocation())
+        }
+        setTimeout(() => {
+          chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.SUCCESS)
+        }, 1000)
+        return
+      }
+      chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.FAILURE)
+    } catch (error) {
+      chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.FAILURE)
+      httpErrorHandle()
+    }
+  }
+
+  // * 数据保存
+  const dataSyncUpdate = throttle(async (updateImg = true) => {
+    if(!fetchRouteParamsLocation()) return
+
+    let projectId = chartEditStore.getProjectInfo[ProjectInfoEnum.PROJECT_ID];
+    if(projectId === null || projectId === ''){
+      window['$message'].error('数据初未始化成功,请刷新页面！')
+      return
+    }
+
+    chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.START)
+
+    // 异常处理：缩略图上传失败不影响JSON的保存
+    try {
+      if (updateImg) {
+        // 获取缩略图片
+        const range = document.querySelector('.go-edit-range') as HTMLElement
+        // 生成图片
+        const canvasImage: HTMLCanvasElement = await html2canvas(range, {
+          backgroundColor: null,
+          allowTaint: true,
+          useCORS: true
+        })
+
+        // 上传预览图
+        let uploadParams = new FormData()
+        uploadParams.append('object', base64toFile(canvasImage.toDataURL(), `${fetchRouteParamsLocation()}_index_preview.png`))
+        const uploadRes = await uploadFile(uploadParams)
+        // 保存预览图
+        if(uploadRes && uploadRes.code === ResultEnum.SUCCESS) {
+          if (uploadRes.data.fileurl) {
+            await updateProjectApi({
+              id: fetchRouteParamsLocation(),
+              indexImage: `${uploadRes.data.fileurl}`
+            })
+          } else {
+            await updateProjectApi({
+              id: fetchRouteParamsLocation(),
+              indexImage: `${systemStore.getFetchInfo.OSSUrl}${uploadRes.data.fileName}`
+            })
+          }
+        }
+      }
+    } catch (e) {
+      console.log(e)
+    }
+
+    // 保存数据
+    let params = new FormData()
+    params.append('projectId', projectId)
+    params.append('content', JSONStringify(chartEditStore.getStorageInfo || {}))
+    const res= await saveProjectApi(params)
+
+    if (res && res.code === ResultEnum.SUCCESS) {
+      // 成功状态
+      setTimeout(() => {
+        chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.SUCCESS)
+      }, 1000)
+      return
+    }
+    // 失败状态
+    chartEditStore.setEditCanvas(EditCanvasTypeEnum.SAVE_STATUS, SyncEnum.FAILURE)
+  }, 3000)
+
+  // * 定时处理
+  const intervalDataSyncUpdate = () => {
+    // 定时获取数据
+    const syncTiming = setInterval(() => {
+      dataSyncUpdate()
+    }, saveInterval * 1000)
+
+    // 销毁
+    onUnmounted(() => {
+      clearInterval(syncTiming)
+    })
+  }
+
   return {
-    updateComponent
+    updateComponent,
+    updateStoreInfo,
+    dataSyncFetch,
+    dataSyncUpdate,
+    intervalDataSyncUpdate
   }
 }

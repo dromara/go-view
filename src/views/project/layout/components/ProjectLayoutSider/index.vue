@@ -45,8 +45,7 @@ const collapsed = ref<boolean>(false)
 const { getAsideCollapsedWidth } = toRefs(useSettingStore())
 
 const route = useRoute()
-const routeRame = computed(() => route.name)
-const menuValue = ref(routeRame)
+const menuValue = computed(() => route.name)
 
 const menuOptions = menuOptionsInit()
 

@@ -9,16 +9,16 @@ import {
 } from '@/enums/httpEnum'
 import type { RequestGlobalConfigType, RequestConfigType } from '@/store/modules/chartEditStore/chartEditStore.d'
 
-export const get = (url: string, params?: object) => {
-  return axiosInstance({
+export const get = <T = any>(url: string, params?: object) => {
+  return axiosInstance<T>({
     url: url,
     method: RequestHttpEnum.GET,
-    params: params
+    params: params,
   })
 }
 
-export const post = (url: string, data?: object, headersType?: string) => {
-  return axiosInstance({
+export const post = <T = any>(url: string, data?: object, headersType?: string) => {
+  return axiosInstance<T>({
     url: url,
     method: RequestHttpEnum.POST,
     data: data,
@@ -28,8 +28,8 @@ export const post = (url: string, data?: object, headersType?: string) => {
   })
 }
 
-export const patch = (url: string, data?: object, headersType?: string) => {
-  return axiosInstance({
+export const patch = <T = any>(url: string, data?: object, headersType?: string) => {
+  return axiosInstance<T>({
     url: url,
     method: RequestHttpEnum.PATCH,
     data: data,
@@ -39,8 +39,8 @@ export const patch = (url: string, data?: object, headersType?: string) => {
   })
 }
 
-export const put = (url: string, data?: object, headersType?: ContentTypeEnum) => {
-  return axiosInstance({
+export const put = <T = any>(url: string, data?: object, headersType?: ContentTypeEnum) => {
+  return axiosInstance<T>({
     url: url,
     method: RequestHttpEnum.PUT,
     data: data,
@@ -50,8 +50,8 @@ export const put = (url: string, data?: object, headersType?: ContentTypeEnum) =
   })
 }
 
-export const del = (url: string, params?: object) => {
-  return axiosInstance({
+export const del = <T = any>(url: string, params?: object) => {
+  return axiosInstance<T>({
     url: url,
     method: RequestHttpEnum.DELETE,
     params
@@ -82,11 +82,11 @@ export const http = (type?: RequestHttpEnum) => {
 }
 const prefix = 'javascript:'
 // 对输入字符进行转义处理
-export const translateStr = (target: string | object) => {
+export const translateStr = (target: string | Record<any, any>) => {
   if (typeof target === 'string') {
     if (target.startsWith(prefix)) {
       const funcStr = target.split(prefix)[1]
-      let result;
+      let result
       try {
         result = new Function(`${funcStr}`)()
       } catch (error) {
@@ -100,8 +100,8 @@ export const translateStr = (target: string | object) => {
   }
   for (const key in target) {
     if (Object.prototype.hasOwnProperty.call(target, key)) {
-      const subTarget = (target as any)[key];
-      (target as any)[key] = translateStr(subTarget)
+      const subTarget = target[key]
+      target[key] = translateStr(subTarget)
     }
   }
   return target
@@ -163,7 +163,6 @@ export const customizeHttp = (targetParams: RequestConfigType, globalParams: Req
   params = translateStr(params)
   // form 类型处理
   let formData: FormData = new FormData()
-  formData.set('default', 'defaultData')
   // 类型处理
 
   switch (requestParamsBodyType) {
@@ -172,7 +171,9 @@ export const customizeHttp = (targetParams: RequestConfigType, globalParams: Req
 
     case RequestBodyEnum.JSON:
       headers['Content-Type'] = ContentTypeEnum.JSON
-      data = translateStr(JSON.parse(targetRequestParams.Body['json']))
+      //json对象也能使用'javasctipt:'来动态拼接参数
+      data = translateStr(targetRequestParams.Body['json'])
+      if(typeof data === 'string')  data = JSON.parse(data)
       // json 赋值给 data
       break
 

@@ -134,6 +134,10 @@ const themeOptions = [
   {
     value: ThemeEnum.WINE,
     label: '酱籽'
+  },
+  {
+    value: ThemeEnum.WEIXIN,
+    label: '卫星'
   }
 ]
 

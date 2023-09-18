@@ -55,7 +55,7 @@ const rangeModelStyle = computed(() => {
   position: relative;
   transform-origin: left top;
   background-size: cover;
-  border-radius: 20px;
+  border-radius: 10px;
   overflow: hidden;
   @include fetch-border-color('hover-border-color');
   @include fetch-bg-color('background-color2');

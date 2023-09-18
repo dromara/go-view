@@ -10,14 +10,22 @@ import { requestInterval, previewScaleType, requestIntervalUnit } from '@/settin
 import { useChartHistoryStore } from '@/store/modules/chartHistoryStore/chartHistoryStore'
 // 全局设置
 import { useSettingStore } from '@/store/modules/settingStore/settingStore'
+// 历史类型
+import { HistoryActionTypeEnum, HistoryItemType, HistoryTargetTypeEnum } from '@/store/modules/chartHistoryStore/chartHistoryStore.d'
+// 画布枚举
+import { MenuEnum, SyncEnum } from '@/enums/editPageEnum'
+
 import {
-  HistoryActionTypeEnum,
-  HistoryItemType,
-  HistoryTargetTypeEnum
-} from '@/store/modules/chartHistoryStore/chartHistoryStore.d'
-import { MenuEnum } from '@/enums/editPageEnum'
-import { getUUID, loadingStart, loadingFinish, loadingError, isString, isArray } from '@/utils'
+  getUUID,
+  loadingStart,
+  loadingFinish,
+  loadingError,
+  isString,
+  isArray
+} from '@/utils'
+
 import {
+  ProjectInfoType,
   ChartEditStoreEnum,
   ChartEditStorage,
   ChartEditStoreType,
@@ -36,6 +44,14 @@ const settingStore = useSettingStore()
 export const useChartEditStore = defineStore({
   id: 'useChartEditStore',
   state: (): ChartEditStoreType => ({
+    // 项目数据
+    projectInfo: {
+      projectId: '',
+      projectName: '',
+      remarks: '',
+      thumbnail: '',
+      release: false
+    },
     // 画布属性
     editCanvas: {
       // 编辑区域 Dom
@@ -54,7 +70,11 @@ export const useChartEditStore = defineStore({
       // 拖拽中
       isDrag: false,
       // 框选中
-      isSelect: false
+      isSelect: false,
+      // 同步中
+      saveStatus: SyncEnum.PENDING,
+      // 代码编辑中
+      isCodeEdit: false
     },
     // 右键菜单
     rightMenuShow: false,
@@ -108,6 +128,8 @@ export const useChartEditStore = defineStore({
       selectColor: true,
       // chart 主题色
       chartThemeColor: defaultTheme || 'dark',
+      // 自定义颜色列表
+      chartCustomThemeColorInfo: undefined,
       // 全局配置
       chartThemeSetting: globalThemeJson,
       // 适配方式
@@ -134,6 +156,9 @@ export const useChartEditStore = defineStore({
     componentList: []
   }),
   getters: {
+    getProjectInfo(): ProjectInfoType {
+      return this.projectInfo
+    },
     getMousePosition(): MousePositionType {
       return this.mousePosition
     },
@@ -157,17 +182,17 @@ export const useChartEditStore = defineStore({
     },
     getComponentList(): Array<CreateComponentType | CreateComponentGroupType> {
       return this.componentList
-    },
-    // 获取需要存储的数据项
+    }
+  },
+  actions: {
+    // * 获取需要存储的数据项
     getStorageInfo(): ChartEditStorage {
       return {
         [ChartEditStoreEnum.EDIT_CANVAS_CONFIG]: this.getEditCanvasConfig,
         [ChartEditStoreEnum.COMPONENT_LIST]: this.getComponentList,
         [ChartEditStoreEnum.REQUEST_GLOBAL_CONFIG]: this.getRequestGlobalConfig
       }
-    }
-  },
-  actions: {
+    },
     // * 设置 editCanvas 数据项
     setEditCanvas<T extends keyof EditCanvasType, K extends EditCanvasType[T]>(key: T, value: K) {
       this.editCanvas[key] = value
@@ -496,8 +521,8 @@ export const useChartEditStore = defineStore({
         }
         const parseHandle = (e: CreateComponentType | CreateComponentGroupType) => {
           e = cloneDeep(e)
-          e.attr.x = this.getMousePosition.x + 30
-          e.attr.y = this.getMousePosition.y + 30
+          e.attr.x = this.getMousePosition.startX
+          e.attr.y = this.getMousePosition.startY
           // 外层生成新 id
           e.id = getUUID()
           // 分组列表生成新 id
@@ -506,11 +531,11 @@ export const useChartEditStore = defineStore({
               item.id = getUUID()
             })
           }
-        
+
           return e
         }
         const isCut = recordCharts.type === HistoryActionTypeEnum.CUT
-        const targetList = Array.isArray(recordCharts.charts) ? recordCharts.charts : [ recordCharts.charts ]
+        const targetList = Array.isArray(recordCharts.charts) ? recordCharts.charts : [recordCharts.charts]
         // 多项
         targetList.forEach((e: CreateComponentType | CreateComponentGroupType) => {
           this.addComponentList(parseHandle(e), undefined, true)
@@ -610,7 +635,7 @@ export const useChartEditStore = defineStore({
           } else {
             const group = historyData[0] as CreateComponentGroupType
             group.groupList.forEach(item => {
-              ids.push(item.id)
+              ids.unshift(item.id)
             })
           }
           this.setGroup(ids, false)
@@ -759,7 +784,7 @@ export const useChartEditStore = defineStore({
           // 高
           groupAttr.b = b < y + h ? y + h : b
 
-          targetList.push(item)
+          targetList.unshift(item)
           historyList.push(toRaw(item))
         })
 
@@ -805,7 +830,7 @@ export const useChartEditStore = defineStore({
           if (isHistory) chartHistoryStore.createUnGroupHistory(cloneDeep([targetGroup]))
 
           // 分离组件并还原位置属性
-          targetGroup.groupList.forEach(item => {
+          targetGroup.groupList.reverse().forEach(item => {
             item.attr.x = item.attr.x + targetGroup.attr.x
             item.attr.y = item.attr.y + targetGroup.attr.y
             if (!callBack) {

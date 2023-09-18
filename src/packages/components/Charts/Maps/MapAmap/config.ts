@@ -16,7 +16,8 @@ export enum ThemeEnum {
   MACARON = 'macaron',
   BLUE = 'blue',
   DARKBLUE = 'darkblue',
-  WINE = 'wine'
+  WINE = 'wine',
+  WEIXIN = 'tileLayer'
 }
 
 export enum LangEnum {

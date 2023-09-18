@@ -11,7 +11,7 @@
         <n-space class="list-content-top go-px-0" justify="center">
           <n-space>
             <n-text>
-              {{ cardData?.title || '' }}
+              {{ cardData?.title || cardData?.id || '未命名' }}
             </n-text>
           </n-space>
         </n-space>
@@ -26,9 +26,7 @@
         <!-- 中间 -->
         <div class="list-content-img">
           <img
-            :src="
-              requireUrl('project/moke-20211219181327.png')
-            "
+            :src="cardData?.image"
             :alt="cardData?.title"
           />
         </div>
@@ -75,10 +73,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, PropType, watch } from 'vue'
 import { renderIcon, renderLang } from '@/utils'
 import { icon } from '@/plugins'
 import { MacOsControlBtn } from '@/components/Tips/MacOsControlBtn'
+import { Chartype } from '../../index.d'
 
 const { HammerIcon } = icon.ionicons5
 const showRef = ref(false)
@@ -140,12 +139,14 @@ const closeHandle = () => {
 <style lang="scss" scoped>
 $padding: 30px;
 $contentHeight: calc(80vh);
+$imageHeight: calc(80vh - 110px);
 $contentWidth: calc(82vw);
 
 @include go('modal-box') {
   width: $contentWidth;
+  height: $contentHeight;
   .list-content {
-    margin-top: 28px;
+    margin-top: 20px;
     border-radius: $--border-radius-base;
     overflow: hidden;
     @include background-image('background-point');
@@ -160,8 +161,9 @@ $contentWidth: calc(82vw);
     }
     &-img {
       @extend .go-flex-center;
+      padding: 6px 0;
       img {
-        max-height: $contentHeight;
+        height: $imageHeight;
         min-height: 200px;
         max-width: 100%;
         @extend .go-border-radius;

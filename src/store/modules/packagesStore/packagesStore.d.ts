@@ -4,5 +4,6 @@ export { ConfigType }
 
 export { PackagesType }
 export interface PackagesStoreType {
-  packagesList: PackagesType
+  packagesList: PackagesType,
+  newPhoto?: ConfigType
 }

@@ -102,7 +102,8 @@ export class PublicConfigClass implements PublicConfigType {
     advancedEvents: {
       [EventLife.VNODE_MOUNTED]: undefined,
       [EventLife.VNODE_BEFORE_MOUNT]: undefined
-    }
+    },
+    interactEvents: []
   }
 }
 

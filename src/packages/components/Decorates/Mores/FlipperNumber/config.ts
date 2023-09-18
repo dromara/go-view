@@ -16,6 +16,7 @@ export interface OptionType {
   flipperGap: number
   flipperType: FlipType
   flipperSpeed: number
+  flipperBorderWidth: number
 }
 
 export const option: OptionType = {
@@ -28,7 +29,8 @@ export const option: OptionType = {
   flipperRadius: 5,
   flipperGap: 10,
   flipperType: 'down',
-  flipperSpeed: 450
+  flipperSpeed: 450,
+  flipperBorderWidth: 0,
 }
 
 export default class Config extends PublicConfigClass implements CreateComponentType {

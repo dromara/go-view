@@ -27,7 +27,9 @@
 <script lang="ts" setup>
 import { h, ref } from 'vue'
 import { NAvatar, NText } from 'naive-ui'
-import { renderIcon } from '@/utils'
+import { renderIcon, getLocalStorage } from '@/utils'
+import { SystemStoreEnum, SystemStoreUserInfoEnum } from '@/store/modules/systemStore/systemStore.d'
+import { StorageEnum } from '@/enums/storageEnum'
 import { logout, renderLang } from '@/utils'
 import { GoSystemSet } from '@/components/GoSystemSet/index'
 import { GoSystemInfo } from '@/components/GoSystemInfo/index'
@@ -64,7 +66,17 @@ const renderUserInfo = () => {
       }),
       h('div', null, [
         h('div', null, [
-          h(NText, { depth: 2 }, { default: () => '奔跑的面条' })
+            h(NText, { depth: 2 }, {
+                default: () => {
+                    const info = getLocalStorage(StorageEnum.GO_SYSTEM_STORE)
+                    if (info) {
+                        return info[SystemStoreEnum.USER_INFO][SystemStoreUserInfoEnum.USER_NAME];
+                    }
+                    else {
+                        return 'admin';
+                    }
+                }
+            })
         ])
       ])
     ]

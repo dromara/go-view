@@ -53,6 +53,7 @@ async function appInit() {
   window['$vue'] = app
 }
 
-await appInit()
+appInit().then(() => {
+  initFunction()
+})
 
-await initFunction()

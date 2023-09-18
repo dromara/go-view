@@ -11,7 +11,7 @@
       <!-- 模块展示按钮 -->
       <n-tooltip v-for="item in btnList" :key="item.key" placement="bottom" trigger="hover">
         <template #trigger>
-          <n-button size="small" ghost :type="styleHandle(item)" @click="clickHandle(item)">
+          <n-button size="small" ghost :type="styleHandle(item)" :focusable="false" @click="clickHandle(item)">
             <component :is="item.icon"></component>
           </n-button>
         </template>
@@ -29,26 +29,44 @@
         </template>
         <span>{{ item.title }}</span>
       </n-tooltip>
+
+      <n-divider vertical />
+
+      <!-- 保存 -->
+      <n-tooltip placement="bottom" trigger="hover">
+        <template #trigger>
+          <div class="save-btn" >
+            <n-button size="small" type="primary" ghost @click="dataSyncUpdate()">
+              <template #icon>
+                <n-icon>
+                  <SaveIcon></SaveIcon>
+                </n-icon>
+              </template>
+            </n-button>
+          </div>
+        </template>
+        <span>保存</span>
+      </n-tooltip>
     </n-space>
   </n-space>
 </template>
 
 <script setup lang="ts">
-import { toRefs, Ref, reactive, computed } from 'vue'
+import { toRefs, ref, Ref, reactive, computed } from 'vue'
 import { renderIcon, goDialog, goHome } from '@/utils'
 import { icon } from '@/plugins'
 import { useRemoveKeyboard } from '../../hooks/useKeyboard.hook'
-
+import { useSync } from '../../hooks/useSync.hook'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-
 import { useChartHistoryStore } from '@/store/modules/chartHistoryStore/chartHistoryStore'
 import { HistoryStackEnum } from '@/store/modules/chartHistoryStore/chartHistoryStore.d'
-
 import { useChartLayoutStore } from '@/store/modules/chartLayoutStore/chartLayoutStore'
 import { ChartLayoutStoreEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
 
 const { LayersIcon, BarChartIcon, PrismIcon, HomeIcon, ArrowBackIcon, ArrowForwardIcon } = icon.ionicons5
+const { SaveIcon } = icon.carbon
 const { setItem } = useChartLayoutStore()
+const { dataSyncUpdate } = useSync()
 const { getLayers, getCharts, getDetails } = toRefs(useChartLayoutStore())
 const chartEditStore = useChartEditStore()
 const chartHistoryStore = useChartHistoryStore()
@@ -130,7 +148,7 @@ const clickHistoryHandle = (item: ItemType<HistoryStackEnum>) => {
 // 返回首页
 const goHomeHandle = () => {
   goDialog({
-    message: '返回将不会保存任何操作',
+    message: '确定已保存了数据（Ctrl / ⌘ + S），并返回到首页吗？',
     isMaskClosable: true,
     onPositiveCallback: () => {
       goHome()

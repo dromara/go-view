@@ -1,13 +1,13 @@
 <template>
-  <div class="go-Flipper" :class="[flipType, { go: isFlipping }]">
+  <div class="go-flipper" :class="[flipType, { go: isFlipping }]">
     <div class="digital front" :data-front="frontTextFromData"></div>
     <div class="digital back" :data-back="backTextFromData"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, PropType, watch } from 'vue'
-import { FlipType }  from './index'
+import { ref, PropType, watch, nextTick } from 'vue'
+import { FlipType } from './index'
 
 const props = defineProps({
   flipType: {
@@ -43,6 +43,10 @@ const props = defineProps({
   backColor: {
     type: String,
     default: '#000000'
+  },
+  borderWidth: {
+    type: Number,
+    default: 2
   }
 })
 
@@ -50,19 +54,27 @@ const isFlipping = ref(false)
 const frontTextFromData = ref(props.count || 0)
 const backTextFromData = ref(props.count || 0)
 
+let timeoutID: any = 0
+
 // 翻牌
-const flip = (front: string | number, back: string | number) => {
+const flip = async (front: string | number, back: string | number) => {
   // 如果处于翻转中，则不执行
-  if (isFlipping.value) return
+  if (isFlipping.value) {
+    isFlipping.value = false // 立即结束此次动画
+    clearTimeout(timeoutID) // 清除上一个计时器任务
+    await nextTick()
+    await flip(front, back) // 开始最后一次翻牌任务
+    return
+  }
+
   // 设置翻盘前后数据
   backTextFromData.value = back
   frontTextFromData.value = front
-
   // 设置翻转状态为true
   isFlipping.value = true
 
   // 翻牌结束的行为
-  setTimeout(() => {
+  timeoutID = setTimeout(() => {
     isFlipping.value = false // 设置翻转状态为false
     frontTextFromData.value = back
   }, props.duration)
@@ -86,6 +98,7 @@ $radius: v-bind('`${props.radius}px`');
 $width: v-bind('`${props.width}px`');
 $height: v-bind('`${props.height}px`');
 $perspective: v-bind('`${props.height * 2}px`');
+$borderWidth: v-bind('`${props.borderWidth * 2}px`');
 $speed: v-bind('`${props.duration / 1000}s`');
 $shadowColor: #000000;
 $lineColor: #4a9ef8;
@@ -125,13 +138,12 @@ $lineColor: #4a9ef8;
 }
 // #endregion
 
-.go-Flipper {
+.go-flipper {
   display: inline-block;
   position: relative;
   width: $width;
   height: $height;
   line-height: $height;
-  border: solid 1px $backColor;
   border-radius: $radius;
   background: $frontColor;
   font-size: $width;
@@ -139,6 +151,17 @@ $lineColor: #4a9ef8;
   box-shadow: 0 0 6px rgba($color: $shadowColor, $alpha: 0.5); // 阴影部分
   text-align: center;
   // font-family: 'Helvetica Neue';
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    box-shadow: inset 0 0 $borderWidth 0 $frontColor; // 内测阴影部分
+    border-radius: $radius;
+  }
 
   .digital:before,
   .digital:after {
@@ -186,11 +209,13 @@ $lineColor: #4a9ef8;
   &.down.go .front:before {
     transform-origin: 50% 100%;
     animation: frontFlipDown $speed ease-in-out both;
-    box-shadow: 0 -2px 6px rgba($color: $lineColor, $alpha: 0.3);
+    box-shadow: 0 -2px $borderWidth 0 $frontColor;
     backface-visibility: hidden;
   }
   &.down.go .back:after {
     animation: backFlipDown $speed ease-in-out both;
+    box-shadow: 0 2px $borderWidth 0 $frontColor;
+    backface-visibility: hidden;
   }
   /*向上翻*/
   &.up .front:after {
@@ -208,11 +233,13 @@ $lineColor: #4a9ef8;
   &.up.go .front:after {
     transform-origin: 50% 0;
     animation: frontFlipUp $speed ease-in-out both;
-    box-shadow: 0 2px 6px rgba($color: $lineColor, $alpha: 0.3);
+    box-shadow: 0 2px $borderWidth 0 $frontColor;
     backface-visibility: hidden;
   }
   &.up.go .back:before {
     animation: backFlipUp $speed ease-in-out both;
+    box-shadow: 0 -2px $borderWidth 0 $frontColor;
+    backface-visibility: hidden;
   }
 }
 </style>

@@ -1,19 +1,14 @@
 <template>
-  <v-chart
-    ref="vChartRef"
-    :theme="themeColor"
-    :option="option"
-    :manual-update="isPreview()"
+  <v-chart ref="vChartRef" :init-options="initOptions" :theme="themeColor" :option="option" :manual-update="isPreview()"
     :update-options="{
       replaceMerge: replaceMergeArr
-    }"
-    autoresize
-  ></v-chart>
+    }" autoresize></v-chart>
 </template>
 
 <script setup lang="ts">
 import { ref, nextTick, computed, watch, PropType } from 'vue'
 import VChart from 'vue-echarts'
+import { useCanvasInitOptions } from '@/hooks/useCanvasInitOptions.hook'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart } from 'echarts/charts'
@@ -25,6 +20,7 @@ import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore
 import { isPreview } from '@/utils'
 import { DatasetComponent, GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
 import isObject from 'lodash/isObject'
+import cloneDeep from 'lodash/cloneDeep'
 
 const props = defineProps({
   themeSetting: {
@@ -40,6 +36,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const initOptions = useCanvasInitOptions(props.chartConfig.option, props.themeSetting)
 
 use([DatasetComponent, CanvasRenderer, BarChart, GridComponent, TooltipComponent, LegendComponent])
 
@@ -57,11 +55,23 @@ watch(
       if (!isObject(newData) || !('dimensions' in newData)) return
       if (Array.isArray(newData?.dimensions)) {
         const seriesArr = []
-        for (let i = 0; i < newData.dimensions.length - 1; i++) {
-          seriesArr.push(seriesItem)
+        // 对oldData进行判断，防止传入错误数据之后对旧维度判断产生干扰
+        // 此处计算的是dimensions的Y轴维度，若是dimensions.length为0或1，则默认为1，排除X轴维度干扰
+        const oldDimensions = Array.isArray(oldData?.dimensions)&&oldData.dimensions.length >= 1 ? oldData.dimensions.length : 1; 
+        const newDimensions = newData.dimensions.length >= 1 ? newData.dimensions.length : 1;
+        const dimensionsGap = newDimensions - oldDimensions;
+        if (dimensionsGap < 0) {
+          props.chartConfig.option.series.splice(newDimensions - 1)
+        } else if (dimensionsGap > 0) {
+          if(!oldData || !oldData?.dimensions || !Array.isArray(oldData?.dimensions) || !oldData?.dimensions.length ) {
+              props.chartConfig.option.series=[]
+          }
+          for (let i = 0; i < dimensionsGap; i++) {
+            seriesArr.push(cloneDeep(seriesItem))
+          }
+          props.chartConfig.option.series.push(...seriesArr)
         }
         replaceMergeArr.value = ['series']
-        props.chartConfig.option.series = seriesArr
         nextTick(() => {
           replaceMergeArr.value = []
         })

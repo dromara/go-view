@@ -3,7 +3,7 @@
     :type="type"
     :height="h"
     :processing="processing"
-    :percentage="option.dataset"
+    :percentage="dataset"
     :indicator-placement="indicatorPlacement"
     :color="color"
     :rail-color="railColor"
@@ -15,7 +15,7 @@
         fontSize: `${indicatorTextSize}px`
       }"
     >
-      {{ option.dataset }} {{ unit }}
+      {{ dataset }} {{ unit }}
     </n-text>
   </n-progress>
 </template>

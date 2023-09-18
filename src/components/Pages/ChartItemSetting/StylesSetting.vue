@@ -69,6 +69,22 @@
       </setting-item>
     </setting-item-box>
 
+    <!--  预设滤镜  -->
+    <div v-if="presetImageList.length" class="preset-filter">
+      <n-image
+        class="preset-img"
+        width="46"
+        preview-disabled
+        object-fit="scale-down"
+        v-for="(item, index) in presetImageList"
+        :key="index"
+        :class="{ 'active-preset': item.hueRotate === chartStyles.hueRotate }"
+        :style="{ filter: `hue-rotate(${item.hueRotate}deg)` }"
+        :src="item.src"
+        @click="() => (chartStyles.hueRotate = item.hueRotate)"
+      ></n-image>
+    </div>
+
     <!-- 混合模式 -->
     <setting-item-box v-if="!isCanvas" :alone="true">
       <template #name>
@@ -149,10 +165,12 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue'
+import { ref, PropType } from 'vue'
 import { PickCreateComponentType, BlendModeEnumList } from '@/packages/index.d'
 import { SettingItemBox, SettingItem, CollapseItem } from '@/components/Pages/ChartItemSetting'
 import { icon } from '@/plugins'
+import logoImg from '@/assets/logo.png'
+import { useDesignStore } from '@/store/modules/designStore/designStore'
 
 const props = defineProps({
   isGroup: {
@@ -175,10 +193,48 @@ const { HelpOutlineIcon } = icon.ionicons5
 const sliderFormatTooltip = (v: string) => {
   return `${(parseFloat(v) * 100).toFixed(0)}%`
 }
+
 // 角度格式化
 const degFormatTooltip = (v: string) => {
   return `${v}deg`
 }
+
+// 预设滤镜
+interface presetImageData {
+  index: number
+  src: string
+  hueRotate: number
+}
+
+const presetImageList = ref([] as presetImageData[])
+for (let i = 1; i <= 12; i++) {
+  presetImageList.value.push({
+    index: i,
+    src: logoImg,
+    hueRotate: i * 30
+  })
+}
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+// 预设滤镜
+.preset-filter {
+  margin: 20px 0 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  .preset-img {
+    margin-bottom: 10px;
+    padding: 2px;
+    border-radius: 6px;
+    transition: 0.2s all;
+    cursor: pointer;
+    &:hover {
+      box-shadow: 0 0 0 2px #66a9c9;
+    }
+  }
+  .active-preset {
+    box-shadow: 0 0 0 2px #66a9c9;
+  }
+}
+</style>

@@ -1,4 +1,5 @@
 import {
+  Add as AddIcon,
   Close as CloseIcon,
   Remove as RemoveIcon,
   Resize as ResizeIcon,
@@ -52,19 +53,23 @@ import {
   ColorWand as ColorWandIcon,
   ArrowBack as ArrowBackIcon,
   ArrowForward as ArrowForwardIcon,
+  ArrowDown as ArrowDownIcon,
   Planet as PawIcon,
   Search as SearchIcon,
+  Reload as ReloadIcon,
   ChevronUpOutline as ChevronUpOutlineIcon,
   ChevronDownOutline as ChevronDownOutlineIcon,
   Pulse as PulseIcon,
   Folder as FolderIcon,
   FolderOpen as FolderOpenIcon,
-  Image as ImageIcon,
+  ImageOutline as ImageIcon,
   Images as ImagesIcon,
   List as ListIcon,
   EyeOutline as EyeOutlineIcon,
   EyeOffOutline as EyeOffOutlineIcon,
-  Albums as AlbumsIcon
+  Albums as AlbumsIcon,
+  Analytics as AnalyticsIcon,
+  AirplaneOutline as AirPlaneOutlineIcon
 } from '@vicons/ionicons5'
 
 import {
@@ -93,6 +98,7 @@ import {
   FitToScreen as FitToScreenIcon,
   FitToHeight as FitToHeightIcon,
   FitToWidth as FitToWidthIcon,
+  Save as SaveIcon,
   Carbon3DCursor as Carbon3DCursorIcon,
   Carbon3DSoftware as Carbon3DSoftwareIcon,
   Filter as FilterIcon,
@@ -101,6 +107,8 @@ import {
 } from '@vicons/carbon'
 
 const ionicons5 = {
+  // 新增
+  AddIcon,
   // 帮助（问号）
   HelpOutlineIcon,
   // 添加
@@ -206,10 +214,14 @@ const ionicons5 = {
   ArrowBackIcon,
   // 前进
   ArrowForwardIcon,
+  // 向下
+  ArrowDownIcon,
   // 狗爪
   PawIcon,
   // 搜索（放大镜）
   SearchIcon,
+  // 加载
+  ReloadIcon,
   // 过滤器
   FilterIcon,
   // 向上
@@ -231,8 +243,12 @@ const ionicons5 = {
   // 眼睛
   EyeOutlineIcon,
   EyeOffOutlineIcon,
-  // 图表列表 
-  AlbumsIcon
+  // 图表列表
+  AlbumsIcon,
+  // 分析
+  AnalyticsIcon,
+  // 飞机
+  AirPlaneOutlineIcon
 }
 
 const carbon = {
@@ -277,6 +293,8 @@ const carbon = {
   FitToScreenIcon,
   FitToHeightIcon,
   FitToWidthIcon,
+  // 保存
+  SaveIcon,
   // 成组
   Carbon3DCursorIcon,
   // 解组

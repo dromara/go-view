@@ -1,6 +1,6 @@
 <template>
   <n-layout-header bordered class="go-header">
-    <header class="go-header-box">
+    <header class="go-header-box" :class="{ 'is-project': isProject }">
       <div class="header-item left">
         <n-space>
           <slot name="left"></slot>
@@ -23,17 +23,29 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { GoThemeSelect } from '@/components/GoThemeSelect'
 import { GoLangSelect } from '@/components/GoLangSelect'
 import { ThemeColorSelect } from '@/components/Pages/ThemeColorSelect'
+import { PageEnum } from '@/enums/pageEnum'
+
+const route = useRoute()
+
+const isProject = computed(() => {
+  return route.fullPath === PageEnum.BASE_HOME_ITEMS
+})
 </script>
 
 <style lang="scss" scoped>
-$min-width: 400px;
+$min-width: 520px;
 @include go(header) {
   &-box {
     display: grid;
-    grid-template-columns: repeat(3, 33.33%);
+    grid-template-columns: repeat(3, 33%);
+    &.is-project {
+      grid-template-columns: none;
+    }
     .header-item {
       display: flex;
       align-items: center;
@@ -49,7 +61,7 @@ $min-width: 400px;
       }
     }
     height: $--header-height;
-    padding: 0 60px;
+    padding: 0 20px 0 60px;
   }
 }
 </style>

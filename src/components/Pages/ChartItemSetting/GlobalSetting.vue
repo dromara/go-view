@@ -1,4 +1,34 @@
 <template>
+  <collapse-item name="渲染器">
+    <setting-item-box :alone="true">
+      <template #name>
+        <n-text>全局</n-text>
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <n-icon size="21" :depth="3">
+              <help-outline-icon></help-outline-icon>
+            </n-icon>
+          </template>
+          <n-text>所有echarts图表组件默认都将采用所选的渲染器进行渲染</n-text>
+        </n-tooltip>
+      </template>
+      <EchartsRendererSetting v-model="themeSetting.renderer" />
+    </setting-item-box>
+    <setting-item-box :alone="true">
+      <template #name>
+        <n-text>当前</n-text>
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <n-icon size="21" :depth="3">
+              <help-outline-icon></help-outline-icon>
+            </n-icon>
+          </template>
+          <n-text>仅当前组件采用指定渲染器渲染</n-text>
+        </n-tooltip>
+      </template>
+      <EchartsRendererSetting v-model="optionData.renderer" includeInherit />
+    </setting-item-box>
+  </collapse-item>
   <collapse-item v-if="title" name="标题">
     <template #header>
       <n-switch v-model:value="title.show" size="small"></n-switch>
@@ -227,8 +257,35 @@
       <n-switch v-model:value="legend.show" size="small"></n-switch>
     </template>
     <setting-item-box name="图例文字">
-      <setting-item>
+      <setting-item name="颜色">
         <n-color-picker size="small" v-model:value="legend.textStyle.color"></n-color-picker>
+      </setting-item>
+      <setting-item name="大小">
+        <n-input-number v-model:value="legend.textStyle.fontSize" :min="1" size="small"></n-input-number>
+      </setting-item>
+    </setting-item-box>
+    <setting-item-box name="图例位置">
+      <setting-item name="x轴">
+        <n-select v-model:value="legend.x" size="small" :options="legendConfig.lengendX" />
+      </setting-item>
+      <setting-item name="y轴">
+        <n-select v-model:value="legend.y" size="small" :options="legendConfig.lengendY" />
+      </setting-item>
+    </setting-item-box>
+    <setting-item-box name="图例信息">
+      <setting-item name="方向">
+        <n-select v-model:value="legend.orient" size="small" :options="legendConfig.orient" />
+      </setting-item>
+      <setting-item name="形状">
+        <n-select v-model:value="legend.icon" size="small" :options="legendConfig.shape" />
+      </setting-item>
+    </setting-item-box>
+    <setting-item-box name="图例大小">
+      <setting-item name="宽">
+        <n-input-number v-model:value="legend.itemWidth" :min="1" size="small"></n-input-number>
+      </setting-item>
+      <setting-item name="高">
+        <n-input-number v-model:value="legend.itemHeight" :min="1" size="small"></n-input-number>
       </setting-item>
     </setting-item-box>
   </collapse-item>
@@ -279,10 +336,15 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, computed } from 'vue'
+import { PropType, computed, watch } from 'vue'
 import { GlobalThemeJsonType } from '@/settings/chartThemes/index'
-import { axisConfig } from '@/packages/chartConfiguration/echarts/index'
+import { axisConfig, legendConfig } from '@/packages/chartConfiguration/echarts/index'
 import { CollapseItem, SettingItemBox, SettingItem, GlobalSettingPosition } from '@/components/Pages/ChartItemSetting'
+import { icon } from '@/plugins'
+import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
+import EchartsRendererSetting from './EchartsRendererSetting.vue'
+
+const { HelpOutlineIcon } = icon.ionicons5
 
 const props = defineProps({
   optionData: {
@@ -294,6 +356,12 @@ const props = defineProps({
     required: false,
     default: false
   }
+})
+
+const chartEditStore = useChartEditStore()
+const themeSetting = computed(() => {
+  const chartThemeSetting = chartEditStore.getEditCanvasConfig.chartThemeSetting
+  return chartThemeSetting
 })
 
 const title = computed(() => {
@@ -318,5 +386,19 @@ const grid = computed(() => {
 
 const visualMap = computed(() => {
   return props.optionData.visualMap
+})
+
+// 监听legend color颜色改变type = scroll的颜色
+watch(() => legend.value && legend.value.textStyle.color, (newVal) => {
+  if (legend.value && newVal) {
+     if (!legend.value.pageTextStyle) {
+      legend.value.pageTextStyle = { color: newVal }
+    } else {
+      legend.value.pageTextStyle.color = newVal
+    }
+  }
+}, {
+  immediate: true,
+  deep: true,
 })
 </script>

@@ -1,5 +1,6 @@
 import { CreateComponentType, CreateComponentGroupType, FilterEnum } from '@/packages/index.d'
 import { HistoryActionTypeEnum } from '@/store/modules/chartHistoryStore/chartHistoryStore.d'
+import { SyncEnum } from '@/enums/editPageEnum'
 import {
   RequestHttpEnum,
   RequestContentTypeEnum,
@@ -10,7 +11,30 @@ import {
   RequestParamsObjType
 } from '@/enums/httpEnum'
 import { PreviewScaleEnum } from '@/enums/styleEnum'
-import type { ChartColorsNameType, GlobalThemeJsonType } from '@/settings/chartThemes/index'
+import type { ChartColorsNameType, CustomColorsType, GlobalThemeJsonType } from '@/settings/chartThemes/index'
+
+// 项目数据枚举
+export enum ProjectInfoEnum {
+  // ID
+  PROJECT_ID = "projectId",
+  // 名称
+  PROJECT_NAME = 'projectName',
+  // 描述
+  REMARKS = 'remarks',
+  // 缩略图
+  THUMBNAIL= 'thumbnail',
+  // 是否公开发布
+  RELEASE = 'release'
+}
+
+// 项目数据
+export type ProjectInfoType = {
+  [ProjectInfoEnum.PROJECT_ID]: string,
+  [ProjectInfoEnum.PROJECT_NAME]: string,
+  [ProjectInfoEnum.REMARKS]: string,
+  [ProjectInfoEnum.THUMBNAIL]: string,
+  [ProjectInfoEnum.RELEASE]: boolean
+}
 
 // 编辑画布属性
 export enum EditCanvasTypeEnum {
@@ -20,12 +44,14 @@ export enum EditCanvasTypeEnum {
   SCALE = 'scale',
   USER_SCALE = 'userScale',
   LOCK_SCALE = 'lockScale',
+  SAVE_STATUS = 'saveStatus',
   IS_CREATE = 'isCreate',
   IS_DRAG = 'isDrag',
-  IS_SELECT = 'isSelect'
+  IS_SELECT = 'isSelect',
+  IS_CODE_EDIT="isCodeEdit"
 }
 
-// 编辑区域
+// 编辑区域（临时）
 export type EditCanvasType = {
   // 编辑区域 DOM
   [EditCanvasTypeEnum.EDIT_LAYOUT_DOM]: HTMLElement | null
@@ -42,16 +68,21 @@ export type EditCanvasType = {
   [EditCanvasTypeEnum.IS_CREATE]: boolean
   // 拖拽中
   [EditCanvasTypeEnum.IS_DRAG]: boolean
+  // 保存状态
+  [EditCanvasTypeEnum.SAVE_STATUS]: SyncEnum
   // 框选中
   [EditCanvasTypeEnum.IS_SELECT]: boolean
+  // 代码编辑中
+  [EditCanvasTypeEnum.IS_CODE_EDIT]: boolean
 }
 
-// 滤镜/背景色/宽高主题等
+// 画布数据/滤镜/背景色/宽高主题等
 export enum EditCanvasConfigEnum {
   PROJECT_NAME = 'projectName',
   WIDTH = 'width',
   HEIGHT = 'height',
   CHART_THEME_COLOR = 'chartThemeColor',
+  CHART_CUSTOM_THEME_COLOR_INFO = 'chartCustomThemeColorInfo',
   CHART_THEME_SETTING = 'chartThemeSetting',
   BACKGROUND = 'background',
   BACKGROUND_IMAGE = 'backgroundImage',
@@ -59,7 +90,14 @@ export enum EditCanvasConfigEnum {
   PREVIEW_SCALE_TYPE = 'previewScaleType'
 }
 
-export interface EditCanvasConfigType {
+// 画布属性（需保存）
+export type EditCanvasConfigType = {
+  // ID
+  [EditCanvasConfigEnum.PROJECT_ID]: string,
+  // 项目名称
+  [EditCanvasConfigEnum.PROJECT_NAME]?: string,
+  // 项目描述
+  [EditCanvasConfigEnum.REMARKS]: string,
   // 滤镜-启用
   [FilterEnum.FILTERS_SHOW]: boolean
   // 滤镜-色相
@@ -87,9 +125,12 @@ export interface EditCanvasConfigType {
   [EditCanvasConfigEnum.HEIGHT]: number
   // 背景色
   [EditCanvasConfigEnum.BACKGROUND]?: string
+  // 背景图片
   [EditCanvasConfigEnum.BACKGROUND_IMAGE]?: string | null
   // 图表主题颜色
   [EditCanvasConfigEnum.CHART_THEME_COLOR]: ChartColorsNameType
+  // 自定义图表主题颜色
+  [EditCanvasConfigEnum.CHART_CUSTOM_THEME_COLOR_INFO]?: CustomColorsType[] 
   // 图表全局配置
   [EditCanvasConfigEnum.CHART_THEME_SETTING]: GlobalThemeJsonType
   // 图表主题颜色
@@ -133,6 +174,7 @@ export type RecordChartType = {
 
 // Store 枚举
 export enum ChartEditStoreEnum {
+  PROJECT_INFO = 'projectInfo',
   EDIT_RANGE = 'editRange',
   EDIT_CANVAS = 'editCanvas',
   RIGHT_MENU_SHOW = 'rightMenuShow',
@@ -194,6 +236,7 @@ export interface RequestConfigType extends RequestPublicConfigType {
 
 // Store 类型
 export interface ChartEditStoreType {
+  [ChartEditStoreEnum.PROJECT_INFO]: ProjectInfoType
   [ChartEditStoreEnum.EDIT_CANVAS]: EditCanvasType
   [ChartEditStoreEnum.EDIT_CANVAS_CONFIG]: EditCanvasConfigType
   [ChartEditStoreEnum.RIGHT_MENU_SHOW]: boolean

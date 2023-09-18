@@ -1,13 +1,9 @@
 <template>
   <router-view>
     <template #default="{ Component, route }">
-      <component
-        v-if="route.noKeepAlive"
-        :is="Component"
-        :key="route.fullPath"
-      ></component>
+      <component v-if="route.meta.noKeepAlive" :is="Component"></component>
       <keep-alive v-else>
-        <component :is="Component" :key="route.fullPath"></component>
+        <component :is="Component"></component>
       </keep-alive>
     </template>
   </router-view>

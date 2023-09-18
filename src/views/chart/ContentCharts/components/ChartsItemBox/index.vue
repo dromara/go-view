@@ -9,11 +9,12 @@
       <div
         class="item-box"
         v-for="(item, index) in menuOptions"
-        :key="index"
+        :key="item.title"
         draggable
-        @dragstart="dragStartHandle($event, item)"
-        @dragend="dragendHandle"
+        @dragstart="!item.disabled && dragStartHandle($event, item)"
+        @dragend="!item.disabled && dragendHandle"
         @dblclick="dblclickHandle(item)"
+        @click="clickHandle(item)"
       >
         <div class="list-header">
           <mac-os-control-btn class="list-header-control-btn" :mini="true" :disabled="true"></mac-os-control-btn>
@@ -21,13 +22,27 @@
             <n-ellipsis>{{ item.title }}</n-ellipsis>
           </n-text>
         </div>
-        <div class="list-center go-flex-center go-transition">
-          <chart-glob-image class="list-img" :chartConfig="item"></chart-glob-image>
+        <div class="list-center go-flex-center go-transition" draggable="true">
+          <Icon v-if="item.icon" class="list-img" :icon="item.icon" color="#999" width="48" />
+          <chart-glob-image v-else class="list-img" :chartConfig="item" />
         </div>
         <div class="list-bottom">
           <n-text class="list-bottom-text" depth="3">
             <n-ellipsis style="max-width: 90%">{{ item.title }}</n-ellipsis>
           </n-text>
+        </div>
+        <!-- 遮罩 -->
+        <div v-if="item.disabled" class="list-model"></div>
+        <!-- 工具栏 -->
+        <div v-if="isShowTools(item)" class="list-tools go-transition" @click="deleteHandle(item, index)">
+          <n-button text type="default" color="#ffffff">
+            <template #icon>
+              <n-icon>
+                <TrashIcon />
+              </n-icon>
+            </template>
+            <span>删除</span>
+          </n-button>
         </div>
       </div>
     </div>
@@ -42,17 +57,23 @@ import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore
 import { EditCanvasTypeEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
 import { ChartModeEnum } from '@/store/modules/chartLayoutStore/chartLayoutStore.d'
 import { useChartLayoutStore } from '@/store/modules/chartLayoutStore/chartLayoutStore'
-import { componentInstall, loadingStart, loadingFinish, loadingError, JSONStringify } from '@/utils'
+import { usePackagesStore } from '@/store/modules/packagesStore/packagesStore'
+import { componentInstall, loadingStart, loadingFinish, loadingError, JSONStringify, goDialog } from '@/utils'
 import { DragKeyEnum } from '@/enums/editPageEnum'
 import { createComponent } from '@/packages'
-import { ConfigType, CreateComponentType } from '@/packages/index.d'
+import { ConfigType, CreateComponentType, PackagesCategoryEnum } from '@/packages/index.d'
+import { ChatCategoryEnum } from '@/packages/components/Photos/index.d'
 import { fetchConfigComponent, fetchChartComponent } from '@/packages/index'
+import { Icon } from '@iconify/vue'
+import { icon } from '@/plugins'
 
 import omit from 'lodash/omit'
 
 const chartEditStore = useChartEditStore()
+const { TrashIcon } = icon.ionicons5
 
-defineProps({
+const emit = defineEmits(['deletePhoto'])
+const props = defineProps({
   menuOptions: {
     type: Array as PropType<ConfigType[]>,
     default: () => []
@@ -62,6 +83,11 @@ defineProps({
 const chartLayoutStore = useChartLayoutStore()
 const contentChartsItemBoxRef = ref()
 
+// 判断工具栏展示
+const isShowTools = (item: ConfigType) => {
+  return !item.disabled && item.package === PackagesCategoryEnum.PHOTOS && item.category === ChatCategoryEnum.PRIVATE
+}
+
 // 组件展示状态
 const chartMode: Ref<ChartModeEnum> = computed(() => {
   return chartLayoutStore.getChartType
@@ -69,6 +95,7 @@ const chartMode: Ref<ChartModeEnum> = computed(() => {
 
 // 拖拽处理
 const dragStartHandle = (e: DragEvent, item: ConfigType) => {
+  if (item.disabled) return
   // 动态注册图表组件
   componentInstall(item.chartKey, fetchChartComponent(item))
   componentInstall(item.conKey, fetchConfigComponent(item))
@@ -85,6 +112,7 @@ const dragendHandle = () => {
 
 // 双击添加
 const dblclickHandle = async (item: ConfigType) => {
+  if (item.disabled) return
   try {
     loadingStart()
     // 动态注册图表组件
@@ -92,6 +120,11 @@ const dblclickHandle = async (item: ConfigType) => {
     componentInstall(item.conKey, fetchConfigComponent(item))
     // 创建新图表组件
     let newComponent: CreateComponentType = await createComponent(item)
+    if (item.redirectComponent) {
+      item.dataset && (newComponent.option.dataset = item.dataset)
+      newComponent.chartConfig.title = item.title
+      newComponent.chartConfig.chartFrame = item.chartFrame
+    }
     // 添加
     chartEditStore.addComponentList(newComponent, false, true)
     // 选中
@@ -101,6 +134,23 @@ const dblclickHandle = async (item: ConfigType) => {
     loadingError()
     window['$message'].warning(`图表正在研发中, 敬请期待...`)
   }
+}
+
+// 单击事件
+const clickHandle = (item: ConfigType) => {
+  item?.configEvents?.addHandle(item)
+}
+
+const deleteHandle = (item: ConfigType, index: number) => {
+  goDialog({
+    message: '是否删除此图片？',
+    transformOrigin: 'center',
+    onPositiveCallback: () => {
+      const packagesStore = usePackagesStore()
+      emit('deletePhoto', item, index)
+      packagesStore.deletePhotos(item, index)
+    }
+  })
 }
 
 watch(
@@ -135,6 +185,7 @@ $halfCenterHeight: 50px;
   gap: 9px;
   transition: all 0.7s linear;
   .item-box {
+    position: relative;
     margin: 0;
     width: $itemWidth;
     overflow: hidden;
@@ -145,7 +196,10 @@ $halfCenterHeight: 50px;
     &:hover {
       @include hover-border-color('background-color4');
       .list-img {
-        transform: scale(1.1);
+        transform: scale(1.08);
+      }
+      .list-tools {
+        opacity: 1;
       }
     }
     .list-header {
@@ -157,6 +211,7 @@ $halfCenterHeight: 50px;
       &-text {
         font-size: 12px;
         margin-left: 8px;
+        user-select: none;
       }
     }
     .list-center {
@@ -165,8 +220,9 @@ $halfCenterHeight: 50px;
       overflow: hidden;
       .list-img {
         height: 100px;
-        width: 140px;
+        max-width: 140px;
         border-radius: 6px;
+        object-fit: contain;
         @extend .go-transition;
       }
     }
@@ -175,6 +231,33 @@ $halfCenterHeight: 50px;
       .list-bottom-text {
         font-size: 12px;
         padding-left: 5px;
+      }
+    }
+    .list-model {
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0);
+    }
+    .list-tools {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      bottom: 0;
+      left: 0;
+      margin: 0 4px 2px;
+      height: 26px;
+      width: calc(100% - 8px);
+      opacity: 0;
+      border-radius: 6px;
+      backdrop-filter: blur(20px);
+      background-color: rgba(255, 255, 255, 0.15);
+      &:hover {
+        background-color: rgba(232, 128, 128, 0.7);
       }
     }
   }
@@ -196,6 +279,9 @@ $halfCenterHeight: 50px;
     .item-box {
       width: $halfItemWidth;
       max-width: $maxItemWidth;
+      .list-img {
+        max-width: 76px;
+      }
     }
     .list-center {
       height: $halfCenterHeight;
@@ -204,6 +290,7 @@ $halfCenterHeight: 50px;
         height: $halfCenterHeight;
         width: auto;
         transition: all 0.2s;
+        object-fit: contain;
       }
     }
     .list-bottom {

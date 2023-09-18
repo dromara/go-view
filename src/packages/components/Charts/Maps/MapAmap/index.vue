@@ -8,7 +8,7 @@ import AMapLoader from '@amap/amap-jsapi-loader'
 import { CreateComponentType } from '@/packages/index.d'
 import { useChartDataFetch } from '@/hooks'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
-import { MarkerEnum } from './config'
+import { MarkerEnum, ThemeEnum } from './config'
 import { isArray } from '@/utils'
 
 const props = defineProps({
@@ -51,7 +51,6 @@ const initMap = (newData: any) => {
         resizeEnable: true,
         zoom: amapZindex.value, // 地图显示的缩放级别
         center: [amapLon.value, amapLat.value],
-        mapStyle: `amap://styles/${amapStyleKeyCustom.value !== '' ? amapStyleKeyCustom.value : amapStyleKey.value}`, //自定义地图的显示样式
         lang: lang.value,
         features: features.value,
         pitch: pitch.value, // 地图俯仰角度，有效范围 0 度- 83 度
@@ -60,6 +59,14 @@ const initMap = (newData: any) => {
         willReadFrequently: true
       })
       dataHandle(props.chartConfig.option.dataset)
+      let satellite = new AMap.TileLayer.Satellite()
+      let roadNet = new AMap.TileLayer.RoadNet()
+      if (newData.amapStyleKey === ThemeEnum.WEIXIN) {
+        mapIns.add([satellite, roadNet])
+      } else {
+        mapIns.remove([satellite, roadNet])
+        mapIns.setMapStyle(`amap://styles/${amapStyleKeyCustom.value !== '' ? amapStyleKeyCustom.value : amapStyleKey.value}`)
+      }
     })
     .catch(e => {})
 }

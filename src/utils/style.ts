@@ -2,6 +2,7 @@ import Color from 'color'
 import { useDesignStore } from '@/store/modules/designStore/designStore'
 import { PickCreateComponentType } from '@/packages/index.d'
 import { EditCanvasConfigType } from '@/store/modules/chartEditStore/chartEditStore.d'
+import { chartColors, chartColorsSearch, CustomColorsType } from '@/settings/chartThemes/index'
 
 type AttrType = PickCreateComponentType<'attr'>
 type StylesType = PickCreateComponentType<'styles'>
@@ -87,6 +88,21 @@ export function darken(color: string, concentration: number) {
 }
 
 /**
+ * * hsl 转成16进制
+ * @param hsl
+ * @returns
+ */
+export function hslToHexa(hslString: string): string {
+  const color = Color(hslString)
+  return color.hexa()
+}
+
+export function hslToHex(hslString: string): string {
+  const color = Color(hslString)
+  return color.hex()
+}
+
+/**
  * * 修改主题色
  * @param themeName 主题名称
  * @returns
@@ -99,4 +115,49 @@ export const setHtmlTheme = (themeName?: string) => {
   }
   const designStore = useDesignStore()
   e.setAttribute('data-theme', designStore.themeName)
+}
+
+/**
+ * * 合并基础颜色和自定义颜色
+ * @param chartDefaultColors
+ * @param customColor
+ * @returns
+ */
+export const colorCustomMerge = (customColor?: CustomColorsType[]) => {
+  type FormateCustomColorType = {
+    [T: string]: {
+      color: string[]
+      name: string
+    }
+  }
+  const formateCustomColor: FormateCustomColorType = {}
+  customColor?.forEach(item => {
+    formateCustomColor[item.id] = {
+      color: item.color,
+      name: item.name
+    }
+  })
+  return { ...formateCustomColor, ...chartColors }
+}
+
+/**
+ * * 合并基础渐变颜色和自定义渐变颜色
+ * @param customColor
+ */
+export const colorGradientCustomMerge = (customColor?: CustomColorsType[]) => {
+  type FormateGradientCustomColorType = {
+    [T: string]: string[]
+  }
+  const formateGradientCustomColor: FormateGradientCustomColorType = {}
+  customColor?.forEach(item => {
+    formateGradientCustomColor[item.id] = [
+      item.color[0],
+      item.color[1],
+      fade(item.color[0], 0.3),
+      fade(item.color[0], 0.5),
+      fade(item.color[1], 0.5)
+    ]
+  })
+
+  return { ...formateGradientCustomColor, ...chartColorsSearch }
 }

@@ -9,7 +9,7 @@ export const exportHandle = () => {
 
   // 导出数据
   downloadTextFile(
-    JSONStringify(chartEditStore.getStorageInfo || []),
+    JSONStringify(chartEditStore.getStorageInfo() || []),
     undefined,
     'json'
   )

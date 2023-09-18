@@ -33,6 +33,10 @@ export const option = {
         width: 3,
         color: {
           type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
           colorStops: [
             {
               offset: 0,

@@ -1,10 +1,11 @@
 <template>
-  <v-chart :theme="themeColor" :option="option.value" autoresize> </v-chart>
+  <v-chart :theme="themeColor" :init-options="initOptions" :option="option.value" autoresize> </v-chart>
 </template>
 
 <script setup lang="ts">
 import { PropType, reactive, watch } from 'vue'
 import VChart from 'vue-echarts'
+import { useCanvasInitOptions } from '@/hooks/useCanvasInitOptions.hook'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { PieChart } from 'echarts/charts'
@@ -29,6 +30,8 @@ const props = defineProps({
   }
 })
 
+const initOptions = useCanvasInitOptions(props.chartConfig.option, props.themeSetting)
+
 use([DatasetComponent, CanvasRenderer, PieChart, GridComponent, TooltipComponent, LegendComponent, TitleComponent])
 
 const option = reactive({
@@ -38,7 +41,7 @@ const option = reactive({
 const dataHandle = (newData: any) => {
   const d = parseFloat(`${newData}`) * 100
   let config = props.chartConfig.option
-  config.title.text = d.toFixed(2) + '%'
+  config.title.text = `${+d.toFixed(2)}%`
   config.series[0].data[0].value[0] = d
   config.series[0].data[1].value[0] = 100 - d
   option.value = mergeTheme(props.chartConfig.option, props.themeSetting, includes)
@@ -65,7 +68,7 @@ watch(
 useChartDataFetch(props.chartConfig, useChartEditStore, (resData: number) => {
   let d = parseFloat(`${resData}`) * 100
   // @ts-ignore
-  option.value.title.text = d.toFixed(2) + '%'
+  option.value.title.text = `${+d.toFixed(2)}%`
   // @ts-ignore
   option.value.series[0].data[0].value[0] = d
   // @ts-ignore

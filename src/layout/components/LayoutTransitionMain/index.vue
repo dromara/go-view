@@ -2,7 +2,7 @@
   <router-view #default="{ Component, route }">
     <transition name="fade" mode="out-in" appear>
       <component
-        v-if="route.noKeepAlive"
+        v-if="route.meta.noKeepAlive"
         :is="Component"
         :key="route.fullPath"
       ></component>

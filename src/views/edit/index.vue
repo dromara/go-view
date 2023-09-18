@@ -14,8 +14,17 @@
           </n-button>
         </div>
         <n-space>
-          <n-tag :bordered="false" type="warning"> 「页面失焦保存」 </n-tag>
-          <n-tag :bordered="false" type="warning"> 「ctrl + s 保存」 </n-tag>
+          <!-- 暂时关闭 -->
+          <!-- <n-tag :bordered="false" type="warning"> 「页面失焦保存」 </n-tag> -->
+          <n-tag :bordered="false" type="warning"> 「Ctrl + S 更新视图」 </n-tag>
+          <n-button v-if="showOpenFilePicker" class="go-mr-3" size="medium" @click="updateSync">
+            <template #icon>
+              <n-icon>
+                <analytics-icon></analytics-icon>
+              </n-icon>
+            </template>
+            保存
+          </n-button>
         </n-space>
       </n-layout-header>
       <n-layout-content>
@@ -26,28 +35,37 @@
             lineNumbers: 'on',
             minimap: { enabled: true }
           }"
-      />
+          />
       </n-layout-content>
     </n-layout>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { ref } from 'vue'
 import { MonacoEditor } from '@/components/Pages/MonacoEditor'
 import { SavePageEnum } from '@/enums/editPageEnum'
 import { getSessionStorageInfo } from '../preview/utils'
-import type { ChartEditStorageType } from '../preview/index.d'
-import { setSessionStorage, JSONStringify, JSONParse, setTitle } from '@/utils'
+import { setSessionStorage, fetchRouteParamsLocation, JSONStringify, JSONParse, setTitle, goDialog } from '@/utils'
 import { StorageEnum } from '@/enums/storageEnum'
 import { icon } from '@/plugins'
+import { useSync } from '@/views/chart/hooks/useSync.hook'
+import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
+import { ProjectInfoEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
+import type { ChartEditStorageType } from '../preview/index.d'
 
-const { ChevronBackOutlineIcon, DownloadIcon } = icon.ionicons5
+const chartEditStore = useChartEditStore()
+const { dataSyncUpdate } = useSync()
+
+const { ChevronBackOutlineIcon, DownloadIcon, AnalyticsIcon } = icon.ionicons5
 const showOpenFilePicker: Function = (window as any).showOpenFilePicker
 const content = ref('')
+
+window['$message'].warning('请不要刷新此窗口！')
+
 // 从sessionStorage 获取数据
 async function getDataBySession() {
-  const localStorageInfo: ChartEditStorageType = await getSessionStorageInfo() as unknown as ChartEditStorageType
+  const localStorageInfo: ChartEditStorageType = (await getSessionStorageInfo()) as unknown as ChartEditStorageType
   setTitle(`编辑-${localStorageInfo.editCanvasConfig.projectName}`)
   content.value = JSONStringify(localStorageInfo)
 }
@@ -60,44 +78,80 @@ function back() {
 }
 
 // 导入json文本
-async function importJSON() {
-  const files = await showOpenFilePicker()
-  const file = await files[0].getFile()
-  const fr = new FileReader()
-  fr.readAsText(file)
-  fr.onloadend = () => {
-    content.value = (fr.result || '').toString()
-  }
+function importJSON() {
+  goDialog({
+    message: '导入数据将覆盖内容，此操作不可撤回，是否继续？',
+    isMaskClosable: true,
+    transformOrigin: 'center',
+    onPositiveCallback: async () => {
+      try {
+        const files = await showOpenFilePicker()
+        const file = await files[0].getFile()
+        const fr = new FileReader()
+        fr.readAsText(file)
+        fr.onloadend = () => {
+          content.value = (fr.result || '').toString()
+        }
+        window['$message'].success('导入成功！')
+      } catch (error) {
+        window['$message'].error('导入失败，请检查文件是否损坏！')
+        console.log(error)
+      }
+    }
+  })
 }
 
-// 同步 [画布页失去焦点时同步数据到JSON页，JSON页Ctrl+S 时同步数据到画布页]
+// 同步数据编辑页
 window.opener.addEventListener(SavePageEnum.CHART, (e: any) => {
+  window['$message'].success('正在进行更新...')
   setSessionStorage(StorageEnum.GO_CHART_STORAGE_LIST, [e.detail])
   content.value = JSONStringify(e.detail)
 })
 
-// 窗口失焦 + 保存 => 同步数据
+// 保存按钮同步数据
 document.addEventListener('keydown', function (e) {
   if (e.keyCode == 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
     e.preventDefault()
     updateSync()
   }
 })
-addEventListener('blur', updateSync)
+
+// 失焦保存（暂时关闭）
+// addEventListener('blur', updateSync)
 
 // 同步更新
 async function updateSync() {
   if (!window.opener) {
-    return window['$message'].error('源窗口已关闭，视图同步失败')
+    return window['$message'].error('源窗口已关闭，视图同步失败！')
   }
-  try {
-    const detail = JSONParse(content.value)
-    delete detail.id
-    // 保持id不变
-    window.opener.dispatchEvent(new CustomEvent(SavePageEnum.JSON, { detail }))
-  } catch (e) {
-    window['$message'].error('内容格式有误')
-    console.log(e)
+  goDialog({
+    message: '是否覆盖源视图内容? 此操作不可撤！',
+    isMaskClosable: true,
+    transformOrigin: 'center',
+    onPositiveCallback: async () => {
+      try {
+        const detail = JSONParse(content.value)
+        delete detail.id
+        // 保持id不变
+        // 带后端版本额外处理请求
+        if (dataSyncUpdate) {
+          chartEditStore.setProjectInfo(ProjectInfoEnum.PROJECT_ID, fetchRouteParamsLocation())
+          await dataSyncUpdate(false) // JSON界面保存不上传缩略图
+        }
+        window.opener.dispatchEvent(new CustomEvent(SavePageEnum.JSON, { detail }))
+        window['$message'].success('正在同步内容...')
+      } catch (e) {
+        window['$message'].error('内容格式有误')
+        console.log(e)
+      }
+    }
+  })
+}
+
+// 关闭页面发送关闭事件
+window.onbeforeunload = () => {
+  if (window.opener) {
+    window.opener.dispatchEvent(new CustomEvent(SavePageEnum.CLOSE))
   }
 }
 </script>

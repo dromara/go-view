@@ -44,7 +44,7 @@ export const asideCollapsedWidth = 60
 export const maskClosable = false
 
 // 全局边框圆角
-export const borderRadius = '6px'
+export const borderRadius = '4px'
 
 // 轮播间隔
 export const carouselInterval = 4000
@@ -60,6 +60,9 @@ export const editToJsonInterval = 5000
 
 // 数据请求间隔
 export const requestInterval = 30
+
+// 工作台自动保存间隔（s）
+export const saveInterval = 30
 
 // 数据请求间隔单位
 export const requestIntervalUnit = RequestHttpIntervalEnum.SECOND

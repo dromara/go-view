@@ -86,8 +86,18 @@
   },
   "legend": {
     "show": true,
-    "top": "5%",
+    "type": "scroll",
+    "x": "center",
+    "y": "top",
+    "icon": "circle",
+    "orient": "horizontal",
     "textStyle": {
+      "color": "#B9B8CE",
+      "fontSize": 18
+    },
+    "itemHeight": 15,
+    "itemWidth": 15,
+    "pageTextStyle": {
       "color": "#B9B8CE"
     }
   },

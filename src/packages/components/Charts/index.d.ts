@@ -14,5 +14,6 @@ export enum ChatCategoryEnumName {
   LINE = '折线图',
   SCATTER = '散点图',
   MAP = '地图',
+  COMBINATION = '组合图',
   MORE = '更多'
 }

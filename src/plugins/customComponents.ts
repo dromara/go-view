@@ -8,7 +8,10 @@ import { SketchRule } from 'vue3-sketch-ruler'
  * @param app
  */
 export function setupCustomComponents(app: App) {
+  // 骨架屏
   app.component('GoSkeleton', GoSkeleton)
+  // 加载
   app.component('GoLoading', GoLoading)
+  // 标尺
   app.component('SketchRule', SketchRule)
 }

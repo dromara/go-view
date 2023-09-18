@@ -1,7 +1,16 @@
 <template>
   <div class="go-chart-theme-color">
+    <n-card class="card-box" size="small" hoverable embedded @click="createColorHandle">
+      <n-text class="go-flex-items-center">
+        <span>自定义颜色</span>
+        <n-icon size="16">
+          <add-icon></add-icon>
+        </n-icon>
+      </n-text>
+    </n-card>
+
     <n-card
-      v-for="(value, key) in chartColors"
+      v-for="(value, key) in comChartColors"
       :key="key"
       class="card-box"
       :class="{ selected: key === selectName }"
@@ -11,41 +20,51 @@
       @click="selectTheme(key)"
     >
       <div class="go-flex-items-center">
-        <n-text>{{ chartColorsName[key] }}</n-text>
+        <n-ellipsis style="text-align: left; width: 60px">{{ value.name }} </n-ellipsis>
         <span
           class="theme-color-item"
           v-for="colorItem in fetchShowColors(value.color)"
           :key="colorItem"
           :style="{ backgroundColor: colorItem }"
-       ></span>
+        ></span>
       </div>
-      <div
-        class="theme-bottom"
-        :style="{ backgroundImage: chartColorsshow[key] }"
-      ></div>
+      <div class="theme-bottom" :style="{ backgroundImage: colorBackgroundImage(value) }"></div>
     </n-card>
+    <!-- 自定义颜色 modal -->
+    <create-color v-model:modelShow="createColorModelShow"></create-color>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
+import cloneDeep from 'lodash/cloneDeep'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { EditCanvasConfigEnum } from '@/store/modules/chartEditStore/chartEditStore.d'
-import {
-  chartColors,
-  chartColorsName,
-  chartColorsshow,
-  ChartColorsNameType
-} from '@/settings/chartThemes/index'
+import { chartColors, ChartColorsNameType } from '@/settings/chartThemes/index'
 import { useDesignStore } from '@/store/modules/designStore/designStore'
-import cloneDeep from 'lodash/cloneDeep'
+import { loadAsyncComponent, colorCustomMerge } from '@/utils'
 import { icon } from '@/plugins'
 
-const { SquareIcon } = icon.ionicons5
+type FormateCustomColorType = {
+  [T: string]: {
+    color: string[]
+    name: string
+  }
+}
+
+const CreateColor = loadAsyncComponent(() => import('../CreateColor/index.vue'))
+
+const { SquareIcon, AddIcon } = icon.ionicons5
 const chartEditStore = useChartEditStore()
 
 // 全局颜色
 const designStore = useDesignStore()
+const createColorModelShow = ref(false)
+
+// 合并默认颜色和自定义颜色
+const comChartColors = computed(() => {
+  return colorCustomMerge(chartEditStore.getEditCanvasConfig.chartCustomThemeColorInfo)
+})
 
 // 颜色
 const themeColor = computed(() => {
@@ -56,6 +75,16 @@ const themeColor = computed(() => {
 const selectName = computed(() => {
   return chartEditStore.getEditCanvasConfig.chartThemeColor
 })
+
+// 创建颜色
+const createColorHandle = () => {
+  createColorModelShow.value = true
+}
+
+// 底色
+const colorBackgroundImage = (item: { color: string[] }) => {
+  return `linear-gradient(to right, ${item.color[0]} 0%, ${item.color[5]} 100%)`
+}
 
 // 获取用来展示的色号
 const fetchShowColors = (colors: Array<string>) => {
@@ -69,36 +98,34 @@ const selectTheme = (theme: ChartColorsNameType) => {
 </script>
 
 <style lang="scss" scoped>
-@include go(chart-theme-color) {
-  padding-top: 20px;
+$radius: 10px;
+$itemRadius: 6px;
+
+@include go('chart-theme-color') {
   .card-box {
     cursor: pointer;
     margin-top: 15px;
     padding: 0;
     @include fetch-bg-color('background-color4-shallow');
-    border-radius: 23px;
+    border-radius: $radius;
     overflow: hidden;
-    @include deep() {
-      .n-card__content {
-        padding-top: 5px;
-        padding-bottom: 10px;
-      }
-    }
+
     &.selected {
-      border: 1px solid v-bind('themeColor');
+      border: 2px solid v-bind('themeColor');
       border-bottom: 1px solid rgba(0, 0, 0, 0);
     }
     &:first-child {
-      margin-top: 0;
+      margin-top: 5px;
     }
     .go-flex-items-center {
       justify-content: space-between;
+      margin-top: -4px;
     }
     .theme-color-item {
       display: inline-block;
       width: 20px;
       height: 20px;
-      border-radius: 50%;
+      border-radius: $itemRadius;
     }
     .theme-bottom {
       position: absolute;
@@ -106,7 +133,6 @@ const selectTheme = (theme: ChartColorsNameType) => {
       bottom: 0px;
       width: 100%;
       height: 3px;
-      background-image: linear-gradient(to right, #e0c3fc 0%, #8ec5fc 100%);
     }
   }
 }

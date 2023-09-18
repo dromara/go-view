@@ -36,7 +36,7 @@
       </div>
       <div class="model-footer">
         中国色列表来自于：
-        <n-a href="http://zhongguose.com">http://zhongguose.com</n-a>
+        <n-a href="http://zhongguose.com" target="_blank">http://zhongguose.com</n-a>
       </div>
     </div>
   </n-modal>
@@ -157,6 +157,7 @@ $height: 85vh;
     }
   }
   .model-footer {
+    z-index: 1;
     text-align: end;
   }
 }

@@ -16,9 +16,10 @@
 import { computed } from 'vue'
 import { loadAsyncComponent } from '@/utils'
 import { SettingItemBox } from '@/components/Pages/ChartItemSetting'
+import { RequestDataTypeEnum } from '@/enums/httpEnum'
+import { ChartFrameEnum } from '@/packages/index.d'
 import { useTargetData } from '../hooks/useTargetData.hook'
 import { SelectCreateDataType, SelectCreateDataEnum } from './index.d'
-import { RequestDataTypeEnum } from '@/enums/httpEnum'
 
 const ChartDataStatic = loadAsyncComponent(() => import('./components/ChartDataStatic/index.vue'))
 const ChartDataAjax = loadAsyncComponent(() => import('./components/ChartDataAjax/index.vue'))
@@ -44,6 +45,9 @@ const selectOptions: SelectCreateDataType[] = [
 
 // 无数据源
 const isNotData = computed(() => {
-  return typeof targetData.value?.option?.dataset === 'undefined'
+  return (
+    targetData.value.chartConfig?.chartFrame === ChartFrameEnum.STATIC ||
+    typeof targetData.value?.option?.dataset === 'undefined'
+  )
 })
 </script>

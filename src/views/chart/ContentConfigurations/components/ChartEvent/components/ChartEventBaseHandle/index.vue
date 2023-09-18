@@ -1,5 +1,5 @@
 <template>
-  <n-collapse-item title="基础事件配置" name="1">
+  <n-collapse-item title="基础事件配置" name="2">
     <template #header-extra>
       <n-button type="primary" tertiary size="small" @click.stop="showModal = true">
         <template #icon>
@@ -16,7 +16,7 @@
         <p>
           <span class="func-annotate">// {{ EventTypeName[eventName] }}</span>
           <br />
-          <span class="func-keyword">async {{ eventName }}</span> (mouseEvent) {
+          <span class="func-keyword">async {{ eventName }}</span> (mouseEvent,components) {
         </p>
         <p class="go-ml-4">
           <n-code :code="(targetData.events.baseEvent || {})[eventName] || ''" language="typescript"></n-code>
@@ -52,7 +52,7 @@
               <!-- 函数名称 -->
               <p class="go-pl-3">
                 <span class="func-keyword">async function &nbsp;&nbsp;</span>
-                <span class="func-keyNameWord">{{ eventName }}(mouseEvent)&nbsp;&nbsp;{</span>
+                <span class="func-keyNameWord">{{ eventName }}(mouseEvent,components)&nbsp;&nbsp;{</span>
               </p>
               <!-- 编辑主体 -->
               <monaco-editor v-model:modelValue="baseEvent[eventName]" height="480px" language="javascript" />

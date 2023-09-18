@@ -69,11 +69,7 @@
         </n-space>
       </SettingItem>
       <SettingItem name="字体颜色">
-        <n-color-picker
-          size="small"
-          :modes="['hex']"
-          v-model:value="seriesList[1].label.color"
-        ></n-color-picker>
+        <n-color-picker size="small" :modes="['hex']" v-model:value="seriesList[1].label.color"></n-color-picker>
       </SettingItem>
       <SettingItem name="字体大小">
         <n-input-number
@@ -129,7 +125,7 @@
         ></n-color-picker>
       </SettingItem>
     </SettingItemBox>
-    
+
     <SettingItemBox name="悬浮弹窗">
       <SettingItem name="显示">
         <n-space>
@@ -180,6 +176,22 @@
       <SettingItem>
         <n-checkbox v-model:checked="mapRegion.showHainanIsLands" size="small">显示南海群岛</n-checkbox>
       </SettingItem>
+      <SettingItem v-if="seriesList[2]">
+        <n-checkbox v-model:checked="mapRegion.enter" size="small">点击进入下级</n-checkbox>
+      </SettingItem>
+    </SettingItemBox>
+    <SettingItemBox name="返回图标" v-if="mapRegion.enter">
+      <SettingItem name="颜色">
+        <n-color-picker size="small" :modes="['hex']" v-model:value="mapRegion.backColor"></n-color-picker>
+      </SettingItem>
+      <SettingItem name="大小">
+        <n-input-number
+          v-model:value="mapRegion.backSize"
+          :min="1"
+          size="small"
+          placeholder="请输入字体大小"
+        ></n-input-number>
+      </SettingItem>
     </SettingItemBox>
   </CollapseItem>
   <CollapseItem name="标记" :expanded="true">
@@ -191,7 +203,7 @@
         <n-color-picker size="small" :modes="['hex']" v-model:value="seriesList[0].itemStyle.color"></n-color-picker>
       </SettingItem>
     </SettingItemBox>
-      
+
     <SettingItemBox name="文本">
       <SettingItem name="显示">
         <n-space>
@@ -220,6 +232,47 @@
       </SettingItem>
       <SettingItem name="涟漪的绘制方式">
         <n-select size="small" v-model:value="seriesList[0].rippleEffect.brushType" :options="rippleEffectOptions" />
+      </SettingItem>
+    </SettingItemBox>
+  </CollapseItem>
+
+  <CollapseItem v-if="seriesList[2]" name="飞线" :expanded="true">
+    <SettingItemBox name="箭头">
+      <SettingItem name="速度">
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <n-input-number v-model:value="seriesList[2].effect.period" size="small" :min="0"></n-input-number>
+          </template>
+          值越小速度越快
+        </n-tooltip>
+      </SettingItem>
+      <SettingItem name="尾迹">
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <n-input-number
+              v-model:value="seriesList[2].effect.trailLength"
+              size="small"
+              :min="0"
+              :max="1"
+            ></n-input-number>
+          </template>
+          特效尾迹长度[0,1]值越大，尾迹越长重
+        </n-tooltip>
+      </SettingItem>
+      <SettingItem name="大小">
+        <n-input-number v-model:value="seriesList[2].effect.symbolSize" size="small" :min="0"></n-input-number>
+      </SettingItem>
+    </SettingItemBox>
+    <SettingItemBox name="配置">
+      <SettingItem name="颜色">
+        <n-color-picker
+          size="small"
+          :modes="['hex']"
+          v-model:value="seriesList[2].lineStyle.normal.color"
+        ></n-color-picker>
+      </SettingItem>
+      <SettingItem name="宽度">
+        <n-input-number v-model:value="seriesList[2].lineStyle.normal.width" size="small" :min="1"></n-input-number>
       </SettingItem>
     </SettingItemBox>
   </CollapseItem>

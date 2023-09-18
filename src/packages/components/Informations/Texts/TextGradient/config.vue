@@ -2,7 +2,7 @@
   <collapse-item name="信息" :expanded="true">
     <setting-item-box name="文字" :alone="true">
       <setting-item>
-        <n-input v-model:value="optionData.dataset" size="small"></n-input>
+        <n-input v-model:value="optionData.dataset" type="textarea" size="small"></n-input>
       </setting-item>
     </setting-item-box>
   </collapse-item>

@@ -7,7 +7,8 @@
       :fallback-src="requireErrorImg()"
       :width="w"
       :height="h"
-    ></n-image>
+      lazy
+    />
   </div>
 </template>
 

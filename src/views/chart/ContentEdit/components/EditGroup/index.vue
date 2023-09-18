@@ -56,7 +56,7 @@ import { MenuEnum } from '@/enums/editPageEnum'
 import { chartColors } from '@/settings/chartThemes/index'
 import { CreateComponentType, CreateComponentGroupType } from '@/packages/index.d'
 import { MenuOptionsItemType } from '@/views/chart/hooks/useContextMenu.hook.d'
-import { animationsClass, getFilterStyle, getTransformStyle, getBlendModeStyle } from '@/utils'
+import { animationsClass, getFilterStyle, getTransformStyle, getBlendModeStyle, colorCustomMerge } from '@/utils'
 import { useChartEditStore } from '@/store/modules/chartEditStore/chartEditStore'
 import { useContextMenu, divider } from '@/views/chart/hooks/useContextMenu.hook'
 import { useMouseHandle } from '../../hooks/useDrag.hook'
@@ -117,8 +117,8 @@ const optionsHandle = (
 
 // 配置项
 const themeColor = computed(() => {
-  const chartThemeColor = chartEditStore.getEditCanvasConfig.chartThemeColor
-  return chartColors[chartThemeColor]
+  const colorCustomMergeData = colorCustomMerge(chartEditStore.getEditCanvasConfig.chartCustomThemeColorInfo)
+  return colorCustomMergeData[chartEditStore.getEditCanvasConfig.chartThemeColor]
 })
 
 // 主题色

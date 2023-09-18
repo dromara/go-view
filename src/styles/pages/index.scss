@@ -7,3 +7,9 @@
 .amap-copyright {
   opacity: 0 !important;
 }
+
+[data-theme='dark'] {
+  body {
+    background-color: #18181c;
+  }
+}

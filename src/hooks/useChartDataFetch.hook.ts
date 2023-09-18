@@ -1,4 +1,4 @@
-import { ref, toRefs, toRaw } from 'vue'
+import { ref, toRefs, toRaw, watch } from 'vue'
 import type VChart from 'vue-echarts'
 import { customizeHttp } from '@/api/http'
 import { useChartDataPondFetch } from '@/hooks/'
@@ -76,10 +76,11 @@ export const useChartDataFetch = (
           if (res) {
             try {
               const filter = targetComponent.filter
-              echartsUpdateHandle(newFunctionHandle(res?.data, res, filter))
+              const { data } = res
+              echartsUpdateHandle(newFunctionHandle(data, res, filter))
               // 更新回调函数
               if (updateCallback) {
-                updateCallback(newFunctionHandle(res?.data, res, filter))
+                updateCallback(newFunctionHandle(data, res, filter))
               }
             } catch (error) {
               console.error(error)
@@ -87,14 +88,28 @@ export const useChartDataFetch = (
           }
         }
 
-        // 立即调用
-        fetchFn()
+        // 普通初始化与组件交互处理监听
+        watch(
+          () => targetComponent.request.requestParams,
+          () => {
+            fetchFn()
+          },
+          {
+            immediate: true,
+            deep: true
+          }
+        )
+
         // 定时时间
         const time = targetInterval && targetInterval.value ? targetInterval.value : globalRequestInterval.value
         // 单位
         const unit = targetInterval && targetInterval.value ? targetUnit.value : globalUnit.value
         // 开启轮询
-        if (time) fetchInterval = setInterval(fetchFn, intervalUnitHandle(time, unit))
+        if (time) {
+          fetchInterval = setInterval(fetchFn, intervalUnitHandle(time, unit))
+        } else {
+          fetchFn()
+        }
       }
       // eslint-disable-next-line no-empty
     } catch (error) {
@@ -103,10 +118,11 @@ export const useChartDataFetch = (
   }
 
   if (isPreview()) {
-    // 判断是否是数据池类型
     targetComponent.request.requestDataType === RequestDataTypeEnum.Pond
       ? addGlobalDataInterface(targetComponent, useChartEditStore, updateCallback || echartsUpdateHandle)
       : requestIntervalFn()
+  } else {
+    requestIntervalFn()
   }
   return { vChartRef }
 }

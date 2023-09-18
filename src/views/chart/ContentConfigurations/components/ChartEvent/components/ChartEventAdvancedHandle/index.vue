@@ -1,5 +1,5 @@
 <template>
-  <n-collapse-item title="高级事件配置" name="2">
+  <n-collapse-item title="高级事件配置" name="3">
     <template #header-extra>
       <n-button type="primary" tertiary size="small" @click.stop="showModal = true">
         <template #icon>
