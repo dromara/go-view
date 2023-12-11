@@ -1,4 +1,4 @@
-### 最新的代码将第一时间在码云 [Gitee] 上更新，更建议您前往码云进行查看👉：https://gitee.com/dromara/go-view
+### 最新的代码将第一时间在码云 [Gitee] 上更新，更建议您前往码云进行查看 👉：https://gitee.com/dromara/go-view
 
 ##
 
@@ -24,7 +24,7 @@
 
 ### 🤯 后端项目
 
-后端项目gitee地址：[https://gitee.com/MTrun/go-view-serve](https://gitee.com/MTrun/go-view-serve)
+后端项目 gitee 地址：[https://gitee.com/MTrun/go-view-serve](https://gitee.com/MTrun/go-view-serve)
 
 接口说明地址：[https://docs.apipost.cn/preview/5aa85d10a59d66ce/ddb813732007ad2b?target_id=84dbc5b0-158f-4bcb-8f74-793ac604ada3#3e053622-1e76-43f9-a039-756aee822dbb](https://docs.apipost.cn/preview/5aa85d10a59d66ce/ddb813732007ad2b?target_id=84dbc5b0-158f-4bcb-8f74-793ac604ada3#3e053622-1e76-43f9-a039-756aee822dbb)
 
@@ -160,8 +160,11 @@ make dist
 
 ## 交流
 
-QQ 群：663629294
+QQ 交流群 和 作者 QQ：
 
-<img width="260px" src="readme/go-view-qq.png" alt="QQ群" style="border-radius: 20px" />
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+  <img width="240px" src="readme/qq.jpg" alt="QQ群" style="border-radius: 20px" />
+  <img width="240px" src="readme/qq-person.png" alt="QQ" style="border-radius: 20px" />
+</div>
 
 ![渲染海报](readme/logo-poster.png)
