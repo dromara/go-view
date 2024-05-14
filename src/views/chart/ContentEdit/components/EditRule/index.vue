@@ -173,12 +173,12 @@ const canvasBox = () => {
 }
 
 // 重绘标尺
-const reDraw = () => {
+const reDraw = throttle(() => {
   sketchRuleReDraw.value = false
   setTimeout(() => {
     sketchRuleReDraw.value = true
   }, 10)
-}
+},20)
 
 // 滚动居中
 const canvasPosCenter = () => {
@@ -209,7 +209,7 @@ watch(
         reDraw()
       }, 400)
     } else {
-      throttle(reDraw, 20)
+      reDraw();
     }
   }
 )
