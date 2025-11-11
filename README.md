@@ -71,6 +71,7 @@
 | Vue                 | 3.2.x | TypeScript4 | 4.6.x  |
 | Vite                | 2.9.x | NaiveUI     | 2.27.x |
 | ECharts             | 5.3.x | Pinia       | 2.0.x  |
+| VChart              | 2.0.x | 其余详见 `package.json`       | 👈  |
 | 详见 `package.json` | 😁    | 🥰          | 🤗     |
 
 开发环境:
